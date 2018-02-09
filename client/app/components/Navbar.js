@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { navbar } from '../styles/navbar.scss';
+import '../styles/global.scss';
 
 class Navbar extends Component {
     render() {
@@ -9,9 +10,9 @@ class Navbar extends Component {
                 <img src={require('../images/methanexlogo.png')} />
                 <Link to="/">Home</Link>
                 <Link to="/portfolio">Portfolio</Link>
-                <Link to="/projects">Projects</Link>
-                <Link to="/resources">Resource</Link>
-                <Link to="/settings">Settings</Link>
+                <Link to="/project">Projects</Link>
+                <Link to="/resource">Resource</Link>
+                <Link to="/setting">Settings</Link>
             </div>
         );
     }
