@@ -52,6 +52,10 @@ public class ClassificationServiceImpl {
 
         Classification classification = classificationDao.findOne(Integer.valueOf(id));
 
+        if (classification == null) {
+            throw new GeneralRestNotFoundException();
+        }
+
         if (toUpdate.hasName()) {
             String classificationName = toUpdate.getName();
             validateClassificationName(classificationName);
