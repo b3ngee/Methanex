@@ -1,7 +1,9 @@
+@import './global.scss';
+
 .navbar {
     height: 100%;
     width: 250px;
-    border-right: 1px solid #1AA7CC;
+    border-right: 1px solid $primary-color;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -14,7 +16,7 @@
     }
     a {
         font-size: 20px;
-        color: #1AA7CC;
+        color: $primary-color;
         text-transform: uppercase;
         text-decoration: none;
         text-align: right;
@@ -22,11 +24,11 @@
         display: block;
 
         &:hover {
-            background-color: #ECECEC;
+            background-color: $hover-color;
         }
 
         &:active {
-            color: #FFFFFF;
+            color: $navbar-active-color;
         }
     }
 }
