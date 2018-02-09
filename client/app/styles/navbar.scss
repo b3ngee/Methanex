@@ -1,7 +1,9 @@
+@import './global.scss';
+
 .navbar {
     height: 100%;
     width: 250px;
-    border-right: 1px solid #1AA7CC;
+    border-right: 1px solid $primary-color;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -13,21 +15,20 @@
         margin-bottom: 100px;
     }
     a {
-        font-family: "Trebuchet MS", Helvetica, sans-serif;
+        font-size: 20px;
+        color: $primary-color;
         text-transform: uppercase;
         text-decoration: none;
-        padding: 20px 10px 20px 10px;
-        font-size: 20px;
-        color: #1AA7CC;
-        display: block;
         text-align: right;
+        padding: 20px 10px 20px 10px;
+        display: block;
 
         &:hover {
-            background-color: #ECECEC;
+            background-color: $hover-color;
         }
 
         &:active {
-            color: #FFFFFF;
+            color: $navbar-active-color;
         }
     }
 }
