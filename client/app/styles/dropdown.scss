@@ -1,0 +1,31 @@
+select {
+    width: auto-adjust;
+    background-color: white;
+    border: thin solid grey;
+    border-radius: 4px;
+    display: inline-block;
+    font: inherit;
+    line-height: 1.5em;
+    padding: 0.5em 3.5em 0.5em 1em;
+
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, black 50%),
+        linear-gradient(135deg, black 50%, transparent 50%),
+        linear-gradient(to right, #ccc, #ccc);
+    background-position:
+        calc(100% - 20px) calc(1em + 0px),
+        calc(100% - 10px) calc(1em + 0px),
+        calc(100% - 0.5em) 0.5em;
+    background-size:
+        10px 10px,
+        10px 10px,
+        0px 1.5em;
+    background-repeat: no-repeat;
+}
