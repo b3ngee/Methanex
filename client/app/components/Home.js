@@ -3,7 +3,7 @@ import { home } from '../styles/home.scss';
 
 const Home = () =>
     <div className={ home }>
-        <h1>My Homepage</h1>
+      <p> Hello Jane! </p>
     </div>;
 
 export default Home;
