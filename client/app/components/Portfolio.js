@@ -3,14 +3,14 @@ import { portfolio } from '../styles/portfolio.scss';
 import Dropdown from './Dropdown.js';
 
 let portfolioData1 = {
-    projectNames: [
+    choices: [
         'Project Infrastructure Reboot',
         'Project UBC'
     ]
 };
 
 let portfolioData2 = {
-    projectNames: [
+    choices: [
         'Project A',
         'Project B',
         'Project X',
