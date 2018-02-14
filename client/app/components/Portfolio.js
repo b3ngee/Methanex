@@ -2,22 +2,16 @@ import React from 'react';
 import { portfolio } from '../styles/portfolio.scss';
 import Dropdown from './Dropdown.js';
 
-let portfolioData1 = {
-    choices: [
-        'Project Infrastructure Reboot',
-        'Project UBC'
-    ]
-};
+let portfolioData1 = [
+    'Project Infrastructure Reboot',
+    'Project UBC'];
 
-let portfolioData2 = {
-    choices: [
-        'Project A',
-        'Project B',
-        'Project X',
-        'Project XYB',
-        'Project ReVamp HR'
-    ]
-};
+let portfolioData2 = [
+    'Project A',
+    'Project B',
+    'Project X',
+    'Project XYB',
+    'Project ReVamp HR'];
 
 const Portfolio = () =>
     <div className={ portfolio }>

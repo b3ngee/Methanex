@@ -4,6 +4,7 @@ import { select } from '../styles/dropdown.scss';
 export default class Dropdown extends Component {
     constructor(props) {
         super(props);
+        this.state = {};
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -12,9 +13,7 @@ export default class Dropdown extends Component {
     }
 
     render() {
-        const values = this.props.data.choices;
-
-        let options = values.map(val => {
+        let options = this.props.data.map(val => {
             return <option value = {val}>{val}</option>;
         });
 
