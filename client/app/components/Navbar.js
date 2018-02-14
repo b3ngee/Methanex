@@ -9,9 +9,9 @@ class Navbar extends Component {
             <div className={ navbar }>
                 <img src={require('../images/methanexlogo.png')} />
                 <Link to="/">Home</Link>
-                <Link to="/portfolio">Portfolio</Link>
+                <Link to="/portfolio">Portfolios</Link>
                 <Link to="/project">Projects</Link>
-                <Link to="/resource">Resource</Link>
+                <Link to="/resource">Resources</Link>
                 <Link to="/setting">Settings</Link>
             </div>
         );
