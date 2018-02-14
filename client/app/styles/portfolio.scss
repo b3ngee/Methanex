@@ -1,3 +1,11 @@
+@import './global.scss';
+
 .portfolio {
+    text-align: left;
+    padding-left: 20px;
+    padding-top: 9%;
+
+    div {
     text-align: center;
+    }
 }
