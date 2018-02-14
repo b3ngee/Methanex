@@ -1,0 +1,53 @@
+:root {
+  --main-color: #1AA7CC;
+  --main-color-high:#222;
+  --text-color:#cccccc;
+  --text-hover: #fff;
+}
+
+.toolbar{
+  overflow-y: visible;
+  //position: absolute;
+  top:0px;
+  z-index: 1;
+  left:0px;
+  max-height: 50px;
+  min-height: 30px;
+  background:var(--main-color);
+  width:100%;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+}
+
+.toolbar> ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px;
+  margin-left: 5px;
+  overflow: visible;
+  //background-color:
+  font-size: 12pt;
+  white-space: nowrap;
+}
+
+
+
+.toolbar> ul> li:hover{
+  color:var(--text-hover)
+}
+
+.toolbar> ul> li {
+  float: right;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.text-content {
+  display: none;
+  position: absolute;
+  background-color: #000;
+  min-width: 200px;
+  width: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 2;
+}
