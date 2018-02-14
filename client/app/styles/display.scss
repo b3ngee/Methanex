@@ -1,6 +1,6 @@
 .display {
     position: fixed;
     margin-left: 260px;
-    width: 100%;
+    width: calc(100% - 260px);
     height: 100%;
 }
