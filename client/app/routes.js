@@ -5,6 +5,7 @@ import Portfolio from './components/Portfolio';
 import Project from './components/Project';
 import Resource from './components/Resource';
 import Setting from './components/Setting';
+import Login from './components/Login';
 
 export default (
 	<Switch>
@@ -13,5 +14,6 @@ export default (
 		<Route exact path="/project" component={Project} />
 		<Route exact path="/resource" component={Resource} />
 		<Route exact path="/setting" component={Setting} />
+		<Route exact path="/login" component={Login} />
 	</Switch>
 );
