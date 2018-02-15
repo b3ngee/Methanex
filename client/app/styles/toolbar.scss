@@ -3,6 +3,7 @@
   --main-color-high:#222;
   --text-color:#cccccc;
   --text-hover: #fff;
+  padding-left: 3px;
 }
 
 .toolbar{
@@ -17,6 +18,15 @@
   width:100%;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
+}
+
+.link {
+    color: #cccccc;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: #fff;
 }
 
 .toolbar> ul {

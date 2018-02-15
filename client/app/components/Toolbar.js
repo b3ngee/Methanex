@@ -1,13 +1,18 @@
 import React, {Component} from 'react';
 import { toolbar } from '../styles/toolbar.scss';
-// import { Link } from 'react-router-dom';
+import { link } from '../styles/toolbar.scss';
+import { Link } from 'react-router-dom';
 
 class Toolbar extends Component {
     render() {
         return (
             <div className={ toolbar }>
                 <ul>
-                    <li className="text" style={{marginLeft: '1em', marginRight: '5em'}}>My Projects</li>
+                    <li className="text" style={{marginRight: '1em'}}>
+                        <Link className={ link } to="/skill">My Skills</Link>
+                    </li>
+
+                    <li className="text" style={{marginLeft: '1em', marginRight: '1em'}}>My Projects</li>
 
                     <li className="text" style={{marginLeft: '1em'}}>My Resouces</li>
 
