@@ -3,15 +3,12 @@ import { portfolio } from '../styles/portfolio.scss';
 import Dropdown from './Dropdown.js';
 
 let portfolioData1 = [
-    'Project Infrastructure Reboot',
-    'Project UBC'];
-
-let portfolioData2 = [
-    'Project A',
-    'Project B',
-    'Project X',
-    'Project XYB',
-    'Project ReVamp HR'];
+    'Portfolio: Infrastructure Reboot',
+    'Portfolio: UBC',
+    'Portfolio: A',
+    'Portfolio: B',
+    'Portfolio: XYB',
+    'Portfolio: Revamp HR'];
 
 const Portfolio = () =>
     <div className={ portfolio }>
@@ -19,7 +16,6 @@ const Portfolio = () =>
         <p>{"Here's an overview of your portfolios."}</p>
         <div>
             <Dropdown data={portfolioData1}/>
-            <Dropdown data={portfolioData2}/>
         </div>
     </div>;
 
