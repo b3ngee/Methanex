@@ -17,6 +17,6 @@ const Login = () =>
         </label>
         <br/>
         <br/>
-        <Link to="/">Login</Link>
+        <Link to="/portfolio">Login</Link>
     </div>;
 export default Login;
