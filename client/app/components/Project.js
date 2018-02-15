@@ -1,37 +1,41 @@
 import React from 'react';
 import Table from './Table.js';
 import { project } from '../styles/project.scss';
-import Login from './Login';
+import Navbar from './Navbar';
 
 let tableData = {
     columns: ['Project Name', 'Project Manager', 'Status'],
     rows: [{
         'Project Name': 'FB',
         'Project Manager': 'Ben Gee',
-        'Status': 'Red'
+        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
     }, {
         'Project Name': 'GOOGLE',
         'Project Manager': 'Ben Gee',
-        'Status': 'Red'
+        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
     }, {
         'Project Name': 'MSFT',
         'Project Manager': 'Colby Song',
-        'Status': 'Green'
+        'Status': <img style={{width: 15, height: 20}} src={require('../images/greenLightBulb.png')} />
     }, {
         'Project Name': 'TWITCH',
         'Project Manager': 'Lansi Chu',
-        'Status': 'Red'
+        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
     }, {
         'Project Name': 'EA',
         'Project Manager': 'Yoony Ok',
-        'Status': 'Red'
+        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
+    }, {
+        'Project Name': 'UBC',
+        'Project Manager': 'Harnoor Shoker',
+        'Status': <img style={{width: 15, height: 20}} src={require('../images/amberLightBulb.jpg')} />
     }]
 };
 
 const Project = () =>
     <div className={ project }>
         <h1>My Project</h1>
-        <Login/>
+        <Navbar/>
         <Table text="List of Projects" data={tableData}/>
     </div>;
 

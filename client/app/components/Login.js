@@ -13,7 +13,7 @@ const Login = () =>
         <br/>
         <label htmlFor="pw">
             Password:
-            <input id="pw" type="text"/>
+            <input id="pw" type="password"/>
         </label>
         <br/>
         <br/>
