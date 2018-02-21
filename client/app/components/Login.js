@@ -46,7 +46,7 @@ class Login extends React.Component {
                 localStorage.setItem('user_id', res.data.user_id);
                 localStorage.setItem('roles', res.data.roles);
                 localStorage.setItem('user_name', res.data.user_name);
-                this.props.history.push('/home');
+                this.props.history.push('/');
             }).catch(
                 // TODO: display error message once api format is finalized
             );

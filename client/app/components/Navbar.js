@@ -4,6 +4,7 @@ import { navbar } from '../styles/navbar.scss';
 import '../styles/global.scss';
 
 class Navbar extends Component {
+    // TODO: conditionally render different links depending on roles retrieved from local storage
     render() {
         return (
             <div className={ navbar }>
