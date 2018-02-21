@@ -17,6 +17,7 @@
   "author": "Jean-Pierre Sierens",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
     "prop-types": "^15.5.9",
     "react": "^15.0.2",
     "react-dom": "^15.0.2",
