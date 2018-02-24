@@ -4,8 +4,7 @@ import Login from './Login';
 
 const Home = () =>
     <div className={ home }>
-      {/* <p> Hello Jane! </p> */}
-      <Login/>
+      <p> Hello {localStorage.getItem('user_name')}! </p>
     </div>;
 
 export default Home;
