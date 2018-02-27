@@ -9,7 +9,7 @@ class Toolbar extends Component {
                 <ul>
                     <li className="text" style={{marginLeft: '1em', marginRight: '5em'}}>My Projects</li>
 
-                    <li className="text" style={{marginLeft: '1em'}}>My Resouces</li>
+                    <li className="text" style={{marginLeft: '1em'}}>My Resources</li>
 
                     <li className="text">My Hours</li>
                 </ul>
