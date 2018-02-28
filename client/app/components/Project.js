@@ -2,6 +2,19 @@ import React from 'react';
 import Table from './Table.js';
 import { project } from '../styles/project.scss';
 import Navbar from './Navbar';
+import axios from 'axios';
+
+let projectCount = 0;
+axios.get('https://private-05c14-methanex.apiary-mock.com/projects?portfolioType=&projectOwner=')
+    .then(response => {
+        projectCount = JSON.parse(response.data).length;
+        console.log(projectCount);
+        localStorage.setItem('projects', response.data);
+        console.log(localStorage.getItem('projects'));
+    })
+    .catch(error => {
+        console.log('Error fetching and parsing data', error);
+    });
 
 let tableData = {
     columns: ['Project Name', 'Project Manager', 'Status'],
