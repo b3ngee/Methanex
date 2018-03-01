@@ -16,7 +16,8 @@
             a {
                 display: inline-block;
                 text-decoration: none;
-                padding: 14px 30px;
+                padding: 14px 15px;
+                color: $primary-color;
 
                 &:hover {
                     background-color: $hover-color;
