@@ -7,7 +7,6 @@ import '../styles/global.scss';
 class Navbar extends Component {
     // TODO: conditionally render different links depending on roles retrieved from local storage
     logout() {
-        console.log('logging out');
         localStorage.clear();
         location.reload();
     }
