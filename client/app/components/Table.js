@@ -6,8 +6,11 @@ export default class Table extends Component {
         super(props);
     }
     render() {
-        const cols = this.props.data.columns;
-        const rows = this.props.data.rows;
+        const cols = this.props.columns;
+        const rows = this.props.rows;
+
+        console.log('Columns: ', cols);
+        console.log('Rows: ', rows);
 
         let headers = (<thead>
             <tr>
@@ -33,5 +36,6 @@ export default class Table extends Component {
 }
 
 Table.propTypes = {
-    data: PropTypes.any
+    columns: PropTypes.any,
+    rows: PropTypes.any
 };

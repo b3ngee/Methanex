@@ -1,55 +1,51 @@
 import React from 'react';
 import Table from './Table.js';
 import { project } from '../styles/project.scss';
-import Navbar from './Navbar';
+// import Navbar from './Navbar';
 import axios from 'axios';
 
-let projectCount = 0;
-axios.get('https://private-05c14-methanex.apiary-mock.com/projects?portfolioType=&projectOwner=')
-    .then(response => {
-        projectCount = JSON.parse(response.data).length;
-        console.log(projectCount);
-        localStorage.setItem('projects', response.data);
-        console.log(localStorage.getItem('projects'));
-    })
-    .catch(error => {
-        console.log('Error fetching and parsing data', error);
-    });
+class Project extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            numProject: 0,
+            selectedProjectID: 0,
+            rows: [],
+        };
 
-let tableData = {
-    columns: ['Project Name', 'Project Manager', 'Status'],
-    rows: [{
-        'Project Name': 'FB',
-        'Project Manager': 'Ben Gee',
-        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
-    }, {
-        'Project Name': 'GOOGLE',
-        'Project Manager': 'Ben Gee',
-        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
-    }, {
-        'Project Name': 'MSFT',
-        'Project Manager': 'Colby Song',
-        'Status': <img style={{width: 15, height: 20}} src={require('../images/greenLightBulb.png')} />
-    }, {
-        'Project Name': 'TWITCH',
-        'Project Manager': 'Lansi Chu',
-        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
-    }, {
-        'Project Name': 'EA',
-        'Project Manager': 'Yoony Ok',
-        'Status': <img style={{width: 15, height: 20}} src={require('../images/redLightBulb.png')} />
-    }, {
-        'Project Name': 'UBC',
-        'Project Manager': 'Harnoor Shoker',
-        'Status': <img style={{width: 15, height: 20}} src={require('../images/amberLightBulb.jpg')} />
-    }]
-};
+        this.getProjects = this.getProjects.bind(this);
+    }
 
-const Project = () =>
-    <div className={ project }>
-        <h1>My Project</h1>
-        <Navbar/>
-        <Table text="List of Projects" data={tableData}/>
-    </div>;
+
+    componentDidMount() {
+        this.getProjects();
+    }
+
+    // TODO: need to change the end points
+    getProjects() {
+        axios.get('https://private-05c14-methanex.apiary-mock.com/projects?portfolioType=&projectOwner=').then(response => {
+            this.setState({ numProject: response.data.length });
+            this.setState({ projects: response.data });
+
+            const tableData = [];
+            for (let i = 0; i < this.state.numProject; i++) {
+                tableData.push({ 'Project Name': this.state.projects[i].project_name, 'Project Manager': this.state.projects[i].project_manager, 'Status': this.state.projects[i].rag_status });
+            }
+            this.setState({ rows: tableData});
+        }).catch(error => {
+            console.log('Error fetching and parsing data', error);
+        });
+    }
+
+    render() {
+        let columns = ['Project Name', 'Project Manager', 'Status'];
+        return(
+            <div className={ project }>
+                <h1>My Projects</h1>
+                <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
+            </div>
+        );
+    }
+}
 
 export default Project;
