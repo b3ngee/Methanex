@@ -19,7 +19,7 @@ const StandardUser = () =>
     <div className={ project }>
         <h1>My Skills</h1>
         <Table text="My Skills" data={skillsTable}/>
-        <Link to = "/addSkillPage">
+        <Link to = "/addSkill">
             <Button text="Add Skill(s)"/>
         </Link>
         <Button text="Edit Skill(s)"/>

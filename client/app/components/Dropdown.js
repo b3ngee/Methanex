@@ -16,11 +16,10 @@ export default class Dropdown extends Component {
         let options = this.props.data.map(val => {
             return <option value = {val}>{val}</option>;
         });
-        let selectID = this.props.id;
 
         return (
             <div>
-                <select id={selectID} onChange="this.handleChange">
+                <select onChange="this.handleChange">
                     <option value = "">select</option>;
                     {options}
                 </select>
@@ -31,5 +30,4 @@ export default class Dropdown extends Component {
 
 Dropdown.propTypes = {
     data: PropTypes.arrayOf(PropTypes.string),
-    id: PropTypes.string
 };
