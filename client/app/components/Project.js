@@ -1,9 +1,8 @@
 import React from 'react';
-import {Link, Route} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import { project } from '../styles/project.scss';
 import Table from './Table';
-import ProjectDetail from './ProjectDetail';
 import axios from 'axios';
 
 class Project extends React.Component {
@@ -59,7 +58,7 @@ class Project extends React.Component {
                       </li>
                     ))}
                 </ul>
-                <Route path={'/project/:project_id'} component={ ProjectDetail } />
+
             </div>
         );
     }

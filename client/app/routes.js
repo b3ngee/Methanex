@@ -7,6 +7,7 @@ import Resource from './components/Resource';
 import Setting from './components/Setting';
 import Login from './components/Login';
 import StandardUser from './components/StandardUser';
+import ProjectDetail from './components/ProjectDetail';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -20,6 +21,7 @@ export default (
 		<Route exact path="/" render={() => (isLoggedIn() ? (<Home />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/portfolio" render={() => (isLoggedIn() ? (<Portfolio />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/project" render={() => (isLoggedIn() ? (<Project />) : (<Redirect to="/login"/>))} />
+		    <Route path={'/project/:project_id'} component={ ProjectDetail } />
 		<Route exact path="/resource" render={() => (isLoggedIn() ? (<Resource />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/login" component={Login} />
