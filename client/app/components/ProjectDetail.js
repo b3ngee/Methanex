@@ -12,7 +12,6 @@ class ProjectDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            columns: ['key', 'value'],
             rows: [],
         };
 
@@ -35,7 +34,7 @@ class ProjectDetail extends React.Component {
                 }
             }
             console.log(data);
-            this.setState({rows: data});
+            this.setState({rows: rows});
         }).catch( () => {
         });
     }
