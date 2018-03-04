@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-
 import { project } from '../styles/project.scss';
 import Table from './Table';
 import axios from 'axios';
@@ -58,7 +57,6 @@ class Project extends React.Component {
                       </li>
                     ))}
                 </ul>
-
             </div>
         );
     }

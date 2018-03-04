@@ -1,42 +1,53 @@
 import React from 'react';
 import { resource } from '../styles/resource.scss';
 import Table from './Table.js';
+import axios from 'axios/index';
 
+class Resource extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            numResources: 0,
+            rows: [],
+            resourceIDs: []
+        };
 
-let tableData = {
-    columns: ['Resource Name', 'Resource Manager', 'Skills', 'Department'],
-    rows: [{
-        'Resource Name': 'Daniel Chen',
-        'Resource Manager': 'Jane Doe',
-        'Skills': 'Java, SQL',
-        'Department': 'IT'
-    }, {
-        'Resource Name': 'Lansi Chu',
-        'Resource Manager': 'Daniel Choi',
-        'Skills': 'Java, React',
-        'Department': 'IT'
-    }, {
-        'Resource Name': 'Harnoor Shoker',
-        'Resource Manager': 'Daniel Choi',
-        'Skills': 'Java, MySQL',
-        'Department': 'IT'
-    }, {
-        'Resource Name': 'Ben Gee',
-        'Resource Manager': 'Jane Doe',
-        'Skills': 'Java',
-        'Department': 'Business'
-    }, {
-        'Resource Name': 'Stella Fang',
-        'Resource Manager': 'Jane Doe',
-        'Skills': 'Java',
-        'Department': 'Business'
-    }]
-};
+        this.getResources = this.getResources.bind(this);
+    }
 
-const Resource = () =>
-    <div className={ resource }>
-        <h1>My Resource</h1>
-        <Table text="List of Resources" data={tableData}/>
-    </div>;
+    componentDidMount() {
+        this.getResources();
+    }
+
+    // TODO: need to change the end points
+    getResources() {
+        axios.get('https://private-05c14-methanex.apiary-mock.com/resources?managerId=').then(response => {
+            this.setState({ numResources: response.data.length });
+            this.setState({ resources: response.data });
+
+            const tableData = [];
+            const resourceIDs = [];
+            for (let i = 0; i < this.state.numResources; i++) {
+                tableData.push({ 'ID': this.state.resources[i].resource_id, 'Resource Name': this.state.resources[i].resource_name, 'Manager ID': this.state.resources[i].manager_id, 'Status': this.state.resources[i].status });
+                resourceIDs.push(this.state.resources[i].resource_id);
+            }
+            this.setState({ rows: tableData});
+            this.setState({ resourceIDs: resourceIDs});
+        }).catch( () => {
+
+        });
+    }
+
+    render() {
+        let columns = ['ID', 'Resource Name', 'Manager ID', 'Status'];
+        return(
+            <div className={ resource }>
+                <h1>My Resources</h1>
+                <Table text="List of Projects" columns={columns} rows={this.state.rows} ids={this.state.resourceIDs}/>
+            </div>
+        );
+    }
+
+}
 
 export default Resource;
