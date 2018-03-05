@@ -1,7 +1,6 @@
 import React from 'react';
 import Table from './Table.js';
 import { project } from '../styles/project.scss';
-import Navbar from './Navbar';
 import axios from 'axios';
 
  // const id = localStorage.getItem('project_id');
@@ -44,7 +43,6 @@ class ProjectDetail extends React.Component {
         return (
             <div className={ project }>
                 <h1>Project Details</h1>
-                <Navbar/>
                 <Table text="Project Details" columns={columns} rows={this.state.rows}/>
             </div>
         );
