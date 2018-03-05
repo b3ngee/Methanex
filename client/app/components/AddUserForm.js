@@ -12,6 +12,10 @@ class AddUserForm extends React.Component {
             lastName: '',
             email: '',
             password: '',
+            address: '',
+            location: '',
+            status: '',
+            enabled: true,
             roles: '',
             errors: {},
         };
@@ -28,14 +32,21 @@ class AddUserForm extends React.Component {
                 last_name: this.state.lastName,
                 email: this.state.email,
                 pw: this.state.password,
+                address: this.state.address,
+                location: this.state.location,
+                status: this.state.status,
+                enabled: this.state.enabled,
                 roles: this.state.roles,
             }).then((response) => {
                 if (response.status === 201 && response.data.status === 'user_created') {
+                    console.log(response);
                     this.setState({
                         firstName: '',
                         lastName: '',
                         email: '',
                         password: '',
+                        address: '',
+                        location: '',
                         roles: '',
                         errors: {},
                     });
@@ -75,7 +86,7 @@ class AddUserForm extends React.Component {
     }
 
     render() {
-        const { firstName, lastName, email, password, roles, errors } = this.state;
+        const { firstName, lastName, email, password, address, location, roles, errors } = this.state;
 
         return (
         <div className={ formBox }>
@@ -109,6 +120,18 @@ class AddUserForm extends React.Component {
                     type="password"
                     value={password}
                     error={errors.password}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="address"
+                    label="Address"
+                    value={address}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="location"
+                    label="Location"
+                    value={location}
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
