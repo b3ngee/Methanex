@@ -2,11 +2,9 @@
 
 .formBox {
     width: 30%;
+    height: 100%;
     font-size: 12px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 0 auto;
 
     form {
         padding: 20px 20px 20px 20px;
