@@ -2,6 +2,7 @@ import React from 'react';
 import TextFieldGroup from './TextFieldGroup';
 import axios from 'axios';
 import isValidEmail from '../utils/validationHelpers';
+import { formBox } from '../styles/form.scss';
 
 class Login extends React.Component {
     constructor(props) {
@@ -19,15 +20,15 @@ class Login extends React.Component {
 
     isValid() {
         if (!this.state.email) {
-            this.setState({ errors: { email: 'email is required' }});
+            this.setState({ errors: { email: 'Email is required' }});
             return false;
         }
         if (!isValidEmail(this.state.email)) {
-            this.setState({ errors: { email: 'email format is invalid' }});
+            this.setState({ errors: { email: 'Email format is invalid' }});
             return false;
         }
         if (!this.state.password) {
-            this.setState({errors: { password: 'password is required'}});
+            this.setState({errors: { password: 'Password is required'}});
             return false;
         }
 
@@ -61,30 +62,29 @@ class Login extends React.Component {
         const { errors, email, password, isLoading } = this.state;
 
         return (
-            <form onSubmit={this.onSubmit}>
-                <h1>Login</h1>
+            <div className={ formBox }>
+                <form onSubmit={this.onSubmit}>
+                    <h1>Login to Your Account</h1>
 
-                <TextFieldGroup
-                    field="email"
-                    label="Email"
-                    value={email}
-                    error={errors.email}
-                    onChange={this.onChange}
-                />
+                    <TextFieldGroup
+                        field="email"
+                        label="Email"
+                        value={email}
+                        error={errors.email}
+                        onChange={this.onChange}
+                    />
+                    <TextFieldGroup
+                        field="password"
+                        label="Password"
+                        value={password}
+                        error={errors.password}
+                        onChange={this.onChange}
+                        type="password"
+                    />
 
-                <TextFieldGroup
-                    field="password"
-                    label="Password"
-                    value={password}
-                    error={errors.password}
-                    onChange={this.onChange}
-                    type="password"
-                />
-
-                <div className="form-group">
-                    <button className="loginButton" disabled={isLoading}>Login</button>
-                </div>
-            </form>
+                    <button disabled={isLoading}>Login</button>
+                </form>
+            </div>
         );
     }
 }

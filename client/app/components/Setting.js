@@ -6,8 +6,8 @@ const Setting = () =>
     <div className={ setting }>
         <h1>My Setting</h1>
         <br/>
-        <h2>Add new user</h2>
-        <AddUserForm/>
+        <AddUserForm />
+        <br/>
     </div>;
 
 export default Setting;
