@@ -1,5 +1,6 @@
 import React from 'react';
 import TextFieldGroup from './TextFieldGroup';
+import Button from './Button';
 import axios from 'axios';
 import isValidEmail from '../utils/validationHelpers';
 import { formBox } from '../styles/form.scss';
@@ -81,8 +82,11 @@ class Login extends React.Component {
                         onChange={this.onChange}
                         type="password"
                     />
-
-                    <button disabled={isLoading}>Login</button>
+                    <Button
+                        type="submit"
+                        label="Login"
+                        disabled={isLoading}
+                    />
                 </form>
             </div>
         );
