@@ -1,6 +1,8 @@
 import React from 'react';
 import Dropdown from './Dropdown.js';
 import TextFieldGroup from './TextFieldGroup';
+import { addSkill } from '../styles/addSkill.scss';
+import axios from 'axios';
 
 
 let skillData = [
@@ -49,15 +51,15 @@ class AddSkillForm extends React.Component {
 
     isValid() {
         if (!this.state.skillCategory) {
-            this.setState({ errors: { skillCategory: 'skill category is required' }});
+            this.setState({ errors: { skillCategory: ' skill category is required!' }});
             return false;
         }
         if (!this.state.skillType) {
-            this.setState({ errors: { skillType: 'skill type is required' }});
+            this.setState({ errors: { skillType: ' skill type is required!' }});
             return false;
         }
         if (!this.state.skillCompetency) {
-            this.setState({errors: { skillCompetency: 'skill competency is required'}});
+            this.setState({errors: { skillCompetency: ' skill competency is required!'}});
             return false;
         }
 
@@ -68,7 +70,13 @@ class AddSkillForm extends React.Component {
         e.preventDefault();
         // Todo:
         if (this.isValid()) {
-            alert('new skill has been added');
+            axios.post('https://private-3bb33-methanex.apiary-mock.com/login', {
+                skillCategory: this.state.skillCategory,
+                skillType: this.state.skillType,
+                skills_competency: this.state.skillCompetency
+            }).then(
+                alert('new skill has been added')
+            );
         }
     }
 
@@ -80,10 +88,7 @@ class AddSkillForm extends React.Component {
         const { errors, skillCategory, skillType, skillCompetency } = this.state;
 
         return (
-            <form onSubmit={this.onSubmit}>
-                <div onChange={this.handleSelect}>
-                    <Dropdown data={skillCategoryData}/>
-                </div>
+            <form className={ addSkill } onSubmit={this.onSubmit}>
                 <TextFieldGroup
                     field="skillCategory"
                     label="Skill Category:"
@@ -91,11 +96,11 @@ class AddSkillForm extends React.Component {
                     error={errors.skillCategory}
                     onChange={this.onChange}
                 />
+                <div onChange={this.handleSelect}>
+                    <Dropdown data={skillCategoryData}/>
+                </div>
                 <br/>
 
-                <div onChange={this.handleSelect}>
-                    <Dropdown data={skillData}/>
-                </div>
                 <TextFieldGroup
                     field="skillType"
                     label="Specific Skill:"
@@ -103,11 +108,11 @@ class AddSkillForm extends React.Component {
                     error={errors.skillType}
                     onChange={this.onChange}
                 />
+                <div onChange={this.handleSelect}>
+                    <Dropdown data={skillData}/>
+                </div>
                 <br/>
 
-                <div onChange={this.handleSelect}>
-                    <Dropdown data={competencyData}/>
-                </div>
                 <TextFieldGroup
                     field="skillCompetency"
                     label="Competency Level:"
@@ -115,8 +120,10 @@ class AddSkillForm extends React.Component {
                     error={errors.skillCompetency}
                     onChange={this.onChange}
                 />
+                <div onChange={this.handleSelect}>
+                    <Dropdown data={competencyData}/>
+                </div>
                 <br/>
-
                 <input type="submit" value="Submit" />
             </form>
         );

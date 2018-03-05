@@ -8,7 +8,21 @@
     div {
         float: none;
         padding-top: 0%;
-        display: inline;
+        display: block;
         padding-right: 0px;
+    }
+    input {
+        display: none;
+    }
+    input[value=Submit] {
+        display: inline;
+    }
+    span {
+        float: none;
+        padding-right: 0%;
+        margin-right: 0%
+    }
+    select {
+        margin-left: 40px;
     }
 }
