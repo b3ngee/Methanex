@@ -22,10 +22,10 @@ class ResourceDetail extends React.Component {
     // TODO: need to fix up the apiary call
     getDetails() {
         console.log('in getdetails');
-        axios.get('https://private-05c14-methanex.apiary-mock.com/resource/1').then(response => {
+        axios.get('https://private-05c14-methanex.apiary-mock.com/resource/2').then(response => {
             const rows = [];
             const data = response.data;
-            console.log(response.data);
+            console.log(data);
             for (const key in data) {
                 if(key !== null) {
                     rows.push({'key': key, 'value': data[key]});
