@@ -1,41 +1,32 @@
-import React, {Component, PropTypes} from 'react';
+import React from 'react';
+import button from '../styles/button.scss';
 
-let buttonStyle = {
-    margin: '10px 10px 10px 0',
-    fontSize: '18px',
-    // background: '#2D88EE',
-    borderWidth: 1,
-    borderRadius: 100,
-    width: 100,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    cursor: 'pointer',
-    title: 'PressME'
-};
-
-export default class Button extends Component {
+class Button extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
+        const { type, onClick, label, disabled } = this.props;
         return (
             <button
-                type="submit"
-                className="btn btn-secondary"
-                style={buttonStyle}
-                onClick={() => {
-                    return alert('Button is presseedddddd');
-                }}>
-                {this.props.text}
+                type={type}
+                onClick={onClick}
+                disabled={disabled}
+                className={ button }
+            >{label}
             </button>
         );
     }
 }
 
 Button.propTypes = {
-    text: PropTypes.string
+    type: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string.isRequired,
+    disabled: React.PropTypes.bool,
+    onClick: React.PropTypes.func,
 };
+
+export default Button;
 
 

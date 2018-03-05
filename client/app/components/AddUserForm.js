@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
+import Button from './Button';
 import isValidEmail from '../utils/validationHelpers';
 import { formBox } from '../styles/form.scss';
 
@@ -141,8 +142,10 @@ class AddUserForm extends React.Component {
                     error={errors.roles}
                     onChange={this.onChange}
                 />
-
-                <button>Submit</button>
+                <Button
+                    type="submit"
+                    label="Submit"
+                />
             </form>
         </div>
         );
