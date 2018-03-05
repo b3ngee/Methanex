@@ -23,8 +23,8 @@ class ProjectDetail extends React.Component {
     }
 
     getDetails() {
-    console.log('in getdetails');
-        axios.get('https://private-2a709-methanex.apiary-mock.com/project/2').then(response => {
+    console.log(this.props.match.params.project_id);
+        axios.get('https://private-2a709-methanex.apiary-mock.com/project/' + this.props.match.params.project_id).then(response => {
             const rows = [];
             const data = response.data;
             console.log(response.data);
@@ -51,5 +51,9 @@ class ProjectDetail extends React.Component {
     }
 
 }
+
+ProjectDetail.propTypes = {
+    match: React.PropTypes.any
+};
 
 export default ProjectDetail;

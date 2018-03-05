@@ -3,7 +3,6 @@ import Table from './Table.js';
 import { resource } from '../styles/resource.scss';
 import axios from 'axios';
 
-
 class ResourceDetail extends React.Component {
 
     constructor(props) {
@@ -22,7 +21,8 @@ class ResourceDetail extends React.Component {
     // TODO: need to fix up the apiary call
     getDetails() {
         console.log('in getdetails');
-        axios.get('https://private-05c14-methanex.apiary-mock.com/resource/2').then(response => {
+        console.log(this.props.match.params.resource_id);
+        axios.get('https://private-05c14-methanex.apiary-mock.com/resource/' + this.props.match.params.resource_id).then(response => {
             const rows = [];
             const data = response.data;
             console.log(data);
@@ -48,5 +48,9 @@ class ResourceDetail extends React.Component {
     }
 
 }
+
+ResourceDetail.propTypes = {
+    match: React.PropTypes.any
+};
 
 export default ResourceDetail;
