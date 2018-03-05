@@ -30,7 +30,7 @@ class AddUserForm extends React.Component {
                 pw: this.state.password,
                 roles: this.state.roles,
             }).then((response) => {
-                if (response.status === 201) {
+                if (response.status === 201 && response.data.status === 'user_created') {
                     this.setState({
                         firstName: '',
                         lastName: '',
