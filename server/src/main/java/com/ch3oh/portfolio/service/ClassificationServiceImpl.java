@@ -39,6 +39,8 @@ public class ClassificationServiceImpl {
             throw new RestBadRequestException("Classification name is missing");
         }
 
+        // TODO: Check if classification name already exists in the DB
+
         validateClassificationName(classification.getName());
 
         return classificationDao.save(classification);
@@ -57,6 +59,8 @@ public class ClassificationServiceImpl {
         }
 
         if (toUpdate.hasName()) {
+            // TODO: Check if classification name already exists in the DB
+
             String classificationName = toUpdate.getName();
             validateClassificationName(classificationName);
             classification.setName(classificationName);
