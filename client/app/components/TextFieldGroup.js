@@ -1,17 +1,17 @@
 import React from 'react';
+import { formGroup } from '../styles/textFieldGroup.scss';
 
 const TextFieldGroup = ({ field, value, label, error, type, onChange }) => {
     return (
-        <div className="form-group">
-            <label className="control-label">{label}</label>
+        <div className={ formGroup } >
+            <label>{label}</label>
+            {error && <span>{error}</span>}
             <input
                 onChange={onChange}
                 value={value}
                 type={type}
                 name={field}
-                className="form-control"
             />
-            {error && <span className="error-block">{error}</span>}
         </div>  );
 };
 

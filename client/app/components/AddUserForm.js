@@ -1,51 +1,153 @@
 import React from 'react';
+import axios from 'axios';
+import TextFieldGroup from './TextFieldGroup';
+import Button from './Button';
+import isValidEmail from '../utils/validationHelpers';
+import { formBox } from '../styles/form.scss';
 
 class AddUserForm extends React.Component {
-    constructor() {
-        super();
-        this.handleSubmit = this.handleSubmit.bind(this);
+    constructor(props) {
+        super(props);
+        this.state = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            address: '',
+            location: '',
+            status: '',
+            enabled: true,
+            roles: '',
+            errors: {},
+        };
+
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
-    handleSubmit(event) {
-        alert('A user has been added');
-        event.preventDefault();
-        const data = new FormData(event.target);
+    onSubmit(e) {
+        e.preventDefault();
+        if (this.isValid()) {
+            axios.post('https://private-98eae-methanex.apiary-mock.com/users', {
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+                email: this.state.email,
+                pw: this.state.password,
+                address: this.state.address,
+                location: this.state.location,
+                status: this.state.status,
+                enabled: this.state.enabled,
+                roles: this.state.roles,
+            }).then((response) => {
+                if (response.status === 201 && response.data.status === 'user_created') {
+                    console.log(response);
+                    this.setState({
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        password: '',
+                        address: '',
+                        location: '',
+                        roles: '',
+                        errors: {},
+                    });
+                }
+            });
+        }
+    }
 
-        fetch('https://private-05c14-methanex.apiary-mock.com/users', {
-            method: 'POST',
-            body: data,
-        });
+    onChange(e) {
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    isValid() {
+        let hasError = true;
+
+        if (!this.state.firstName) {
+            this.setState({ errors: { firstName: 'First name is required'}});
+            hasError = false;
+        }
+        if (!this.state.lastName) {
+            this.setState({ errors: { lastName: 'Last name is required'}});
+            hasError = false;
+        }
+        if (!this.state.email) {
+            this.setState({ errors: { email: 'Email is required' }});
+            hasError = false;
+        } else if (!isValidEmail(this.state.email)) {
+            this.setState({ errors: { email: 'Email format is invalid' }});
+            hasError = false;
+        }
+        if (!this.state.password) {
+            this.setState({errors: { password: 'Password is required'}});
+            hasError = false;
+        }
+
+        return hasError;
     }
 
     render() {
+        const { firstName, lastName, email, password, address, location, roles, errors } = this.state;
+
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label htmlFor="user_name">
-                    Name:
-                    <input id="user_name" type="text" />
-                </label>
-                <br/>
-                <br/>
-                <label htmlFor="pw">
-                    Password:
-                    <input id="pw" type="text" />
-                </label>
-                <br/>
-                <br/>
-                <label htmlFor="email">
-                    Email:
-                    <input id="email" type="text" />
-                </label>
-                <br/>
-                <br/>
-                <label htmlFor="roles">
-                    Roles:
-                    <input id="roles" type="text" />
-                </label>
-                <br/>
-                <br/>
-                <input type="submit" value="Submit" />
+        <div className={ formBox }>
+            <form onSubmit={this.onSubmit}>
+                <h2>Add new user</h2>
+
+                <TextFieldGroup
+                    field="firstName"
+                    label="First Name"
+                    value={firstName}
+                    error={errors.firstName}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="lastName"
+                    label="Last Name"
+                    value={lastName}
+                    error={errors.lastName}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="email"
+                    label="Email"
+                    value={email}
+                    error={errors.email}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="password"
+                    label="Password"
+                    type="password"
+                    value={password}
+                    error={errors.password}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="address"
+                    label="Address"
+                    value={address}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="location"
+                    label="Location"
+                    value={location}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    field="roles"
+                    label="Roles"
+                    value={roles}
+                    error={errors.roles}
+                    onChange={this.onChange}
+                />
+                <Button
+                    type="submit"
+                    label="Submit"
+                />
             </form>
+        </div>
         );
     }
 }
