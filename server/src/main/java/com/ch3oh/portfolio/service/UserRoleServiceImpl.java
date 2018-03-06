@@ -63,6 +63,7 @@ public class UserRoleServiceImpl {
         return userRoleDao.save(userRole);
     }
 
+    @Transactional
     public UserRole updateUserRole(String id, UserRole toUpdate) {
         if (toUpdate == null) {
             throw new GeneralRestBadRequestException();

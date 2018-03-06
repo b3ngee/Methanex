@@ -25,7 +25,7 @@ public class UserRoleController {
 
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public UserRole getUserRolesById(@PathVariable("id") String id) {
+    public UserRole getUserRole(@PathVariable("id") String id) {
         return userRoleService.getUserRole(id);
     }
 
