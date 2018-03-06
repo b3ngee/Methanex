@@ -27,9 +27,9 @@ class AddSkillCategoryForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        // TODO: need to make apiary call for /newSkillCategory
+        // TODO: need to make apiary call for /skill-categories
         if (this.isValid()) {
-            axios.post('https://private-3bb33-methanex.apiary-mock.com/newSkillCategory', {
+            axios.post('https://private-3bb33-methanex.apiary-mock.com/skill-categories', {
                 skill_category: this.skillCategory
             }).then((response) => {
                 if (response.status === 201 && response.data.status === 'skill_category_added') {
