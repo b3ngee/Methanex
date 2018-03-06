@@ -25,7 +25,7 @@ export default class Table extends Component {
             let id;
             return (
                 <tr>
-                {cols.map(column => {
+                {cols.map((column, i) => {
                     let endPoint = '';
                     if (column === 'ID') {
                         id = row[column];
@@ -38,10 +38,10 @@ export default class Table extends Component {
                         endPoint = 'portfolio';
                     } if (endPoint !== '') {
                         return (
-                            <td><Link to={`/${endPoint}/${id}`}>{row[column]}</Link></td>
+                            <td key={i}><Link to={`/${endPoint}/${id}`}>{row[column]}</Link></td>
                         );
                     }
-                    return (<td>{row[column]}</td>);
+                    return (<td key={i}>{row[column]}</td>);
                 })}
                 </tr>
              );
