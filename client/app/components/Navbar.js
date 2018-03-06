@@ -24,9 +24,9 @@ class Navbar extends Component {
                     localStorage.getItem('user_id') &&
                     <div>
                         <Link to="/">My Profile</Link>
-                        <Link to="/portfolio">My Portfolios</Link>
-                        <Link to="/project">My Projects</Link>
-                        <Link to="/resource">My Resources</Link>
+                        <Link to="/portfolio">Portfolios</Link>
+                        <Link to="/project">Projects</Link>
+                        <Link to="/resource">Resources</Link>
                         <Link to="/setting">Administration</Link>
                         <div className={ logout } onClick={this.logout.bind(this)}> Log Out </div>
                     </div>
