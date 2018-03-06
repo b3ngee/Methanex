@@ -1,22 +1,51 @@
 import React from 'react';
-import { portfolio } from '../styles/portfolio.scss';
-import Dropdown from './Dropdown.js';
+import { project } from '../styles/project.scss';
+import Table from './Table.js';
+import axios from 'axios';
 
-let portfolioData1 = [
-    'Portfolio: Infrastructure Reboot',
-    'Portfolio: UBC',
-    'Portfolio: A',
-    'Portfolio: B',
-    'Portfolio: XYB',
-    'Portfolio: Revamp HR'];
+class Portfolio extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            listOfProjects: [],
+            projects: [],
+        };
+        this.listProjects = this.listProjects.bind(this);
+    }
 
-const Portfolio = () =>
-    <div className={ portfolio }>
-        <h1>Hello Jane</h1>
-        <p>{"Here's an overview of your portfolios."}</p>
-        <div>
-            <Dropdown data={portfolioData1}/>
-        </div>
-    </div>;
+    componentDidMount() {
+        this.listProjects();
+    }
+
+    listProjects() {
+        axios.get('https://private-2a709-methanex.apiary-mock.com/portfolios?').then(response => {
+            const data = [];
+            this.setState({listOfProjects: response.data});
+            console.log('this is the response data');
+            console.log(response.data);
+            const len = response.data.length;
+            for (let i = 0; i < len; i++) {
+                data.push({ 'ID': this.state.listOfProjects[i].portfolio_id, 'Portfolio Name': this.state.listOfProjects[i].portfolio_name});
+            }
+            this.setState({projects: data});
+        }).catch(()=>{
+
+        });
+    }
+
+    render() {
+        console.log(this.state.projects);
+        let columns = ['ID', 'Portfolio Name'];
+        return (
+            <div className={ project }>
+                <h1>Hello Jane</h1>
+                <p>{"Here's an overview of your portfolios."}</p>
+                <div>
+                    <Table columns={columns} rows={this.state.projects}/>
+                </div>
+            </div>
+        );
+    }
+}
 
 export default Portfolio;

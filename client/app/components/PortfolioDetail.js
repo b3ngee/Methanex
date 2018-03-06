@@ -3,7 +3,7 @@ import { project } from '../styles/project.scss';
 import Table from './Table';
 import axios from 'axios';
 
-class Project extends React.Component {
+class PortfolioDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -38,11 +38,12 @@ class Project extends React.Component {
         let columns = ['ID', 'Project Name', 'Project Manager', 'Status'];
         return(
             <div className={ project }>
-                <h1>My Projects</h1>
-                <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
+                <h1>Projects</h1>
+                <p>{"Here's an overview of all projects under portfolio you chose"}</p>
+                <Table columns={columns} rows={this.state.rows}/>
             </div>
         );
     }
 }
 
-export default Project;
+export default PortfolioDetails;

@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Home from './components/Home';
 import Portfolio from './components/Portfolio';
+import PortfolioDetail from './components/PortfolioDetail';
 import Project from './components/Project';
 import Resource from './components/Resource';
 import Setting from './components/Setting';
@@ -21,6 +22,7 @@ export default (
 	<Switch>
 		<Route exact path="/" render={() => (isLoggedIn() ? (<Home />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/portfolio" render={() => (isLoggedIn() ? (<Portfolio />) : (<Redirect to="/login"/>))} />
+		    <Route path={'/portfolio/:portfolio_id'} component={ PortfolioDetail } />
 		<Route exact path="/project" render={() => (isLoggedIn() ? (<Project />) : (<Redirect to="/login"/>))} />
 		    <Route path={'/project/:project_id'} component={ ProjectDetail } />
 		<Route exact path="/resource" render={() => (isLoggedIn() ? (<Resource />) : (<Redirect to="/login"/>))} />

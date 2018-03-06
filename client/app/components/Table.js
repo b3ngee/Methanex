@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { table } from '../styles/table.scss';
+import {Link} from 'react-router-dom';
 
 export default class Table extends Component {
     constructor(props) {
@@ -21,12 +22,31 @@ export default class Table extends Component {
         </thead>);
 
         let body = rows.map(row => {
+            let id;
             return (
-          <tr>
-            {cols.map(column => {
-                return <td>{row[column]}</td>;
-            })}
-          </tr>); });
+                <tr>
+                {cols.map(column => {
+                    let endPoint = '';
+                    if (column === 'ID') {
+                        id = row[column];
+                    }
+                    if (column === 'Project Name') {
+                        endPoint = 'project';
+                    } else if (column === 'Resource Name') {
+                        endPoint = 'resource';
+                    } else if (column === 'Portfolio Name') {
+                        endPoint = 'portfolio';
+                    } if (endPoint !== '') {
+                        return (
+                            <td><Link to={`/${endPoint}/${id}`}>{row[column]}</Link></td>
+                        );
+                    }
+                    return (<td>{row[column]}</td>);
+                })}
+                </tr>
+             );
+             }
+        );
 
         return (<table className={table} width="100%">
           {headers}

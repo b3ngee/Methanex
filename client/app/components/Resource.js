@@ -1,5 +1,4 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import { resource } from '../styles/resource.scss';
 import Table from './Table.js';
 import axios from 'axios/index';
@@ -45,13 +44,6 @@ class Resource extends React.Component {
             <div className={ resource }>
                 <h1>My Resources</h1>
                 <Table text="List of Resources" columns={columns} rows={this.state.rows} ids={this.state.resourceIDs}/>
-                <ul>
-                    {this.state.resourceIDs.map((ID) => (
-                        <li key={ID}>
-                            <Link to={`/resource/${ID}`}>{ID}</Link>
-                        </li>
-                    ))}
-                </ul>
             </div>
         );
     }
