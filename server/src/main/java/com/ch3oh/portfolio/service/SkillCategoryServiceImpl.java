@@ -39,6 +39,7 @@ public class SkillCategoryServiceImpl {
             throw new RestBadRequestException("Skill category name is missing");
         }
 
+        // TODO: Check if skill category name already exists in the DB
         validateSkillCategoryName(skillCategory.getName());
 
         return skillCategoryDao.save(skillCategory);
@@ -57,6 +58,8 @@ public class SkillCategoryServiceImpl {
         }
 
         if (toUpdate.hasName()) {
+            // TODO: Check if skill category name already exists in the DB
+
             String skillCategoryName= toUpdate.getName();
             validateSkillCategoryName(skillCategoryName);
             skillCategory.setName(skillCategoryName);
