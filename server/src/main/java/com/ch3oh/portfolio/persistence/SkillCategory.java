@@ -1,14 +1,10 @@
 package com.ch3oh.portfolio.persistence;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name="CLASSIFICATION")
-public class Classification {
+@Table(name="SKILL_CATEGORY")
+public class SkillCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
