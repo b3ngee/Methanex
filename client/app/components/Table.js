@@ -15,17 +15,17 @@ export default class Table extends Component {
 
         let headers = (<thead>
             <tr>
-              {cols.map(column => {
-                  return <th>{column}</th>;
+              {cols.map((column, ci) => {
+                  return <th key={ci}>{column}</th>;
               })}
             </tr>
         </thead>);
 
-        let body = rows.map(row => {
+        let body = rows.map((row, ri) => {
             let id;
             return (
-                <tr>
-                {cols.map(column => {
+                <tr key={ri}>
+                {cols.map((column, ci) => {
                     let endPoint = '';
                     if (column === 'ID') {
                         id = row[column];
@@ -38,20 +38,24 @@ export default class Table extends Component {
                         endPoint = 'portfolio';
                     } if (endPoint !== '') {
                         return (
-                            <td><Link to={`/${endPoint}/${id}`}>{row[column]}</Link></td>
+                            <td key={ci}><Link to={`/${endPoint}/${id}`} >{row[column]}</Link></td>
                         );
                     }
-                    return (<td>{row[column]}</td>);
+                    return (<td key={ci}>{row[column]}</td>);
                 })}
                 </tr>
              );
              }
         );
 
-        return (<table className={table} width="100%">
-          {headers}
-          {body}
-        </table>);
+        return (
+            <table className={table} width="100%">
+                {headers}
+                <tbody>
+                    {body}
+                </tbody>
+            </table>
+        );
     }
 }
 

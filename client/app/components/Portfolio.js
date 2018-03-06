@@ -34,11 +34,10 @@ class Portfolio extends React.Component {
     }
 
     render() {
-        console.log(this.state.projects);
         let columns = ['ID', 'Portfolio Name'];
         return (
             <div className={ project }>
-                <h1>Hello Jane</h1>
+                <h1>Hello {localStorage.getItem('user_name')}</h1>
                 <p>{"Here's an overview of your portfolios."}</p>
                 <div>
                     <Table columns={columns} rows={this.state.projects}/>

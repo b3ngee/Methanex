@@ -9,7 +9,7 @@ class Project extends React.Component {
         this.state = {
             numProject: 0,
             selectedProjectID: 0,
-            rows: [],
+            rows: []
         };
         this.getProjects = this.getProjects.bind(this);
     }
