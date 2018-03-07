@@ -8,10 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ch3oh.portfolio.exception.GeneralRestBadRequestException;
 import com.ch3oh.portfolio.exception.GeneralRestNotFoundException;
 import com.ch3oh.portfolio.exception.RestBadRequestException;
+import com.ch3oh.portfolio.exception.user.EmailExistsException;
 import com.ch3oh.portfolio.exception.user.InvalidEmailException;
-import com.ch3oh.portfolio.exception.user.ManagerDoesNotExistException;
+import com.ch3oh.portfolio.exception.user.UserNotFoundException;
+import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.persistence.User;
 import com.ch3oh.portfolio.repository.UserDao;
+import com.ch3oh.portfolio.repository.UserRoleDao;
 import com.ch3oh.portfolio.util.PasswordUtil;
 import com.ch3oh.portfolio.util.ValidatorUtil;
 
@@ -20,6 +23,8 @@ public class UserServiceImpl {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private UserRoleDao userRoleDao;
 
     @Transactional(readOnly = true)
     public User getUser(String id) {
@@ -39,9 +44,12 @@ public class UserServiceImpl {
 
     @Transactional
     public User createUser(User user) {
-        if (user.hasManagerId() && !userDao.exists(user.getManagerId())) {
-            // TODO: Also need to check if managerId has manager role once we implement USER_ROLE table
-            throw new ManagerDoesNotExistException();
+        if (user.hasManagerId()) {
+            if (!userDao.exists(user.getManagerId())) {
+                throw new UserNotFoundException();
+            }
+
+            validateUserIsResourceManager(user.getManagerId());
         }
 
         if (!user.hasFirstName() || StringUtils.isBlank(user.getFirstName())) {
@@ -60,9 +68,7 @@ public class UserServiceImpl {
             throw new RestBadRequestException("Email is missing");
         }
 
-        if (!ValidatorUtil.isValidEmail(user.getEmail())) {
-            throw new InvalidEmailException();
-        }
+        validateEmail(user.getEmail());
 
         if (!user.hasPassword() || StringUtils.isBlank(user.getPassword())) {
             throw new RestBadRequestException("Password is missing");
@@ -94,9 +100,12 @@ public class UserServiceImpl {
         }
 
         if (toUpdate.hasManagerId()) {
-            if (!userDao.exists(toUpdate.getManagerId())) { // TODO: Or user is not a manager
-                throw new ManagerDoesNotExistException();
+            if (!userDao.exists(toUpdate.getManagerId())) {
+                throw new UserNotFoundException();
             }
+
+            validateUserIsResourceManager(toUpdate.getManagerId());
+
             user.setManagerId(toUpdate.getManagerId());
         }
 
@@ -123,15 +132,7 @@ public class UserServiceImpl {
 
         if (toUpdate.hasEmail()) {
             String email = toUpdate.getEmail();
-
-            if (StringUtils.isBlank(email)) {
-                throw new RestBadRequestException("Email is missing");
-            }
-
-            if (!ValidatorUtil.isValidEmail(email)) {
-                throw new RestBadRequestException("Invalid email address");
-            }
-
+            validateEmail(email);
             user.setEmail(email);
         }
 
@@ -162,5 +163,25 @@ public class UserServiceImpl {
     @Transactional
     public void deleteUser(String id) {
         userDao.delete(Integer.valueOf(id));
+    }
+
+    private void validateUserIsResourceManager(Integer userId) {
+        if (userRoleDao.findByUserIdAndRole(userId, RoleTypeEnum.RESOURCE_MANAGER.toString()) == null) {
+            throw new RestBadRequestException("User is not a resource manager");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (StringUtils.isBlank(email)) {
+            throw new RestBadRequestException("Email is missing");
+        }
+
+        if (!ValidatorUtil.isValidEmail(email)) {
+            throw new RestBadRequestException("Invalid email address");
+        }
+
+        if (userDao.findByEmail(email) != null) {
+            throw new EmailExistsException();
+        }
     }
 }
