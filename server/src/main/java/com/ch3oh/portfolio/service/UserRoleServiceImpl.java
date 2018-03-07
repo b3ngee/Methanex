@@ -9,6 +9,7 @@ import com.ch3oh.portfolio.exception.GeneralRestBadRequestException;
 import com.ch3oh.portfolio.exception.GeneralRestNotFoundException;
 import com.ch3oh.portfolio.exception.RestBadRequestException;
 import com.ch3oh.portfolio.exception.RestNotFoundException;
+import com.ch3oh.portfolio.exception.user.UserNotFoundException;
 import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.persistence.UserRole;
 import com.ch3oh.portfolio.repository.UserDao;
@@ -49,7 +50,7 @@ public class UserRoleServiceImpl {
         }
 
         if (!userDao.exists(userRole.getUserId())) {
-            throw new RestNotFoundException("User not found");
+            throw new UserNotFoundException();
         }
 
         if (!EnumUtils.isValidEnum(RoleTypeEnum.class, userRole.getRole())) {
@@ -77,7 +78,7 @@ public class UserRoleServiceImpl {
 
         if (toUpdate.hasUserId()) {
             if (!userDao.exists(toUpdate.getUserId())) {
-                throw new RestBadRequestException("User not found");
+                throw new UserNotFoundException();
             }
 
             userRole.setUserId(toUpdate.getUserId());
