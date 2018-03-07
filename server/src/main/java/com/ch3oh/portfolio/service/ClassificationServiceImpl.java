@@ -39,7 +39,7 @@ public class ClassificationServiceImpl {
             throw new RestBadRequestException("Classification name is missing");
         }
 
-        validateClassificationName(classification.getName());
+        validateClassification(classification);
 
         return classificationDao.save(classification);
     }
@@ -62,6 +62,8 @@ public class ClassificationServiceImpl {
             classification.setName(classificationName);
         }
 
+        validateClassification(classification);
+
         return classificationDao.save(classification);
     }
 
@@ -74,13 +76,21 @@ public class ClassificationServiceImpl {
         classificationDao.delete(Integer.valueOf(id));
     }
 
+    private void validateClassification(Classification classification) {
+        try {
+            Classification existingClassification = classificationDao.findByClassificationByName(classification.getName());
+
+            if (existingClassification != null && existingClassification.getId() != classification.getId()) {
+                throw new RestBadRequestException("Classification name already exists");
+            }
+        } catch (Exception e) { // TODO: Work around for handling SQLConstraintException
+            throw new RestBadRequestException("Classification name already exists");
+        }
+    }
+
     private void validateClassificationName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new RestBadRequestException("Classification name is blank");
-        }
-
-        if (classificationDao.findByClassificationByName(name) != null) {
-            throw new RestBadRequestException("Classfication name already exists");
         }
     }
 }

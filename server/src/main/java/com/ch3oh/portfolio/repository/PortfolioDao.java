@@ -16,5 +16,5 @@ public interface PortfolioDao extends CrudRepository<Portfolio, Integer> {
      * If no portfolio is found, return null.
      */
     @Query("SELECT p FROM Portfolio p WHERE p.classificationId = ?1")
-    Portfolio findByUserIdAndRole(@Param("classificationId") Integer classificationId);
+    Portfolio findByClassificationId(@Param("classificationId") Integer classificationId);
 }

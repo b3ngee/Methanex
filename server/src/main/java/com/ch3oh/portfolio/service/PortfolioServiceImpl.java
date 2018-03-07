@@ -54,6 +54,7 @@ public class PortfolioServiceImpl {
         }
 
         validateClassification(portfolio.getClassificationId());
+        validatePortfolio(portfolio);
 
         return portfolioDao.save(portfolio);
     }
@@ -80,6 +81,8 @@ public class PortfolioServiceImpl {
             portfolio.setClassificationId(toUpdate.getClassificationId());
         }
 
+        validatePortfolio(portfolio);
+
         return portfolioDao.save(portfolio);
     }
 
@@ -90,6 +93,14 @@ public class PortfolioServiceImpl {
         }
 
         portfolioDao.delete(Integer.valueOf(id));
+    }
+
+    private void validatePortfolio(Portfolio portfolio) {
+        Portfolio existingPortfolio = portfolioDao.findByClassificationId(portfolio.getClassificationId());
+
+        if (existingPortfolio != null && existingPortfolio.getId() != portfolio.getId()) {
+            throw new RestBadRequestException("Classification already exists");
+        }
     }
 
     private void validateManager(Integer userId) {
@@ -105,10 +116,6 @@ public class PortfolioServiceImpl {
     private void validateClassification(Integer classificationId) {
         if (!classificationDao.exists(classificationId)) {
             throw new RestBadRequestException("Classification does not exist");
-        }
-
-        if (portfolioDao.findByUserIdAndRole(classificationId) != null) {
-            throw new RestBadRequestException("Classification already exists");
         }
     }
 }
