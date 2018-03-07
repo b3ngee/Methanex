@@ -67,6 +67,10 @@ public class SkillCategoryServiceImpl {
 
     @Transactional
     public void deleteSkillCategory(String id) {
+        if (!skillCategoryDao.exists(Integer.valueOf(id))) {
+            throw new GeneralRestNotFoundException();
+        }
+
         skillCategoryDao.delete(Integer.valueOf(id));
     }
 
