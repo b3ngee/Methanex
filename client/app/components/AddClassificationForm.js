@@ -26,13 +26,19 @@ class AddClassificationForm extends React.Component {
     }
 
     onSubmit(e) {
+        const config = {
+            headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE',
+            }
+        };
         e.preventDefault();
-        // TODO: need to make apiary call for /classifications
         if (this.isValid()) {
-            axios.post('https://private-3bb33-methanex.apiary-mock.com/classifications', {
-                classification: this.classification
-            }).then((response) => {
-                if (response.status === 201 && response.data.status === 'classification_added') {
+            axios.post('https://methanex-portfolio-management.herokuapp.com/classifications', {
+                name: this.classification
+            }, config).then((response) => {
+                if (response.status === 201) {
                     this.setState({
                     classification: '',
                     errors: {},

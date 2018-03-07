@@ -27,9 +27,8 @@ class AddSkillTypeForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        // TODO: need to make apiary call for /newSkillType
         if (this.isValid()) {
-            axios.post('https://private-3bb33-methanex.apiary-mock.com/skill-types', {
+            axios.post('https://methanex-portfolio-management.herokuapp.com/skill-types', {
                 skill_type: this.skillType
             }).then((response) => {
                 if (response.status === 201 && response.data.status === 'skill_type_added') {
