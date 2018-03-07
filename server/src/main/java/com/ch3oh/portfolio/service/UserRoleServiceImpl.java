@@ -49,17 +49,9 @@ public class UserRoleServiceImpl {
             throw new RestBadRequestException("User role is missing");
         }
 
-        if (!userDao.exists(userRole.getUserId())) {
-            throw new UserNotFoundException();
-        }
-
-        if (!EnumUtils.isValidEnum(RoleTypeEnum.class, userRole.getRole())) {
-            throw new RestBadRequestException("Role type does not exist");
-        }
-
-        if (userRoleDao.findByUserIdAndRole(userRole.getUserId(), userRole.getRole()) != null) {
-            throw new RestBadRequestException("User already has the specified role");
-        }
+        validateUser(userRole.getUserId());
+        validateRole(userRole.getRole());
+        validateUserRole(userRole);
 
         return userRoleDao.save(userRole);
     }
@@ -77,20 +69,16 @@ public class UserRoleServiceImpl {
         }
 
         if (toUpdate.hasUserId()) {
-            if (!userDao.exists(toUpdate.getUserId())) {
-                throw new UserNotFoundException();
-            }
-
+            validateUser(toUpdate.getUserId());
             userRole.setUserId(toUpdate.getUserId());
         }
 
         if (toUpdate.hasRole()) {
-            if (!EnumUtils.isValidEnum(RoleTypeEnum.class, toUpdate.getRole())) {
-                throw new RestBadRequestException("Role type does not exist");
-            }
-
+            validateRole(toUpdate.getRole());
             userRole.setRole(toUpdate.getRole());
         }
+
+        validateUserRole(userRole);
 
         return userRoleDao.save(userRole);
     }
@@ -102,5 +90,29 @@ public class UserRoleServiceImpl {
         }
 
         userRoleDao.delete(Integer.valueOf(id));
+    }
+
+    private void validateUserRole(UserRole userRole) {
+        try {
+            UserRole existingUserRole = userRoleDao.findByUserIdAndRole(userRole.getUserId(), userRole.getRole());
+
+            if (existingUserRole != null && existingUserRole.getId() != userRole.getId()) {
+                throw new RestBadRequestException("User already has the specified role");
+            }
+        } catch (Exception e) {
+            throw new RestBadRequestException("User already has the specified role");
+        }
+    }
+
+    private void validateUser(Integer userId) {
+        if (!userDao.exists(userId)) {
+            throw new UserNotFoundException();
+        }
+    }
+
+    private void validateRole(String role) {
+        if (!EnumUtils.isValidEnum(RoleTypeEnum.class, role)) {
+            throw new RestBadRequestException("Role type does not exist");
+        }
     }
 }
