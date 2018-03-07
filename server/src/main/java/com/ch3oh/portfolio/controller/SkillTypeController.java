@@ -13,44 +13,43 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ch3oh.portfolio.persistence.User;
-import com.ch3oh.portfolio.service.UserServiceImpl;
+import com.ch3oh.portfolio.persistence.SkillType;
+import com.ch3oh.portfolio.service.SkillTypeServiceImpl;
 
 @RestController
-@RequestMapping(path = "/users")
-public class UserController {
+@RequestMapping(path = "/skill-types")
+public class SkillTypeController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private SkillTypeServiceImpl skillTypeService;
 
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public User getUser(@PathVariable("id") String id) {
-        return userService.getUser(id);
+    public SkillType getSkillType(@PathVariable("id") String id) {
+        return skillTypeService.getSkillType(id);
     }
 
     @GetMapping
     @ResponseBody
-    public Iterable<User> getUsers() {
-        return userService.getUsers();
+    public Iterable<SkillType> getSkillTypes() {
+        return skillTypeService.getSkillTypes();
     }
 
     @PostMapping
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public SkillType createSkillType(@RequestBody SkillType skillType) {
+        return skillTypeService.createSkillType(skillType);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseBody
-    public User updateUser(@PathVariable("id") String id, @RequestBody User toUpdate) {
-        return userService.updateUser(id, toUpdate);
+    public SkillType updateSkillType(@PathVariable("id") String id, @RequestBody SkillType toUpdate) {
+        return skillTypeService.updateSkillType(id, toUpdate);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteUser(@PathVariable("id") String id) {
-        userService.deleteUser(id);
+    public void deleteSkillType(@PathVariable("id") String id) {
+        skillTypeService.deleteSkillType(id);
     }
 }
-

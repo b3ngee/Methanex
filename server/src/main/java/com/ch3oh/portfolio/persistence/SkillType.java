@@ -1,5 +1,6 @@
 package com.ch3oh.portfolio.persistence;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,12 +8,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="CLASSIFICATION")
-public class Classification {
+@Table(name="SKILL_TYPE")
+public class SkillType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(name = "SKILL_CATEGORY_ID", nullable = false)
+    private Integer skillCategoryId;
+
+    @Column(nullable = false)
     private String name;
 
     public Integer getId() {
@@ -21,6 +26,18 @@ public class Classification {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getSkillCategoryId() {
+        return skillCategoryId;
+    }
+
+    public void setSkillCategoryId(Integer skillCategoryId) {
+        this.skillCategoryId = skillCategoryId;
+    }
+
+    public boolean hasSkillCategoryId() {
+        return this.skillCategoryId != null;
     }
 
     public String getName() {
@@ -32,6 +49,6 @@ public class Classification {
     }
 
     public boolean hasName() {
-        return this.name !=  null;
+        return this.name != null;
     }
 }

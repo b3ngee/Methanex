@@ -1,10 +1,9 @@
 import React from 'react';
-import { addSkill } from '../styles/addSkill.scss';
 import AddSkillForm from './AddSkillForm';
+import { addSkill } from '../styles/addSkill.scss';
 
 const AddSkill = () =>
-    <div className={ addSkill }>
-        <h2>Add new skill</h2>
+    <div className={ addSkill } >
         <AddSkillForm/>
     </div>;
 

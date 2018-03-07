@@ -1,7 +1,8 @@
 import React from 'react';
 import Dropdown from './Dropdown.js';
 import TextFieldGroup from './TextFieldGroup';
-import { addSkill } from '../styles/addSkill.scss';
+import { formBox } from '../styles/form.scss';
+import Button from './Button';
 import axios from 'axios';
 
 
@@ -51,15 +52,15 @@ class AddSkillForm extends React.Component {
 
     isValid() {
         if (!this.state.skillCategory) {
-            this.setState({ errors: { skillCategory: ' skill category is required!' }});
+            this.setState({ errors: { skillCategory: 'skill category is required!' }});
             return false;
         }
         if (!this.state.skillType) {
-            this.setState({ errors: { skillType: ' skill type is required!' }});
+            this.setState({ errors: { skillType: 'skill type is required!' }});
             return false;
         }
         if (!this.state.skillCompetency) {
-            this.setState({errors: { skillCompetency: ' skill competency is required!'}});
+            this.setState({errors: { skillCompetency: 'skill competency is required!'}});
             return false;
         }
 
@@ -70,10 +71,10 @@ class AddSkillForm extends React.Component {
         e.preventDefault();
         // Todo:
         if (this.isValid()) {
-            axios.post('https://private-3bb33-methanex.apiary-mock.com/login', {
-                skillCategory: this.state.skillCategory,
-                skillType: this.state.skillType,
-                skills_competency: this.state.skillCompetency
+            axios.post('https://private-3bb33-methanex.apiary-mock.com/skills', {
+                skill_category_name: this.state.skillCategory,
+                skill_type_name: this.state.skillType,
+                competency: this.state.skillCompetency
             }).then(
                 alert('new skill has been added')
             );
@@ -88,44 +89,49 @@ class AddSkillForm extends React.Component {
         const { errors, skillCategory, skillType, skillCompetency } = this.state;
 
         return (
-            <form className={ addSkill } onSubmit={this.onSubmit}>
-                <TextFieldGroup
-                    field="skillCategory"
-                    label="Skill Category:"
-                    value={skillCategory}
-                    error={errors.skillCategory}
-                    onChange={this.onChange}
-                />
-                <div onChange={this.handleSelect}>
-                    <Dropdown data={skillCategoryData}/>
-                </div>
-                <br/>
+            <div className={ formBox }>
+                <form onSubmit={this.onSubmit}>
+                    <h2> Add new skill</h2>
+                    <TextFieldGroup
+                        field="skillCategory"
+                        label="Skill Category:"
+                        value={skillCategory}
+                        error={errors.skillCategory}
+                        onChange={this.onChange}
+                    />
+                    <div onChange={this.handleSelect}>
+                        <Dropdown data={skillCategoryData}/>
+                    </div>
+                    <br/>
 
-                <TextFieldGroup
-                    field="skillType"
-                    label="Specific Skill:"
-                    value={skillType}
-                    error={errors.skillType}
-                    onChange={this.onChange}
-                />
-                <div onChange={this.handleSelect}>
-                    <Dropdown data={skillData}/>
-                </div>
-                <br/>
+                    <TextFieldGroup
+                        field="skillType"
+                        label="Specific Skill:"
+                        value={skillType}
+                        error={errors.skillType}
+                        onChange={this.onChange}
+                    />
+                    <div onChange={this.handleSelect}>
+                        <Dropdown data={skillData}/>
+                    </div>
+                    <br/>
 
-                <TextFieldGroup
-                    field="skillCompetency"
-                    label="Competency Level:"
-                    value={skillCompetency}
-                    error={errors.skillCompetency}
-                    onChange={this.onChange}
-                />
-                <div onChange={this.handleSelect}>
-                    <Dropdown data={competencyData}/>
-                </div>
-                <br/>
-                <input type="submit" value="Submit" />
-            </form>
+                    <TextFieldGroup
+                        field="skillCompetency"
+                        label="Competency Level:"
+                        value={skillCompetency}
+                        error={errors.skillCompetency}
+                        onChange={this.onChange}
+                    />
+                    <div onChange={this.handleSelect}>
+                        <Dropdown data={competencyData}/>
+                    </div>
+                    <Button
+                        type="submit"
+                        label="Submit"
+                    />
+                </form>
+            </div>
         );
     }
 }

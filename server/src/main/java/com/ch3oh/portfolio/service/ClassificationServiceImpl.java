@@ -74,5 +74,9 @@ public class ClassificationServiceImpl {
         if (StringUtils.isBlank(name)) {
             throw new RestBadRequestException("Classification name is blank");
         }
+
+        if (classificationDao.findByClassificationByName(name) != null) {
+            throw new RestBadRequestException("Classfication name already exists");
+        }
     }
 }

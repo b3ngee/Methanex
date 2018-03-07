@@ -13,44 +13,43 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ch3oh.portfolio.persistence.User;
-import com.ch3oh.portfolio.service.UserServiceImpl;
+import com.ch3oh.portfolio.persistence.UserRole;
+import com.ch3oh.portfolio.service.UserRoleServiceImpl;
 
 @RestController
-@RequestMapping(path = "/users")
-public class UserController {
+@RequestMapping(path = "/user-roles")
+public class UserRoleController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserRoleServiceImpl userRoleService;
 
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public User getUser(@PathVariable("id") String id) {
-        return userService.getUser(id);
+    public UserRole getUserRole(@PathVariable("id") String id) {
+        return userRoleService.getUserRole(id);
     }
 
     @GetMapping
     @ResponseBody
-    public Iterable<User> getUsers() {
-        return userService.getUsers();
+    public Iterable<UserRole> getUserRoles() {
+        return userRoleService.getUserRoles();
     }
 
     @PostMapping
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserRole createUserRole(@RequestBody UserRole userRole) {
+        return userRoleService.createUserRole(userRole);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseBody
-    public User updateUser(@PathVariable("id") String id, @RequestBody User toUpdate) {
-        return userService.updateUser(id, toUpdate);
+    public UserRole updateUserRole(@PathVariable("id") String id, @RequestBody UserRole toUpdate) {
+        return userRoleService.updateUserRole(id, toUpdate);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteUser(@PathVariable("id") String id) {
-        userService.deleteUser(id);
+    public void deleteUserRole(@PathVariable("id") String id) {
+        userRoleService.deleteUserRole(id);
     }
 }
-

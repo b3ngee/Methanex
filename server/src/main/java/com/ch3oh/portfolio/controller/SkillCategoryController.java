@@ -13,44 +13,42 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ch3oh.portfolio.persistence.User;
-import com.ch3oh.portfolio.service.UserServiceImpl;
+import com.ch3oh.portfolio.persistence.SkillCategory;
+import com.ch3oh.portfolio.service.SkillCategoryServiceImpl;
 
 @RestController
-@RequestMapping(path = "/users")
-public class UserController {
+@RequestMapping(path = "/skill-categories")
+public class SkillCategoryController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private SkillCategoryServiceImpl skillCategoryService;
 
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public User getUser(@PathVariable("id") String id) {
-        return userService.getUser(id);
+    public SkillCategory getSkillCategory(@PathVariable("id") String id) {
+        return skillCategoryService.getSkillCategory(id);
     }
 
     @GetMapping
     @ResponseBody
-    public Iterable<User> getUsers() {
-        return userService.getUsers();
+    public Iterable<SkillCategory> getSkillCategories() {
+        return skillCategoryService.getSkillCategories();
     }
 
     @PostMapping
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public SkillCategory createSkillCategory(@RequestBody SkillCategory skillCategory) {
+        return skillCategoryService.createSkillCategory(skillCategory);
     }
 
     @PutMapping(value = "/{id}")
-    @ResponseBody
-    public User updateUser(@PathVariable("id") String id, @RequestBody User toUpdate) {
-        return userService.updateUser(id, toUpdate);
+    public SkillCategory updateSkillCategory(@PathVariable("id") String id, @RequestBody SkillCategory toUpdate) {
+        return skillCategoryService.updateSkillCategory(id, toUpdate);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteUser(@PathVariable("id") String id) {
-        userService.deleteUser(id);
+    public void deleteSkillCategory(@PathVariable("id") String id) {
+        skillCategoryService.deleteSkillCategory(id);
     }
 }
-
