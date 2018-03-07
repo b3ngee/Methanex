@@ -57,7 +57,7 @@ public class UserSkillServiceImpl {
         validateSkillType(userSkill.getSkillTypeId());
         validateCompetency(userSkill.getCompetency());
 
-        validateUserSkillDoesNotExist(userSkill);
+        validateUserSkill(userSkill);
 
         return userSkillDao.save(userSkill);
     }
@@ -89,7 +89,7 @@ public class UserSkillServiceImpl {
             userSkill.setCompetency(toUpdate.getCompetency());
         }
 
-        validateUserSkillDoesNotExist(userSkill);
+        validateUserSkill(userSkill);
 
         return userSkillDao.save(userSkill);
     }
@@ -103,10 +103,14 @@ public class UserSkillServiceImpl {
         userSkillDao.delete(Integer.valueOf(id));
     }
 
-    private void validateUserSkillDoesNotExist(UserSkill userSkill) {
-        UserSkill existingUserSkill = userSkillDao.findByUserIdAndSkillTypeId(userSkill.getUserId(), userSkill.getSkillTypeId());
+    private void validateUserSkill(UserSkill userSkill) {
+        try {
+            UserSkill existingUserSkill = userSkillDao.findByUserIdAndSkillTypeId(userSkill.getUserId(), userSkill.getSkillTypeId());
 
-        if (existingUserSkill != null && existingUserSkill.getId() != userSkill.getId()) {
+            if (existingUserSkill != null && existingUserSkill.getId() != userSkill.getId()) {
+                throw new RestBadRequestException("User already has skill type");
+            }
+        } catch (Exception e) {
             throw new RestBadRequestException("User already has skill type");
         }
     }

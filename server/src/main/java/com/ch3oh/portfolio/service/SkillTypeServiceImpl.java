@@ -1,6 +1,7 @@
 package com.ch3oh.portfolio.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,17 +43,13 @@ public class SkillTypeServiceImpl {
             throw new RestBadRequestException("Skill name is missing");
         }
 
-        validateSkillCategoryName(skillType.getName());
-
         if (!skillType.hasSkillCategoryId()) {
             throw new RestBadRequestException("Skill category is missing");
         }
 
-        if (!skillCategoryDao.exists(skillType.getSkillCategoryId())) {
-            throw new RestBadRequestException("Skill category not found");
-        }
-
-        validateSkillTypeDoesNotExist(skillType.getSkillCategoryId(), skillType.getName());
+        validateSkillTypeName(skillType.getName());
+        validateSkillCategory(skillType.getSkillCategoryId());
+        validateSkillType(skillType);
 
         return skillTypeDao.save(skillType);
     }
@@ -70,18 +67,16 @@ public class SkillTypeServiceImpl {
         }
 
         if (toUpdate.hasSkillCategoryId()) {
-            if (!skillCategoryDao.exists(toUpdate.getSkillCategoryId())) {
-                throw new RestBadRequestException("Skill category not found");
-            }
-
+            validateSkillCategory(toUpdate.getSkillCategoryId());
             skillType.setSkillCategoryId(toUpdate.getSkillCategoryId());
         }
 
         if (toUpdate.hasName()) {
-            validateSkillCategoryName(toUpdate.getName());
-            validateSkillTypeDoesNotExist(skillType.getSkillCategoryId(), toUpdate.getName());
+            validateSkillTypeName(toUpdate.getName());
             skillType.setName(toUpdate.getName());
         }
+
+        validateSkillType(skillType);
 
         return skillTypeDao.save(skillType);
     }
@@ -95,15 +90,28 @@ public class SkillTypeServiceImpl {
         skillTypeDao.delete(Integer.valueOf(id));
     }
 
-    private void validateSkillTypeDoesNotExist(Integer skillCategoryId, String skillTypeName) {
-        if (skillTypeDao.findBySkillCategoryIdAndSkillTypeName(skillCategoryId, skillTypeName) != null) {
+    @Transactional
+    private void validateSkillType(SkillType skillType) {
+        try {
+            SkillType existingSkillType = skillTypeDao.findBySkillCategoryIdAndSkillTypeName(skillType.getSkillCategoryId(), skillType.getName());
+
+            if (existingSkillType != null && existingSkillType.getId() != skillType.getId()) {
+                throw new RestBadRequestException("Skill type already exists under this category");
+            }
+        } catch (Exception e) {
             throw new RestBadRequestException("Skill type already exists under this category");
         }
     }
 
-    private void validateSkillCategoryName(String name) {
+    private void validateSkillCategory(Integer skillCategoryId) {
+        if (!skillCategoryDao.exists(skillCategoryId)) {
+            throw new RestBadRequestException("Skill category not found");
+        }
+    }
+
+    private void validateSkillTypeName(String name) {
         if (StringUtils.isBlank(name)) {
-            throw new RestBadRequestException("Skill category name is blank");
+            throw new RestBadRequestException("Skill type name is blank");
         }
     }
 }

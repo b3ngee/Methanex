@@ -40,6 +40,7 @@ public class SkillCategoryServiceImpl {
         }
 
         validateSkillCategoryName(skillCategory.getName());
+        validateSkillCategory(skillCategory);
 
         return skillCategoryDao.save(skillCategory);
     }
@@ -62,6 +63,8 @@ public class SkillCategoryServiceImpl {
             skillCategory.setName(skillCategoryName);
         }
 
+        validateSkillCategory(skillCategory);
+
         return skillCategoryDao.save(skillCategory);
     }
 
@@ -74,13 +77,17 @@ public class SkillCategoryServiceImpl {
         skillCategoryDao.delete(Integer.valueOf(id));
     }
 
+    private void validateSkillCategory(SkillCategory skillCategory) {
+        SkillCategory existingSkillCategory = skillCategoryDao.findBySkillCategoryName(skillCategory.getName());
+
+        if (existingSkillCategory != null && existingSkillCategory.getId() != skillCategory.getId()) {
+            throw new RestBadRequestException("Skill category name already exists");
+        }
+    }
+
     private void validateSkillCategoryName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new RestBadRequestException("Skill category name is blank");
-        }
-
-        if (skillCategoryDao.findBySkillCategoryName(name) != null) {
-            throw new RestBadRequestException("Skill category name already exists");
         }
     }
 }

@@ -9,7 +9,6 @@ import com.ch3oh.portfolio.exception.GeneralRestBadRequestException;
 import com.ch3oh.portfolio.exception.GeneralRestNotFoundException;
 import com.ch3oh.portfolio.exception.RestBadRequestException;
 import com.ch3oh.portfolio.exception.user.EmailExistsException;
-import com.ch3oh.portfolio.exception.user.InvalidEmailException;
 import com.ch3oh.portfolio.exception.user.UserNotFoundException;
 import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.persistence.User;
@@ -45,22 +44,18 @@ public class UserServiceImpl {
     @Transactional
     public User createUser(User user) {
         if (user.hasManagerId()) {
-            if (!userDao.exists(user.getManagerId())) {
-                throw new UserNotFoundException();
-            }
-
-            validateUserIsResourceManager(user.getManagerId());
+            validateManager(user.getManagerId());
         }
 
-        if (!user.hasFirstName() || StringUtils.isBlank(user.getFirstName())) {
+        if (!user.hasFirstName()) {
             throw new RestBadRequestException("First name is missing");
         }
 
-        if (!user.hasLastName() || StringUtils.isBlank(user.getLastName())) {
+        if (!user.hasLastName()) {
             throw new RestBadRequestException("Last name is missing");
         }
 
-        if (!user.hasAddress() || StringUtils.isBlank(user.getAddress())) {
+        if (!user.hasAddress()) {
             throw new RestBadRequestException("Address is missing");
         }
 
@@ -68,21 +63,27 @@ public class UserServiceImpl {
             throw new RestBadRequestException("Email is missing");
         }
 
-        validateEmail(user.getEmail());
-
-        if (!user.hasPassword() || StringUtils.isBlank(user.getPassword())) {
+        if (!user.hasPassword()) {
             throw new RestBadRequestException("Password is missing");
         }
 
-        if (!user.hasLocation() || StringUtils.isBlank(user.getLocation())) {
+        if (!user.hasLocation()) {
             throw new RestBadRequestException("Location is missing");
         }
 
-        if (!user.hasStatus() || StringUtils.isBlank(user.getStatus())) {
+        if (!user.hasStatus()) {
             throw new RestBadRequestException("Status is missing");
         }
 
+        validateFirstName(user.getFirstName());
+        validateLastName(user.getLastName());
+        validateAddress(user.getAddress());
+        validateEmail(user.getEmail());
+        validatePassword(user.getPassword());
         user.setPassword(PasswordUtil.hashPassword(user.getPassword()));
+        validateLocation(user.getLocation());
+        validateStatus(user.getStatus());
+        validateUser(user);
 
         return userDao.save(user);
     }
@@ -100,60 +101,42 @@ public class UserServiceImpl {
         }
 
         if (toUpdate.hasManagerId()) {
-            if (!userDao.exists(toUpdate.getManagerId())) {
-                throw new UserNotFoundException();
-            }
-
-            validateUserIsResourceManager(toUpdate.getManagerId());
-
+            validateManager(toUpdate.getManagerId());
             user.setManagerId(toUpdate.getManagerId());
         }
 
         if (toUpdate.hasFirstName()) {
-            if (StringUtils.isBlank(toUpdate.getFirstName())) {
-                throw new RestBadRequestException("Invalid first name");
-            }
+            validateFirstName(toUpdate.getFirstName());
             user.setFirstName(toUpdate.getFirstName());
         }
 
         if (toUpdate.hasLastName()) {
-            if (StringUtils.isBlank(toUpdate.getLastName())) {
-                throw new RestBadRequestException("Invalid last name");
-            }
+            validateLastName(toUpdate.getLastName());
             user.setLastName(toUpdate.getLastName());
         }
 
         if (toUpdate.hasAddress()) {
-            if (StringUtils.isBlank(toUpdate.getAddress())) {
-                throw new RestBadRequestException("Invalid address");
-            }
+            validateAddress(toUpdate.getAddress());
             user.setAddress(toUpdate.getAddress());
         }
 
         if (toUpdate.hasEmail()) {
-            String email = toUpdate.getEmail();
-            validateEmail(email);
-            user.setEmail(email);
+            validateEmail(toUpdate.getEmail());
+            user.setEmail(toUpdate.getEmail());
         }
 
         if (toUpdate.hasPassword()) {
-            if (StringUtils.isBlank(toUpdate.getPassword())) {
-                throw new RestBadRequestException("Invalid address");
-            }
+            validatePassword(toUpdate.getPassword());
             user.setPassword(PasswordUtil.hashPassword(toUpdate.getPassword()));
         }
 
         if (toUpdate.hasLocation()) {
-            if (StringUtils.isBlank(toUpdate.getLocation())) {
-                throw new RestBadRequestException("Invalid location");
-            }
+            validateLocation(toUpdate.getLocation());
             user.setLocation(toUpdate.getLocation());
         }
 
         if (toUpdate.hasStatus()) {
-            if (StringUtils.isBlank(toUpdate.getStatus())) {
-                throw new RestBadRequestException("Invalid status");
-            }
+            validateStatus(toUpdate.getStatus());
             user.setStatus((toUpdate.getStatus()));
         }
 
@@ -169,23 +152,66 @@ public class UserServiceImpl {
         userDao.delete(Integer.valueOf(id));
     }
 
-    private void validateUserIsResourceManager(Integer userId) {
-        if (userRoleDao.findByUserIdAndRole(userId, RoleTypeEnum.RESOURCE_MANAGER.toString()) == null) {
+    private void validateUser(User user) {
+        User existingUser = userDao.findByEmail(user.getEmail());
+        if (existingUser != null && existingUser.getId() != user.getId()) {
+            throw new EmailExistsException();
+        }
+    }
+
+    private void validateManager(Integer managerId) {
+        if (!userDao.exists(managerId)) {
+            throw new UserNotFoundException();
+        }
+
+        if (userRoleDao.findByUserIdAndRole(managerId, RoleTypeEnum.RESOURCE_MANAGER.toString()) == null) {
             throw new RestBadRequestException("User is not a resource manager");
+        }
+    }
+
+    private void validateFirstName(String firstName) {
+        if (StringUtils.isBlank(firstName)) {
+            throw new RestBadRequestException("First name is blank");
+        }
+    }
+
+    private void validateLastName(String lastName) {
+        if (StringUtils.isBlank(lastName)) {
+            throw new RestBadRequestException("Last name is blank");
+        }
+    }
+
+    private void validateAddress(String address) {
+        if (StringUtils.isBlank(address)) {
+            throw new RestBadRequestException("Address is blank");
         }
     }
 
     private void validateEmail(String email) {
         if (StringUtils.isBlank(email)) {
-            throw new RestBadRequestException("Email is missing");
+            throw new RestBadRequestException("Email is blank");
         }
 
         if (!ValidatorUtil.isValidEmail(email)) {
             throw new RestBadRequestException("Invalid email address");
         }
+    }
 
-        if (userDao.findByEmail(email) != null) {
-            throw new EmailExistsException();
+    private void validatePassword(String password) {
+        if (StringUtils.isBlank(password)) {
+            throw new RestBadRequestException("Password is blank");
+        }
+    }
+
+    private void validateLocation(String location) {
+        if (StringUtils.isBlank(location)) {
+            throw new RestBadRequestException("Location is blank");
+        }
+    }
+
+    private void validateStatus(String status) {
+        if (StringUtils.isBlank(status)) {
+            throw new RestBadRequestException("Status is blank");
         }
     }
 }
