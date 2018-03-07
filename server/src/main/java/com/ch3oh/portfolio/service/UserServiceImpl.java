@@ -162,6 +162,10 @@ public class UserServiceImpl {
 
     @Transactional
     public void deleteUser(String id) {
+        if (!userDao.exists(Integer.valueOf(id))) {
+            throw new GeneralRestNotFoundException();
+        }
+
         userDao.delete(Integer.valueOf(id));
     }
 

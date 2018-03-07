@@ -67,6 +67,10 @@ public class ClassificationServiceImpl {
 
     @Transactional
     public void deleteClassification(String id) {
+        if (!classificationDao.exists(Integer.valueOf(id))) {
+            throw new GeneralRestNotFoundException();
+        }
+
         classificationDao.delete(Integer.valueOf(id));
     }
 
