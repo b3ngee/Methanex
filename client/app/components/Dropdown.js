@@ -20,6 +20,7 @@ export default class Dropdown extends Component {
         return (
             <div>
                 <select onChange={this.handleChange}>
+                    <option value = "">select</option>;
                     {options}
                 </select>
             </div>
