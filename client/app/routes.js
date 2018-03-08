@@ -10,6 +10,7 @@ import Login from './components/Login';
 import StandardUser from './components/StandardUser';
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
+import AddPortfolioForm from './components/AddPortfolioForm';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -23,6 +24,7 @@ export default (
 		<Route exact path="/" render={() => (isLoggedIn() ? (<Profile />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/portfolio" render={() => (isLoggedIn() ? (<Portfolio />) : (<Redirect to="/login"/>))} />
 		    <Route path={'/portfolio/:portfolio_id'} component={ PortfolioDetail } />
+		<Route exact path="/portfolioNew/addNewPortfolio" render={() => (isLoggedIn() ? (<AddPortfolioForm />) : (<Redirect to={"/login"}/>))} />
 		<Route exact path="/project" render={() => (isLoggedIn() ? (<Project />) : (<Redirect to="/login"/>))} />
 		    <Route path={'/project/:project_id'} component={ ProjectDetail } />
 		<Route exact path="/resource" render={() => (isLoggedIn() ? (<Resource />) : (<Redirect to="/login"/>))} />
