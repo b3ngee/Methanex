@@ -27,7 +27,6 @@ class AddSkillCategoryForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        // TODO: need to make apiary call for /skill-categories
         if (this.isValid()) {
             axios.post('https://methanex-portfolio-management.herokuapp.com/skill-categories', {
                 name: this.state.skillCategory

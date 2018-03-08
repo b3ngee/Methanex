@@ -3,13 +3,11 @@ import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
-import Dropdown from './Dropdown';
 
 class AddSkillTypeForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-              skillCategory: '',
               skillType: '',
               errors: {}
         };
@@ -19,10 +17,6 @@ class AddSkillTypeForm extends React.Component {
     }
 
     isValid() {
-        if (!this.state.skillCategory) {
-            this.setState({errors: {skillCategory: 'Select a Skill Category'}});
-            return false;
-        }
         if(!this.state.skillType) {
             this.setState({ errors: { skillType: 'Skill type is required' }});
             return false;
@@ -31,27 +25,15 @@ class AddSkillTypeForm extends React.Component {
         return true;
     }
 
-//    getOptions() {
-//        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then((response) => {
-//            const dropdownOptions = response.data;
-//            this.getCategoryID(dropdownOptions);
-//        });
-//    }
-//
-//    getCategoryID(options) {
-//        console.log(options);
-//    }
-
     onSubmit(e) {
         e.preventDefault();
+        // TODO: need to make apiary call for /newSkillType
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/skill-types', {
-                skill_category_id: '',
+            axios.post('https://private-3bb33-methanex.apiary-mock.com/skill-types', {
                 skill_type: this.skillType
             }).then((response) => {
-                if (response.status === 201) {
+                if (response.status === 201 && response.data.status === 'skill_type_added') {
                     this.setState({
-                    skillCategory: '',
                     skillType: '',
                     errors: {},
                     });
@@ -71,8 +53,6 @@ class AddSkillTypeForm extends React.Component {
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
                 <h2>Add New Skill Type</h2>
-
-//                <Dropdown data={this.getOptions()}/>
 
                 <TextFieldGroup
                     field="skillType"
