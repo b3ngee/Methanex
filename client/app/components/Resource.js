@@ -2,6 +2,7 @@ import React from 'react';
 import { resource } from '../styles/resource.scss';
 import Table from './Table.js';
 import axios from 'axios/index';
+import {Link} from 'react-router-dom';
 
 class Resource extends React.Component {
     constructor(props) {
@@ -40,10 +41,12 @@ class Resource extends React.Component {
 
     render() {
         let columns = ['ID', 'Resource Name', 'Manager ID', 'Status'];
+        const rows = this.state.rows;
         return(
             <div className={ resource }>
                 <h1>My Resources</h1>
                 <Table text="List of Resources" columns={columns} rows={this.state.rows} ids={this.state.resourceIDs}/>
+                <Link to={{pathname: '/resource/report', state: {c: {columns}, r: {rows}}}}><button>Create report</button></Link>
             </div>
         );
     }
