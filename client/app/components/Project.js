@@ -42,7 +42,11 @@ class Project extends React.Component {
             <div className={ project }>
                 <h1>My Projects</h1>
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
-                <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}><button>Create report</button></Link>
+                <span>
+                    <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>
+                        <button>Create report</button>
+                    </Link>
+                </span>
             </div>
         );
     }

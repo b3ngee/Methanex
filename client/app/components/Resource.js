@@ -46,7 +46,11 @@ class Resource extends React.Component {
             <div className={ resource }>
                 <h1>My Resources</h1>
                 <Table text="List of Resources" columns={columns} rows={this.state.rows} ids={this.state.resourceIDs}/>
-                <Link to={{pathname: '/resource/report', state: {c: {columns}, r: {rows}}}}><button>Create report</button></Link>
+                <span>
+                    <Link to={{pathname: '/resource/report', state: {c: {columns}, r: {rows}}}}>
+                        <button>Create report</button>
+                    </Link>
+                </span>
             </div>
         );
     }

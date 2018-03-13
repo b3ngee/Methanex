@@ -1,8 +1,18 @@
 .resource {
     text-align: center;
+
+    span {
+        text-decoration: none;
+        display: inline-block;
+        &:hover {
+            background-color: f5f5f5;
+        }
+    }
+
     a {
         color: black;
         text-decoration: none;
+        display: block;
         &:hover {
             background-color: f5f5f5;
         }
