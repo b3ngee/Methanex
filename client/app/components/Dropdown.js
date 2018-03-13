@@ -4,6 +4,9 @@ import { select } from '../styles/dropdown.scss';
 export default class Dropdown extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            initialState: 'Select ... '
+        };
     }
 
     render() {
@@ -13,9 +16,14 @@ export default class Dropdown extends Component {
 
         return (
             <div>
+                <label>{this.props.label}</label>
+                {this.props.error && <span>{this.props.error}</span>}
                 <select
                     onChange={this.props.controlFunc}
                 >
+                    value={this.props.value}
+                    <option value = {this.state.initialState}>
+                        {this.state.initialState} </option>
                     {options}
                 </select>
             </div>
@@ -24,6 +32,9 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.propTypes = {
+    label: PropTypes.string,
+    value: PropTypes.string,
+    error: React.PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.string),
     controlFunc: PropTypes.func.isRequired
 };

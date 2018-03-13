@@ -21,11 +21,11 @@ class AddSkillTypeForm extends React.Component {
     }
 
     componentDidMount() {
-        this.getDropdownOptions();
+        this.getSkillCategories();
     }
 
     // Gets skill categories - with name and ID
-    getDropdownOptions() {
+    getSkillCategories() {
         let categories = {};
 
         axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then((response) => {
@@ -37,7 +37,7 @@ class AddSkillTypeForm extends React.Component {
     }
 
     // Retrieves category name to pass to dropdown
-    getOptions(skillCategory) {
+    getCategoryName(skillCategory) {
         this.skillCategory = this.state.skillCategories;
 
         const options = [];
@@ -49,13 +49,14 @@ class AddSkillTypeForm extends React.Component {
     }
 
     isValid() {
+        if(this.state.categoryID === '') {
+           this.setState({errors: { categoryID: 'Select a Skill Category' }});
+           return false;
+        }
+
         if(!this.state.skillType) {
             this.setState({ errors: { skillType: 'Skill Type is Required' }});
             return false;
-        }
-
-        if(!this.state.skillCategory) {
-            this.setState({errors: {skillCategory: 'Select a Skill Category' }});
         }
 
         return true;
@@ -64,13 +65,13 @@ class AddSkillTypeForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            console.log(this.state.categoryID);
             axios.post('https://methanex-portfolio-management.herokuapp.com/skill-types', {
                 name: this.state.skillType,
                 skillCategoryId: this.state.categoryID
             }).then((response) => {
                 if (response.status === 201) {
                     this.setState({
+                    categoryID: '',
                     skillType: '',
                     errors: {},
                     });
@@ -98,6 +99,7 @@ class AddSkillTypeForm extends React.Component {
     render() {
         const {
             skillCategories,
+            categoryID,
             skillType,
             errors
             } = this.state;
@@ -108,7 +110,10 @@ class AddSkillTypeForm extends React.Component {
                 <h2>Add New Skill Type</h2>
 
                 <Dropdown
-                    data={this.getOptions(skillCategories)}
+                    label="Select a Skill Category"
+                    value={categoryID}
+                    error={errors.categoryID}
+                    data={this.getCategoryName(skillCategories)}
                     controlFunc={this.handleOptionSelected}
                 />
 
