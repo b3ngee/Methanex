@@ -25,6 +25,7 @@
     "react-redux": "^4.4.5",
     "react-router-dom": "^4.1.1",
     "react-router-redux": "next",
+    "react-table": "^6.8.0",
     "redux": "^3.5.2"
   },
   "devDependencies": {
