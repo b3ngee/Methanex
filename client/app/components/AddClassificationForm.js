@@ -27,12 +27,11 @@ class AddClassificationForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        // TODO: need to make apiary call for /classifications
         if (this.isValid()) {
-            axios.post('https://private-3bb33-methanex.apiary-mock.com/classifications', {
-                classification: this.classification
+            axios.post('https://methanex-portfolio-management.herokuapp.com/classifications', {
+                name: this.state.classification
             }).then((response) => {
-                if (response.status === 201 && response.data.status === 'classification_added') {
+                if (response.status === 201) {
                     this.setState({
                     classification: '',
                     errors: {},
