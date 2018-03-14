@@ -1,5 +1,6 @@
 package com.ch3oh.portfolio.service;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import com.ch3oh.portfolio.exception.GeneralRestNotFoundException;
 import com.ch3oh.portfolio.exception.RestBadRequestException;
 import com.ch3oh.portfolio.exception.user.UserNotFoundException;
 import com.ch3oh.portfolio.persistence.Project;
+import com.ch3oh.portfolio.persistence.ProjectStatusEnum;
+import com.ch3oh.portfolio.persistence.RagStatusEnum;
 import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.repository.PortfolioDao;
 import com.ch3oh.portfolio.repository.ProjectDao;
@@ -198,11 +201,19 @@ public class ProjectServiceImpl {
         if (StringUtils.isBlank(projectStatus)) {
             throw new RestBadRequestException("Project status is blank");
         }
+
+        if (!EnumUtils.isValidEnum(ProjectStatusEnum.class, projectStatus)) {
+            throw new RestBadRequestException("Project status does not exist");
+        }
     }
 
     private void validateRagStatus(String ragStatus) {
         if (StringUtils.isBlank(ragStatus)) {
             throw new RestBadRequestException("RAG status is blank");
+        }
+
+        if (!EnumUtils.isValidEnum(RagStatusEnum.class, ragStatus)) {
+            throw new RestBadRequestException("Rag status does not exist");
         }
     }
 
