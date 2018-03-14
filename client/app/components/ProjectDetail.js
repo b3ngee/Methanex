@@ -1,5 +1,6 @@
 import React from 'react';
 import Table from './Table.js';
+import Button from './Button.js';
 import { project } from '../styles/project.scss';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -46,9 +47,11 @@ class ProjectDetail extends React.Component {
             <div className={ project }>
                 <h1>Project Details</h1>
                 <Table text="Project Details" columns={columns} rows={this.state.rows}/>
-                <Link to={{pathname: '/project/edit', state: {data}}}>
-                    <button>Edit</button>
-                </Link>
+                <span>
+                    <Link to={{pathname: '/project/edit', state: {data}}}>
+                        <Button label="Edit"/>
+                    </Link>
+               </span>
             </div>
         );
     }
