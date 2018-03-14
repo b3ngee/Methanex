@@ -11,6 +11,7 @@ import StandardUser from './components/StandardUser';
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
 import ReportingModule from './components/ReportingModule';
+import AddPortfolioForm from './components/AddPortfolioForm';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -23,6 +24,8 @@ export default (
 	<Switch>
 		<Route exact path="/" render={() => (isLoggedIn() ? (<Profile />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/portfolio" render={() => (isLoggedIn() ? (<Portfolio />) : (<Redirect to="/login"/>))} />
+        <Route exact path="/portfolio/report" component={ReportingModule} />
+		<Route exact path="/portfolio/addnewportfolio" component={AddPortfolioForm} />
 		    <Route path={'/portfolio/:portfolio_id'} component={ PortfolioDetail } />
 		<Route exact path="/project" render={() => (isLoggedIn() ? (<Project />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/project/report" component= {ReportingModule} />
