@@ -4,6 +4,7 @@ import AddUserForm from './AddUserForm';
 import AddSkillCategoryForm from './AddSkillCategoryForm';
 import AddClassificationForm from './AddClassificationForm';
 import AddSkillTypeForm from './AddSkillTypeForm';
+import AddUserRoleForm from './AddUserRoleForm';
 
 const Setting = () =>
     <div className={ setting }>
@@ -17,6 +18,8 @@ const Setting = () =>
         <br/>
         <AddClassificationForm />
         <br/>
+        <AddUserRoleForm/>
+        <br />
     </div>;
 
 export default Setting;

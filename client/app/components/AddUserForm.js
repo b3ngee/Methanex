@@ -15,9 +15,8 @@ class AddUserForm extends React.Component {
             password: '',
             address: '',
             location: '',
-            status: '',
+            status: 'available',
             enabled: true,
-            roles: '',
             errors: {},
         };
 
@@ -28,16 +27,15 @@ class AddUserForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://private-98eae-methanex.apiary-mock.com/users', {
-                first_name: this.state.firstName,
-                last_name: this.state.lastName,
+            axios.post('https://methanex-portfolio-management.herokuapp.com/users', {
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
                 email: this.state.email,
-                pw: this.state.password,
+                password: this.state.password,
                 address: this.state.address,
                 location: this.state.location,
                 status: this.state.status,
                 enabled: this.state.enabled,
-                roles: this.state.roles,
             }).then((response) => {
                 if (response.status === 201 && response.data.status === 'user_created') {
                     console.log(response);
@@ -48,7 +46,7 @@ class AddUserForm extends React.Component {
                         password: '',
                         address: '',
                         location: '',
-                        roles: '',
+                        status: '',
                         errors: {},
                     });
                 }
@@ -87,7 +85,7 @@ class AddUserForm extends React.Component {
     }
 
     render() {
-        const { firstName, lastName, email, password, address, location, roles, errors } = this.state;
+        const { firstName, lastName, email, password, address, location, errors } = this.state;
 
         return (
         <div className={ formBox }>
@@ -133,13 +131,6 @@ class AddUserForm extends React.Component {
                     field="location"
                     label="Location"
                     value={location}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
-                    field="roles"
-                    label="Roles"
-                    value={roles}
-                    error={errors.roles}
                     onChange={this.onChange}
                 />
                 <Button
