@@ -27,4 +27,14 @@ public interface UserRoleDao extends CrudRepository<UserRole, Integer> {
      */
     @Query("SELECT u FROM UserRole u WHERE u.userId = ?1 AND u.role = ?2")
     UserRole findByUserIdAndRole(@Param("userId") Integer userId, @Param("role") String role);
+
+    /**
+     * Finds UserRole associated with this user.
+     *
+     * @param userId
+     * @return A UserRole
+     * If no user is found, this method returns an empty list.
+     */
+    @Query("SELECT u FROM UserRole u WHERE u.userId = ?1")
+    Iterable<UserRole> findByUserId(@Param("userId") Integer userId);
 }
