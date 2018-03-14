@@ -43,24 +43,9 @@ class EditProjectForm extends Component {
                 estimate_to_complete: this.state.estimateToComplete,
                 resource_link: this.state.resourceLink,
             }).then((response) => {
-                if (response.status === 201 && response.data.status === 'project_created') {
-                    console.log(response);
-                    this.setState({
-                        id: '',
-                        name: '',
-                        manager: '',
-                        owner: '',
-                        percentComplete: '',
-                        duration: '',
-                        status: '',
-                        budget: '',
-                        spendToDate: '',
-                        estimateToComplete: '',
-                        resourceLink: '',
-                        errors: {},
-                    });
+                if (response.status === 201 && response.data.status === 'project_updated') {
+                    this.props.history.push(`/project/${id}`);
                 }
-                this.props.history.push(`/project/${id}`);
             });
         }
     }
