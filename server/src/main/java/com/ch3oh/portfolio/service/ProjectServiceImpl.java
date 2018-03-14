@@ -203,7 +203,7 @@ public class ProjectServiceImpl {
         }
 
         if (!EnumUtils.isValidEnum(ProjectStatusEnum.class, projectStatus)) {
-            throw new RestBadRequestException("Project status does not exist");
+            throw new RestBadRequestException("Project status does not exist (must be one of: PIPELINE, PRE_APPROVAL, SEEKING_FUNDING, ON_HOLD, UNDERWAY or STOPPED)");
         }
     }
 
@@ -213,7 +213,7 @@ public class ProjectServiceImpl {
         }
 
         if (!EnumUtils.isValidEnum(RagStatusEnum.class, ragStatus)) {
-            throw new RestBadRequestException("Rag status does not exist");
+            throw new RestBadRequestException("Rag status does not exist (must be one of: RED, GREEN or AMBER)");
         }
     }
 

@@ -116,7 +116,7 @@ public class UserRoleServiceImpl {
         }
 
         if (!EnumUtils.isValidEnum(RoleTypeEnum.class, role)) {
-            throw new RestBadRequestException("Role type does not exist");
+            throw new RestBadRequestException("Role type does not exist (must be one of: SUPER_ADMIN, PORTFOLIO_MANAGER, PROJECT_MANAGER, RESOURCE_MANAGER or RESOURCE)");
         }
     }
 }
