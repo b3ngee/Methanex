@@ -1,6 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import ReactTable from 'react-table';
 import { reportingModule } from '../styles/reportingModule.scss';
+import { ReactTableDefaults } from 'react-table';
+
+Object.assign(ReactTableDefaults, {
+  defaultPageSize: 10
+});
 
 export default class ReportingModule extends Component {
     constructor(props) {
