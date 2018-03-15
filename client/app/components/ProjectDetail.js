@@ -26,14 +26,14 @@ class ProjectDetail extends React.Component {
 
     getDetails() {
     console.log(this.props.match.params.project_id);
-        axios.get('https://private-2a709-methanex.apiary-mock.com/project/' + this.props.match.params.project_id)
+        axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id)
         .then(response => {
             const rows = [];
             const data = response.data;
             console.log(response.data);
             for (const key in data) {
                 if(key !== null) {
-                    rows.push({'key': key, 'value': data[key]});
+                    rows.push({'Header': key, 'Value': data[key]});
                 }
             }
             console.log(data);
@@ -44,16 +44,16 @@ class ProjectDetail extends React.Component {
 
     deleteProject() {
         const id = this.props.match.params.project_id;
-        axios.delete('https://private-2a709-methanex.apiary-mock.com/project/' + id)
+        axios.delete('https://methanex-portfolio-management.herokuapp.com/projects/' + id)
         .then(response => {
-            if (response.status === 201 && response.data.status === 'project_deleted') {
+            if (response.status === 200) {
                 this.props.history.push('/project');
             }
         });
     }
 
     render() {
-        let columns = ['key', 'value'];
+        let columns = ['Header', 'Value'];
         const data = this.state.rows;
         return (
             <div className={ project }>
