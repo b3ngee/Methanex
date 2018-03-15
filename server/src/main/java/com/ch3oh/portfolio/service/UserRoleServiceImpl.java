@@ -1,6 +1,7 @@
 package com.ch3oh.portfolio.service;
 
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ch3oh.portfolio.exception.GeneralRestBadRequestException;
 import com.ch3oh.portfolio.exception.GeneralRestNotFoundException;
 import com.ch3oh.portfolio.exception.RestBadRequestException;
-import com.ch3oh.portfolio.exception.RestNotFoundException;
 import com.ch3oh.portfolio.exception.user.UserNotFoundException;
 import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.persistence.UserRole;
@@ -111,8 +111,12 @@ public class UserRoleServiceImpl {
     }
 
     private void validateRole(String role) {
+        if (StringUtils.isBlank(role)) {
+            throw new RestBadRequestException("Role type is blank");
+        }
+
         if (!EnumUtils.isValidEnum(RoleTypeEnum.class, role)) {
-            throw new RestBadRequestException("Role type does not exist");
+            throw new RestBadRequestException("Role type does not exist (must be one of: SUPER_ADMIN, PORTFOLIO_MANAGER, PROJECT_MANAGER, RESOURCE_MANAGER or RESOURCE)");
         }
     }
 }

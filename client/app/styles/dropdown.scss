@@ -1,5 +1,14 @@
+@import './global.scss';
+
+label {
+        float: left;
+        font-size: 12px;
+        }
+span {
+        float: right;
+        color: red;
+        }
 select {
-    width: auto-adjust;
     background-color: white;
     border: thin solid grey;
     border-radius: 4px;
