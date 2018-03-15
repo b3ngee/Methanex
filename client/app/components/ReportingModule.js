@@ -3,7 +3,7 @@ import ReactTable from 'react-table';
 import { reportingModule } from '../styles/reportingModule.scss';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { PDF } from '../styles/pdf.scss';
+// import { PDF } from '../styles/pdf.scss';
 import { ReactTableDefaults } from 'react-table';
 
 Object.assign(ReactTableDefaults, {
@@ -32,6 +32,14 @@ export default class ReportingModule extends Component {
         const cols = this.props.location.state.c.columns;
         const rows = this.props.location.state.r.rows;
 
+        const pdfStyle = {
+            backgroundColor: '#f5f5f5',
+            width: '210mm',
+            minHeight: '297mm',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+        };
+
          console.log('Columns: ', cols);
          console.log('Rows: ', rows);
 
@@ -54,11 +62,9 @@ export default class ReportingModule extends Component {
                       <div className="mb5">
                         <button onClick={this.printDocument}>Download Report</button>
                       </div>
-                      <div className={ PDF }>
-                          <div id="divToPrint" className="mt4">
+                          <div id="divToPrint" className="mt4" style={ pdfStyle }>
                               <div><ReactTable filterable data={data} columns={columns}/></div>
                           </div>
-                      </div>
                     </div>
                 </span>
             </div>
