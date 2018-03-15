@@ -1,6 +1,7 @@
 import React from 'react';
 import { project } from '../styles/project.scss';
 import Table from './Table';
+import Button from './Button';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 
@@ -44,7 +45,7 @@ class Project extends React.Component {
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>
-                        <button>Create report</button>
+                        <Button label="Create Report"/>
                     </Link>
                 </span>
             </div>

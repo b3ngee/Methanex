@@ -17,6 +17,7 @@ class ProjectDetail extends React.Component {
         };
 
         this.getDetails = this.getDetails.bind(this);
+        this.deleteProject = this.deleteProject.bind(this);
     }
 
     componentDidMount() {
@@ -25,7 +26,8 @@ class ProjectDetail extends React.Component {
 
     getDetails() {
     console.log(this.props.match.params.project_id);
-        axios.get('https://private-2a709-methanex.apiary-mock.com/project/' + this.props.match.params.project_id).then(response => {
+        axios.get('https://private-2a709-methanex.apiary-mock.com/project/' + this.props.match.params.project_id)
+        .then(response => {
             const rows = [];
             const data = response.data;
             console.log(response.data);
@@ -37,6 +39,16 @@ class ProjectDetail extends React.Component {
             console.log(data);
             this.setState({rows: rows});
         }).catch( () => {
+        });
+    }
+
+    deleteProject() {
+        const id = this.props.match.params.project_id;
+        axios.delete('https://private-2a709-methanex.apiary-mock.com/project/' + id)
+        .then(response => {
+            if (response.status === 201 && response.data.status === 'project_deleted') {
+                this.props.history.push('/project');
+            }
         });
     }
 
@@ -52,6 +64,7 @@ class ProjectDetail extends React.Component {
                         <Button label="Edit"/>
                     </Link>
                </span>
+               <Button label="Delete" onClick={this.deleteProject}/>
             </div>
         );
     }
@@ -59,7 +72,8 @@ class ProjectDetail extends React.Component {
 }
 
 ProjectDetail.propTypes = {
-    match: React.PropTypes.any
+    match: React.PropTypes.any,
+    history: React.PropTypes.any,
 };
 
 export default ProjectDetail;
