@@ -40,6 +40,7 @@ class Portfolio extends React.Component {
     render() {
         let columns = ['ID', 'Portfolio Name'];
         const rows = this.state.rows;
+
         return (
             <div className={ portfolio }>
                 <h1>Hello {localStorage.getItem('user_name')}</h1>
