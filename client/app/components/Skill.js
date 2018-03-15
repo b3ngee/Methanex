@@ -14,10 +14,10 @@ class Skill extends React.Component {
             skillTypeData: {},
             skillCategoryData: {},
             numSkill: 0,
-            rows: []
+            rows: [],
+            num: 0
         };
         this.getSkills = this.getSkills.bind(this);
-        console.log(typeof(this.state.userId));
     }
 
     componentDidMount() {
@@ -45,11 +45,12 @@ class Skill extends React.Component {
                                 // we are trying to find the row that has the same skillCategoryId
                                 if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
                                     tableData.push({
-                                        'ID': i + 1,
+                                        'ID': this.state.num + 1,
                                         'Skill Category': this.state.skillCategoryData[k].name,
                                         'Skill Name': this.state.skillTypeData[j].name,
                                         'Skill Competency': this.state.skills[i].competency
                                     });
+                                    this.state.num++;
                                 }
                             }
                         }

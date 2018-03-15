@@ -104,7 +104,6 @@ class AddExistingSkillForm extends React.Component {
                 this.setState({ theChosenSkillId: this.state.skillTypeData[i].id });
             }
         }
-        console.log('omg ' + this.state.theChosenSkillId);
     }
 
     isValid() {
@@ -151,7 +150,6 @@ class AddExistingSkillForm extends React.Component {
 
     render() {
         const { errors, skillCategory, skillType, skillCompetency, blank, categoryData, skillData } = this.state;
-                console.log('omg ' + this.state.userId);
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
