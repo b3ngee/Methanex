@@ -11,7 +11,7 @@ export default class Dropdown extends Component {
 
     render() {
         let options = this.props.data.map(val => {
-            return <option value = {val}>{val}</option>;
+            return <option key={val} value = {val}>{val}</option>;
         });
 
         return (
@@ -34,7 +34,7 @@ export default class Dropdown extends Component {
 Dropdown.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
-    error: React.PropTypes.string.isRequired,
+    error: React.PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.string).isRequired,
     controlFunc: PropTypes.func.isRequired
 };
