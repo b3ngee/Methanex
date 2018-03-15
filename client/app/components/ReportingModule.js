@@ -4,6 +4,11 @@ import { reportingModule } from '../styles/reportingModule.scss';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { PDF } from '../styles/pdf.scss';
+import { ReactTableDefaults } from 'react-table';
+
+Object.assign(ReactTableDefaults, {
+  defaultPageSize: 10
+});
 
 export default class ReportingModule extends Component {
     constructor(props) {
