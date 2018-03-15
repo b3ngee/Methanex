@@ -39,6 +39,15 @@ public class UserSkillServiceImpl {
         return userSkillDao.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public Iterable<UserSkill> getUserSkillsById(Integer userId) {
+        if (!userDao.exists(userId)) {
+            throw new RestBadRequestException("Request param user ID does not exist");
+        }
+
+        return userSkillDao.findAllByUserId(userId);
+    }
+
     @Transactional
     public UserSkill createUserSkill(UserSkill userSkill) {
         if (!userSkill.hasUserId()) {
