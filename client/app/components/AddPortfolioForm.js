@@ -45,8 +45,8 @@ class AddPortfolioForm extends React.Component {
     }
 
     listClassifications() {
-        // TODO: need to check how to get manager IDs
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then(response => {
+        // TODO: need to filter for Portfolio Managers only
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then(response => {
             console.log(response.data[0].name);
             const len = response.data.length;
             const classificationIDs = [];
@@ -112,8 +112,10 @@ class AddPortfolioForm extends React.Component {
                             onChange={this.onChange}
                         />
                         <label>Portoflio Classification ID</label>
+                        <br />
                         <Dropdown field="portfolioManagerID" data={this.state.classificationIDs} onChange={this.onChange}/>
                         <label>Manager ID</label>
+                        <br />
                         <Dropdown field="portfolioClassificationID" data={this.state.managerIDs} onChange={this.onChange}/>
                         <Button
                             type="submit"
