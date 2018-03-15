@@ -52,6 +52,15 @@ public class ProjectServiceImpl {
         return projectDao.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public Iterable<Project> getProjectsByPortfolioId(Integer portfolioId) {
+        if (!portfolioDao.exists(portfolioId)) {
+            throw new RestBadRequestException("Request param portfolio ID does not exist");
+        }
+
+        return projectDao.findAllByPortfolioId(portfolioId);
+    }
+
     @Transactional
     public Project createProject(Project project) {
         if (!project.hasPortfolioId()) {
