@@ -7,7 +7,8 @@ import Project from './components/Project';
 import Resource from './components/Resource';
 import Setting from './components/Setting';
 import Login from './components/Login';
-import StandardUser from './components/StandardUser';
+import Skill from './components/Skill';
+import AddSkill from './components/AddSkill';
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
 import ReportingModule from './components/ReportingModule';
@@ -34,6 +35,7 @@ export default (
         	<Route path={'/resource/:resource_id'} component={ ResourceDetail } />
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/login" component={Login} />
-		<Route exact path="/standardUser" render={() => (isLoggedIn() ? (<StandardUser />) : (<Redirect to="/login"/>))} />
+        <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
+	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddSkill />) : (<Redirect to="/login"/>))} />
 	</Switch>
 );
