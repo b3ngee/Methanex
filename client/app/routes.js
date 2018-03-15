@@ -11,6 +11,8 @@ import Skill from './components/Skill';
 import AddSkill from './components/AddSkill';
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
+import ReportingModule from './components/ReportingModule';
+import EditProjectForm from './components/EditProjectForm';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -25,8 +27,11 @@ export default (
 		<Route exact path="/portfolio" render={() => (isLoggedIn() ? (<Portfolio />) : (<Redirect to="/login"/>))} />
 		    <Route path={'/portfolio/:portfolio_id'} component={ PortfolioDetail } />
 		<Route exact path="/project" render={() => (isLoggedIn() ? (<Project />) : (<Redirect to="/login"/>))} />
+		<Route exact path="/project/report" component= {ReportingModule} />
+		<Route exact path="/project/edit" component= {EditProjectForm} />
 		    <Route path={'/project/:project_id'} component={ ProjectDetail } />
 		<Route exact path="/resource" render={() => (isLoggedIn() ? (<Resource />) : (<Redirect to="/login"/>))} />
+        <Route exact path="/resource/report" component= {ReportingModule} />
         	<Route path={'/resource/:resource_id'} component={ ResourceDetail } />
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/login" component={Login} />

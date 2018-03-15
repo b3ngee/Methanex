@@ -4,12 +4,9 @@ import { select } from '../styles/dropdown.scss';
 export default class Dropdown extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event) {
-        this.setState({value: event.target.value});
+        this.state = {
+            initialState: 'Select ... '
+        };
     }
 
     render() {
@@ -19,8 +16,14 @@ export default class Dropdown extends Component {
 
         return (
             <div>
-                <select onChange={this.handleChange}>
-                    <option value = "">select</option>;
+                <label>{this.props.label}</label>
+                {this.props.error && <span>{this.props.error}</span>}
+                <select
+                    onChange={this.props.controlFunc}
+                >
+                    value={this.props.value}
+                    <option value = {this.state.initialState}>
+                        {this.state.initialState} </option>
                     {options}
                 </select>
             </div>
@@ -29,5 +32,9 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.string)
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    error: React.PropTypes.string.isRequired,
+    data: PropTypes.arrayOf(PropTypes.string).isRequired,
+    controlFunc: PropTypes.func.isRequired
 };

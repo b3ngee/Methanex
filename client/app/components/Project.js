@@ -2,6 +2,7 @@ import React from 'react';
 import { project } from '../styles/project.scss';
 import Table from './Table';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 class Project extends React.Component {
     constructor(props) {
@@ -36,10 +37,16 @@ class Project extends React.Component {
 
     render() {
         let columns = ['ID', 'Project Name', 'Project Manager', 'Status'];
+        const rows = this.state.rows;
         return(
             <div className={ project }>
                 <h1>My Projects</h1>
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
+                <span>
+                    <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>
+                        <button>Create report</button>
+                    </Link>
+                </span>
             </div>
         );
     }

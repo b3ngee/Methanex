@@ -1,6 +1,5 @@
 package com.ch3oh.portfolio.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,53 +9,47 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ch3oh.portfolio.persistence.User;
-import com.ch3oh.portfolio.service.UserServiceImpl;
+import com.ch3oh.portfolio.persistence.ProjectResource;
+import com.ch3oh.portfolio.service.ProjectResourceServiceImpl;
 
 @RestController
-@RequestMapping(path = "/users")
-public class UserController {
+@RequestMapping(path = "/project-resources")
+public class ProjectResourceController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private ProjectResourceServiceImpl projectResourceService;
 
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public User getUser(@PathVariable("id") String id) {
-        return userService.getUser(id);
+    public ProjectResource getProjectResource(@PathVariable("id") String id) {
+        return projectResourceService.getProjectResource(id);
     }
 
     @GetMapping
     @ResponseBody
-    public Iterable<User> getUsers(@RequestParam(value = "role", required = false) String role) {
-        if (!StringUtils.isBlank(role)) {
-            return userService.getUsersByRole(role);
-        }
-
-        return userService.getUsers();
+    public Iterable<ProjectResource> getProjectResources() {
+        return projectResourceService.getProjectResources();
     }
 
     @PostMapping
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public ProjectResource createProjectResources(@RequestBody ProjectResource projectResource) {
+        return projectResourceService.createProjectResource(projectResource);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseBody
-    public User updateUser(@PathVariable("id") String id, @RequestBody User toUpdate) {
-        return userService.updateUser(id, toUpdate);
+    public ProjectResource updateProjectResource(@PathVariable("id") String id, @RequestBody ProjectResource toUpdate) {
+        return projectResourceService.updateProjectResource(id, toUpdate);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteUser(@PathVariable("id") String id) {
-        userService.deleteUser(id);
+    public void deleteProjectResource(@PathVariable("id") String id) {
+        projectResourceService.deleteProjectResource(id);
     }
 }
-
