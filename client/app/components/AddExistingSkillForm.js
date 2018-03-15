@@ -12,7 +12,7 @@ let competencyData = [
     '4',
     '5'];
 
-class AddSkillForm extends React.Component {
+class AddExistingSkillForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -209,8 +209,8 @@ class AddSkillForm extends React.Component {
     }
 }
 
-AddSkillForm.propTypes = {
+AddExistingSkillForm.propTypes = {
     history: React.PropTypes.object
 };
 
-export default AddSkillForm;
+export default AddExistingSkillForm;

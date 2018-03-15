@@ -1,10 +1,10 @@
 import React from 'react';
-import AddSkillForm from './AddSkillForm';
+import AddExistingSkillForm from './AddExistingSkillForm';
 import { addSkill } from '../styles/addSkill.scss';
 
 const AddSkill = () =>
     <div className={ addSkill } >
-        <AddSkillForm/>
+        <AddExistingSkillForm/>
     </div>;
 
 export default AddSkill;
