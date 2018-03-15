@@ -1,5 +1,6 @@
 package com.ch3oh.portfolio.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +54,12 @@ public class PortfolioServiceImpl {
             throw new RestBadRequestException("Classification is missing");
         }
 
+        if (!portfolio.hasName()) {
+            throw new RestBadRequestException("Portfolio name is missing");
+        }
+
         validateClassification(portfolio.getClassificationId());
-        validatePortfolio(portfolio);
+        validateName(portfolio.getName());
 
         return portfolioDao.save(portfolio);
     }
@@ -81,7 +86,10 @@ public class PortfolioServiceImpl {
             portfolio.setClassificationId(toUpdate.getClassificationId());
         }
 
-        validatePortfolio(portfolio);
+        if (toUpdate.hasName()) {
+            validateName(toUpdate.getName());
+            portfolio.setName(toUpdate.getName());
+        }
 
         return portfolioDao.save(portfolio);
     }
@@ -93,14 +101,6 @@ public class PortfolioServiceImpl {
         }
 
         portfolioDao.delete(Integer.valueOf(id));
-    }
-
-    private void validatePortfolio(Portfolio portfolio) {
-        Portfolio existingPortfolio = portfolioDao.findByClassificationId(portfolio.getClassificationId());
-
-        if (existingPortfolio != null && existingPortfolio.getId() != portfolio.getId()) {
-            throw new RestBadRequestException("Classification already exists");
-        }
     }
 
     private void validateManager(Integer userId) {
@@ -116,6 +116,12 @@ public class PortfolioServiceImpl {
     private void validateClassification(Integer classificationId) {
         if (!classificationDao.exists(classificationId)) {
             throw new RestBadRequestException("Classification does not exist");
+        }
+    }
+
+    private void validateName(String name) {
+        if (StringUtils.isBlank(name)) {
+            throw new RestBadRequestException("Portfolio name is blank");
         }
     }
 }
