@@ -18,4 +18,14 @@ public interface SkillTypeDao extends CrudRepository<SkillType, Integer> {
      */
     @Query("SELECT s FROM SkillType s WHERE s.skillCategoryId = ?1 AND s.name = ?2")
     SkillType findBySkillCategoryIdAndSkillTypeName(@Param("skillCategoryId") Integer skillCategoryId, @Param("name") String skillTypeName);
+
+    /**
+     * Finds SkillType that matches specified skillCategoryId
+     *
+     * @param skillCategoryId
+     * @return A list of SkillTypes
+     * If no SkillType is found, return an empty list.
+     */
+    @Query("SELECT s FROM SkillType s WHERE s.skillCategoryId = ?1")
+    Iterable<SkillType> findBySkillCategoryId(@Param("skillCategoryId") Integer skillCategoryId);
 }

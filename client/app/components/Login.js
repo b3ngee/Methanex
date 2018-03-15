@@ -4,6 +4,7 @@ import Button from './Button';
 import axios from 'axios';
 import isValidEmail from '../utils/validationHelpers';
 import { formBox } from '../styles/form.scss';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class Login extends React.Component {
     constructor(props) {
@@ -38,20 +39,19 @@ class Login extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        // TODO: currently mocking api call with apiary, will need to change
-        // this method depending on api response
         if (this.isValid()) {
-            axios.post('https://private-3bb33-methanex.apiary-mock.com/login', {
+            axios.post(`${prodAPIEndpoint}/login`, {
                 email: this.state.email,
-                pw: this.state.password
+                password: this.state.password
             }).then((res) => {
-                localStorage.setItem('user_id', res.data.user_id);
+                localStorage.setItem('user_id', res.data.user.id);
                 localStorage.setItem('roles', res.data.roles);
-                localStorage.setItem('user_name', res.data.user_name);
-                localStorage.setItem('email', res.data.email);
+                localStorage.setItem('user_name', `${res.data.user.firstName} ${res.data.user.lastName}`);
+                localStorage.setItem('email', res.data.user.email);
                 this.props.history.push('/');
-            }).catch(
-                // TODO: display error message once api format is finalized
+            }).catch(() => {
+                    this.setState({errors: {password: 'Incorrect password or email'}});
+                }
             );
         }
     }

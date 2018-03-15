@@ -20,6 +20,9 @@ public class Portfolio {
     @Column(name = "CLASSIFICATION_ID", nullable = false)
     private Integer classificationId;
 
+    @Column(nullable = false)
+    private String name;
+
     public Integer getId() {
         return id;
     }
@@ -50,5 +53,17 @@ public class Portfolio {
 
     public boolean hasClassificationId() {
         return this.classificationId != null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean hasName() {
+        return this.name != null;
     }
 }

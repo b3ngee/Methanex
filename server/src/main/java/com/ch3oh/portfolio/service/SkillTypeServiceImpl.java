@@ -37,6 +37,15 @@ public class SkillTypeServiceImpl {
         return skillTypeDao.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public Iterable<SkillType> getSkillTypesByCategoryId(Integer skillCategoryId) {
+        if (!skillCategoryDao.exists(skillCategoryId)) {
+            throw new RestBadRequestException("Request param skill category ID does not exist");
+        }
+
+        return skillTypeDao.findBySkillCategoryId(skillCategoryId);
+    }
+
     @Transactional
     public SkillType createSkillType(SkillType skillType) {
         if (!skillType.hasName()) {

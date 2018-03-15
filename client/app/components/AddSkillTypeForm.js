@@ -24,6 +24,10 @@ class AddSkillTypeForm extends React.Component {
         this.getSkillCategories();
     }
 
+    componentDidUpdate() {
+        this.getSkillCategories();
+    }
+
     // Gets skill categories - with name and ID
     getSkillCategories() {
         axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then((response) => {

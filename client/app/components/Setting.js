@@ -1,9 +1,9 @@
 import React from 'react';
 import { setting } from '../styles/setting.scss';
 import AddUserForm from './AddUserForm';
-import AddSkillCategoryForm from './AddSkillCategoryForm';
+import AddSkillForm from './AddSkillForm';
 import AddClassificationForm from './AddClassificationForm';
-import AddSkillTypeForm from './AddSkillTypeForm';
+import AddUserRoleForm from './AddUserRoleForm';
 
 const Setting = () =>
     <div className={ setting }>
@@ -11,12 +11,12 @@ const Setting = () =>
         <br/>
         <AddUserForm />
         <br/>
-        <AddSkillCategoryForm />
-        <br/>
-        <AddSkillTypeForm />
+        <AddSkillForm />
         <br/>
         <AddClassificationForm />
         <br/>
+        <AddUserRoleForm/>
+        <br />
     </div>;
 
 export default Setting;
