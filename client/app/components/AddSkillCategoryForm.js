@@ -32,17 +32,16 @@ class AddSkillCategoryForm extends React.Component {
                 name: this.state.skillCategory
             }).then((response) => {
                 if (response.status === 201) {
-                    this.setState({
-                    skillCategory: '',
-                    errors: {},
-                    });
+                    const skillCategory = this.state.skillCategory;
+                    this.setState({ skillCategory: '' });
+                    this.props.onSubmit(skillCategory);
                 }
             });
         }
     }
 
     onChange(e) {
-            this.setState({ [e.target.name]: e.target.value });
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     render() {
@@ -69,5 +68,9 @@ class AddSkillCategoryForm extends React.Component {
         );
     }
 }
+
+AddSkillCategoryForm.propTypes = {
+    onSubmit: React.PropTypes.func.isRequired
+};
 
 export default AddSkillCategoryForm;
