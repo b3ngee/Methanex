@@ -3,10 +3,20 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { navbar } from '../styles/navbar.scss';
 import { logout } from '../styles/logout.scss';
+import {
+    RESOURCE_MANAGER,
+    PORTFOLIO_MANAGER,
+    PROJECT_MANAGER,
+    SUPER_ADMIN
+} from '../constants/constants';
 import '../styles/global.scss';
 
+let isAdmin = false;
+let isPortfolioManager = false;
+let isResourceManager = false;
+let isProjectManager = false;
+
 class Navbar extends Component {
-    // TODO: conditionally render different links depending on roles retrieved from local storage
     constructor(props) {
         super(props);
     }
@@ -17,6 +27,13 @@ class Navbar extends Component {
     }
 
     render() {
+        const roles = localStorage.getItem('roles');
+        if (roles) {
+            isAdmin = roles.includes(SUPER_ADMIN);
+            isPortfolioManager = roles.includes(PORTFOLIO_MANAGER);
+            isResourceManager = roles.includes(RESOURCE_MANAGER);
+            isProjectManager = roles.includes(PROJECT_MANAGER);
+        }
         return (
             <div className={ navbar }>
                 <img src="https://i.imgur.com/gUCwlxg.png" />
@@ -24,10 +41,10 @@ class Navbar extends Component {
                     localStorage.getItem('user_id') &&
                     <div>
                         <Link to="/">My Profile</Link>
-                        <Link to="/portfolio">Portfolios</Link>
-                        <Link to="/project">Projects</Link>
-                        <Link to="/resource">Resources</Link>
-                        <Link to="/setting">Administration</Link>
+                        { (isAdmin || isPortfolioManager) && <Link to="/portfolio">Portfolios</Link> }
+                        { (isAdmin || isProjectManager || isPortfolioManager) && <Link to="/project">Projects</Link> }
+                        { (isAdmin || isResourceManager) && <Link to="/resource">Resources</Link> }
+                        { isAdmin && <Link to="/setting">Administration</Link> }
                         <div className={ logout } onClick={this.logout.bind(this)}> Log Out </div>
                     </div>
                 }
