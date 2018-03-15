@@ -3,7 +3,6 @@ import { setting } from '../styles/setting.scss';
 import AddUserForm from './AddUserForm';
 import AddSkillForm from './AddSkillForm';
 import AddClassificationForm from './AddClassificationForm';
-import AddSkillTypeForm from './AddSkillTypeForm';
 import AddUserRoleForm from './AddUserRoleForm';
 
 const Setting = () =>
