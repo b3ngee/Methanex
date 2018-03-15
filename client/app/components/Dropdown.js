@@ -32,9 +32,9 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.propTypes = {
-    label: PropTypes.string,
-    value: PropTypes.string,
-    error: React.PropTypes.string,
-    data: PropTypes.arrayOf(PropTypes.string),
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    error: React.PropTypes.string.isRequired,
+    data: PropTypes.arrayOf(PropTypes.string).isRequired,
     controlFunc: PropTypes.func.isRequired
 };
