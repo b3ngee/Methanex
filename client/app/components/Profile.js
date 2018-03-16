@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios/index';
 import VerticalTable from './VerticalTable.js';
 import { profile } from '../styles/profile.scss';
+import Skill from './Skill';
 
 const headings = ['Email', 'Roles', 'Skills'];
 
@@ -40,6 +41,7 @@ class Profile extends React.Component {
                     <p> Hello {localStorage.getItem('user_name')}! </p>
                 </div>
                 <VerticalTable headings={headings} data={data} />
+                <Skill />
             </div>
         );
     }
