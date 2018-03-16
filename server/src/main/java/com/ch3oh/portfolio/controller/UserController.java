@@ -33,12 +33,8 @@ public class UserController {
 
     @GetMapping
     @ResponseBody
-    public Iterable<User> getUsers(@RequestParam(value = "role", required = false) String role) {
-        if (!StringUtils.isBlank(role)) {
-            return userService.getUsersByRole(role);
-        }
-
-        return userService.getUsers();
+    public Iterable<User> getUsers(@RequestParam(value = "role", required = false) String role, @RequestParam(value = "managerId", required = false) Integer managerId) {
+        return userService.getUsers(role, managerId);
     }
 
     @PostMapping
