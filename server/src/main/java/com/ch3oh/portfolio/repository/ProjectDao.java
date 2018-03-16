@@ -17,4 +17,15 @@ public interface ProjectDao extends CrudRepository<Project, Integer> {
      */
     @Query("SELECT p FROM Project p WHERE p.portfolioId = ?1")
     Iterable<Project> findAllByPortfolioId(@Param("portfolioId") Integer portfolioId);
+
+    /**
+     * Finds Projects that match managerId
+     *
+     * @param managerId
+     * @return A list of Projects
+     * If no Projects are found, return an empty list.
+     */
+    @Query("SELECT p FROM Project p WHERE p.managerId = ?1")
+    Iterable<Project> findAllByManagerId(@Param("managerId") Integer managerId);
+
 }

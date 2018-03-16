@@ -40,7 +40,15 @@ public class PortfolioServiceImpl {
     }
 
     @Transactional(readOnly = true)
-    public Iterable<Portfolio> getPortfolios() {
+    public Iterable<Portfolio> getPortfolios(Integer managerId, Integer classificationId) {
+        if (managerId != null) {
+            return portfolioDao.findAllByManagerId(managerId);
+        }
+
+        if (classificationId != null) {
+            return portfolioDao.findAllByClassificationId(classificationId);
+        }
+
         return portfolioDao.findAll();
     }
 
