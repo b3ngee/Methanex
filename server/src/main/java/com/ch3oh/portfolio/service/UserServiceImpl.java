@@ -13,14 +13,12 @@ import com.ch3oh.portfolio.exception.user.EmailExistsException;
 import com.ch3oh.portfolio.exception.user.UserNotFoundException;
 import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.persistence.User;
-import com.ch3oh.portfolio.persistence.UserRole;
 import com.ch3oh.portfolio.repository.UserDao;
 import com.ch3oh.portfolio.repository.UserRoleDao;
 import com.ch3oh.portfolio.util.PasswordUtil;
 import com.ch3oh.portfolio.util.ValidatorUtil;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -43,12 +41,20 @@ public class UserServiceImpl {
     }
 
     @Transactional(readOnly = true)
-    public Iterable<User> getUsers() {
+    public Iterable<User> getUsers(String role, Integer managerId) {
+        if (!StringUtils.isBlank(role)) {
+            return getUsersByRole(role);
+        }
+
+        if (managerId != null) {
+            return getUsersByManagerId(managerId);
+        }
+
         return userDao.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Iterable<User> getUsersByRole(String role) {
+    private Iterable<User> getUsersByRole(String role) {
         if (!EnumUtils.isValidEnum(RoleTypeEnum.class, role)) {
             throw new RestBadRequestException("Request param role does not exist (must be one of: SUPER_ADMIN, PORTFOLIO_MANAGER, PROJECT_MANAGER, RESOURCE_MANAGER or RESOURCE)");
         }
@@ -57,6 +63,11 @@ public class UserServiceImpl {
         userRoleDao.findAllByRole(role).forEach(userRole -> userIdsWithRole.add(userRole.getUserId()));
 
         return userDao.findAll(userIdsWithRole);
+    }
+
+    @Transactional(readOnly = true)
+    private Iterable<User> getUsersByManagerId(Integer managerId) {
+        return userDao.findAllByManagerId(managerId);
     }
 
     @Transactional
