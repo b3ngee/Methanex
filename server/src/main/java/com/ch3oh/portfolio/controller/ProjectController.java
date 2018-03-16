@@ -32,12 +32,8 @@ public class ProjectController {
 
     @GetMapping
     @ResponseBody
-    public Iterable<Project> getProjects(@RequestParam(value = "portfolioId", required = false) Integer portfolioId) {
-        if (portfolioId != null) {
-            return projectService.getProjectsByPortfolioId(portfolioId);
-        }
-
-        return projectService.getProjects();
+    public Iterable<Project> getProjects(@RequestParam(value = "managerId", required = false) Integer managerId, @RequestParam(value = "portfolioId", required = false) Integer portfolioId) {
+        return projectService.getProjects(managerId, portfolioId);
     }
 
     @PostMapping
