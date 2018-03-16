@@ -49,9 +49,13 @@ class Login extends React.Component {
                 localStorage.setItem('user_name', `${res.data.user.firstName} ${res.data.user.lastName}`);
                 localStorage.setItem('email', res.data.user.email);
                 this.props.history.push('/');
-            }).catch(() => {
+            }).catch((err) => {
+                if (err.response.status === 400) {
                     this.setState({errors: {password: 'Incorrect password or email'}});
+                } else if (err.response.status === 500) {
+                    window.alert('Backend Server Down, contact an admin');
                 }
+             }
             );
         }
     }
