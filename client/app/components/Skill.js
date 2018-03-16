@@ -22,8 +22,8 @@ class Skill extends React.Component {
 
     componentDidMount() {
         this.getSkillCategories();
-        this.getSkillTypes();
-        this.getSkills();
+//        this.getSkillTypes();
+//        this.getSkills();
     }
 
     getSkills() {
@@ -65,12 +65,14 @@ class Skill extends React.Component {
     getSkillCategories() {
         axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then( (response) => {
             this.setState({ skillCategoryData: response.data });
+            this.getSkillTypes();
         });
     }
 
     getSkillTypes() {
         axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types').then( (response) => {
             this.setState({ skillTypeData: response.data });
+            this.getSkills();
         });
     }
     render() {
