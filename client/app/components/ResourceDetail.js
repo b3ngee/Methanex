@@ -28,9 +28,9 @@ class ResourceDetail extends React.Component {
             console.log(data);
             for (const key in data) {
                 if(key !== null && typeof data[key] === 'boolean') {
-                    rows.push({'key': key, 'value': data[key] + ''});
+                    rows.push({'Header': key, 'Value': data[key] + ''});
                 } else if (key !== null) {
-                    rows.push({'key': key, 'value': data[key]});
+                    rows.push({'Header': key, 'Value': data[key]});
                 }
             }
             console.log(data);
@@ -40,7 +40,7 @@ class ResourceDetail extends React.Component {
     }
 
     render() {
-        let columns = ['key', 'value'];
+        let columns = ['Header', 'Value'];
         const data = this.state.rows;
         return (
             <div className={ resource }>
