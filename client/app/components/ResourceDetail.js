@@ -80,6 +80,25 @@ class ResourceDetail extends React.Component {
                     </Link>
                 </span>
                 <Table text="Resource Skills" columns={skillsColumns} rows={this.state.skillsRows} />
+                <span>
+                    <Link to = {{pathname: '/resource/addSkill', state: {data}}}>
+                        <Button
+                            label="Add Skill"
+                        />
+                    </Link>
+                </span>
+                <Link to = "/">
+                    <Button
+                        type="submit"
+                        label="Edit Skill"
+                    />
+                </Link>
+                <Link to = "/">
+                    <Button
+                        type="submit"
+                        label="Delete Skill"
+                    />
+                </Link>
             </div>
         );
     }

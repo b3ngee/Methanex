@@ -8,7 +8,7 @@ import Resource from './components/Resource';
 import Setting from './components/Setting';
 import Login from './components/Login';
 import Skill from './components/Skill';
-import AddSkill from './components/AddSkill';
+// import AddSkill from './components/AddSkill';
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
 import ReportingModule from './components/ReportingModule';
@@ -16,6 +16,7 @@ import AddPortfolioForm from './components/AddPortfolioForm';
 import EditProjectForm from './components/EditProjectForm';
 import AddProjectForm from './components/AddProjectForm';
 import EditResourceForm from './components/EditResourceForm';
+import AddExistingSkillForm from './components/AddExistingSkillForm';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -39,10 +40,11 @@ export default (
 		<Route exact path="/resource" render={() => (isLoggedIn() ? (<Resource />) : (<Redirect to="/login"/>))} />
         <Route exact path="/resource/report" component= {ReportingModule} />
         <Route exact path="/resource/edit" component= {EditResourceForm} />
-        	<Route path={'/resource/:resource_id'} component={ ResourceDetail } />
+        <Route exact path="/resource/addSkill" component = { AddExistingSkillForm } />
+			<Route path={'/resource/:resource_id'} component={ ResourceDetail } />
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/login" component={Login} />
         <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
-	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddSkill />) : (<Redirect to="/login"/>))} />
+	        <Route exact path="/addExistingSkill" component={ AddExistingSkillForm } />
 	</Switch>
 );

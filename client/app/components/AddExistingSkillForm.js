@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Dropdown from './Dropdown';
 import TextFieldGroup from './TextFieldGroup';
 import { formBox } from '../styles/form.scss';
@@ -16,6 +16,8 @@ class AddExistingSkillForm extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(this.props.location.state.data);
+        console.log(this.props.location.state.data[0].Value);
         this.state = {
             skillCategory: '',
             skillType: '',
@@ -25,7 +27,7 @@ class AddExistingSkillForm extends React.Component {
             theChosenCategoryId: '',
             theChosenSkillId: '',
             numUser: 0,
-            userId: localStorage.getItem('user_id'),
+            userId: this.props.location.state.data[0].Value,
             blank: '',
             categoryData: [],
             skillCategoryData: {},
@@ -208,7 +210,10 @@ class AddExistingSkillForm extends React.Component {
 }
 
 AddExistingSkillForm.propTypes = {
-    history: React.PropTypes.object
+    history: React.PropTypes.object,
+    data: PropTypes.any,
+    location: PropTypes.any,
+    match: PropTypes.any,
 };
 
 export default AddExistingSkillForm;
