@@ -39,6 +39,6 @@ export default (
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/login" component={Login} />
         <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
-	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddSkill />) : (<Redirect to="/login"/>))} />
+	        <Route exact path="/skill/addSkill" render={() => (isLoggedIn() ? (<AddSkill />) : (<Redirect to="/login"/>))} />
 	</Switch>
 );
