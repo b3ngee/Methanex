@@ -26,20 +26,8 @@ class AddPortfolioForm extends React.Component {
     }
 
     listManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then(roleResp => {
-            const portfolioManagerIDs = roleResp.data.filter(r => {
-                return r.role === 'PORTFOLIO_MANAGER';
-            }).map(ro => {
-                return ro.userId;
-            });
-
-            axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
-                const portfolioManager = userResp.data.filter(u => {
-                    return portfolioManagerIDs.includes(u.id);
-                });
-
-                this.setState({ managers: portfolioManager });
-            });
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER').then((userResp) => {
+            this.setState({ managers: userResp.data });
         });
     }
 

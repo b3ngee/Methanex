@@ -43,20 +43,8 @@ class AddProjectForm extends Component {
     }
 
     fetchManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then((roleResp) => {
-            const projectManagerIDs = roleResp.data.filter(r => {
-                return r.role === 'PROJECT_MANAGER';
-            }).map(ro => {
-                return ro.userId;
-            });
-
-            axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
-                const projectManagers = userResp.data.filter(u => {
-                    return projectManagerIDs.includes(u.id);
-                });
-
-                this.setState({ managers: projectManagers });
-            });
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PROJECT_MANAGER').then((userResp) => {
+            this.setState({ managers: userResp.data });
         });
     }
 
