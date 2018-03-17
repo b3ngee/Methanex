@@ -15,6 +15,7 @@ import ReportingModule from './components/ReportingModule';
 import AddPortfolioForm from './components/AddPortfolioForm';
 import EditProjectForm from './components/EditProjectForm';
 import AddProjectForm from './components/AddProjectForm';
+import EditResourceForm from './components/EditResourceForm';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -37,6 +38,7 @@ export default (
 		    <Route path={'/project/:project_id'} component={ ProjectDetail } />
 		<Route exact path="/resource" render={() => (isLoggedIn() ? (<Resource />) : (<Redirect to="/login"/>))} />
         <Route exact path="/resource/report" component= {ReportingModule} />
+        <Route exact path="/resource/edit" component= {EditResourceForm} />
         	<Route path={'/resource/:resource_id'} component={ ResourceDetail } />
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/login" component={Login} />
