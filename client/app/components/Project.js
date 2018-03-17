@@ -45,7 +45,18 @@ class Project extends React.Component {
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>
-                        <Button label="Create Report"/>
+                        <Button
+                            type="text"
+                            label="Create Report"
+                        />
+                    </Link>
+                </span>
+                <span>
+                    <Link to={{pathname: 'project/add'}}>
+                        <Button
+                            type="text"
+                            label="Add New Project"
+                        />
                     </Link>
                 </span>
             </div>

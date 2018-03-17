@@ -109,7 +109,7 @@ class AddSkillTypeForm extends React.Component {
                     value={categoryID}
                     error={errors.categoryID}
                     data={this.getCategoryName(skillCategories)}
-                    controlFunc={this.handleOptionSelected}
+                    onSelect={this.handleOptionSelected}
                 />
 
                 <TextFieldGroup
