@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { select } from '../styles/dropdown.scss';
+import { dropDown } from '../styles/dropdown.scss';
 
 export default class Dropdown extends Component {
     constructor(props) {
@@ -10,20 +10,23 @@ export default class Dropdown extends Component {
     }
 
     render() {
-        let options = this.props.data.map(val => {
-            return <option key={val} value = {val}>{val}</option>;
+        const { label, name, data, preSelect, error, onSelect } = this.props;
+
+        let options = data.map(val => {
+            if (val.id === preSelect) {
+                return <option selected key={val.id} value={val.id}>{val.name}</option>;
+            }
+            return <option key={val.id} value={val.id}>{val.name}</option>;
         });
 
         return (
-            <div>
-                <label>{this.props.label}</label>
-                {this.props.error && <span>{this.props.error}</span>}
-                <select
-                    onChange={this.props.controlFunc}
-                >
-                    value={this.props.value}
-                    <option value = {this.state.initialState}>
-                        {this.state.initialState} </option>
+            <div className={ dropDown }>
+                <label>{label}</label>
+                {error && <span>{error}</span>}
+                <select name={name} onChange={onSelect}>
+                    <option value={this.state.initialState}>
+                        {this.state.initialState}
+                    </option>
                     {options}
                 </select>
             </div>
@@ -33,8 +36,9 @@ export default class Dropdown extends Component {
 
 Dropdown.propTypes = {
     label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     error: React.PropTypes.string,
-    data: PropTypes.arrayOf(PropTypes.string).isRequired,
-    controlFunc: PropTypes.func.isRequired
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
+    preSelect: PropTypes.any,
+    onSelect: PropTypes.func.isRequired
 };

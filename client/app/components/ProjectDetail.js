@@ -61,10 +61,10 @@ class ProjectDetail extends React.Component {
                 <Table text="Project Details" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/edit', state: {data}}}>
-                        <Button label="Edit"/>
+                        <Button type="submit" label="Edit"/>
                     </Link>
                </span>
-               <Button label="Delete" onClick={this.deleteProject}/>
+               <Button type="submit" label="Delete" onClick={this.deleteProject}/>
             </div>
         );
     }
