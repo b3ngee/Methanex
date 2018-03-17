@@ -10,25 +10,41 @@ class Portfolio extends React.Component {
         this.state = {
             listOfProjects: [],
             rows: [],
+            classificationIDs: {},
             portfolioIDs: []
         };
         this.listProjects = this.listProjects.bind(this);
     }
 
     componentDidMount() {
+        this.listClassifications();
         this.listProjects();
     }
 
-    listProjects() {
-        axios.get('https://private-2a709-methanex.apiary-mock.com/portfolios?').then(response => {
+    listClassifications() {
+            // TODO: need to filter for Portfolio Managers only
+            axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then(response => {
+                const data = {};
+                for (let i = 0; i < response.data.length; i++) {
+                    data[response.data[i].id] = response.data[i].name;
+                }
+                this.setState({classificationIDs: data});
+                console.log(this.state.classificationIDs);
+            }).catch(()=>{
+            });
+        }
+
+        listProjects() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios?' + localStorage.user_id).then(response => {
             const data = [];
             this.setState({listOfProjects: response.data});
-
+            console.log(response.data);
             const len = response.data.length;
             const portfolioIDs = [];
             for (let i = 0; i < len; i++) {
-                data.push({ 'ID': this.state.listOfProjects[i].portfolio_id, 'Portfolio Name': this.state.listOfProjects[i].portfolio_name});
-                portfolioIDs.push(this.state.listOfProjects[i].portfolio_id);
+                const cname = this.state.classificationIDs[this.state.listOfProjects[i].classificationId];
+                data.push({ 'ID': this.state.listOfProjects[i].id, 'Portfolio Name': this.state.listOfProjects[i].name, 'Classification': cname});
+                portfolioIDs.push(this.state.listOfProjects[i].portfolioId);
             }
             this.setState({rows: data});
             this.setState({portfolioIDs: portfolioIDs});
@@ -38,7 +54,7 @@ class Portfolio extends React.Component {
     }
 
     render() {
-        let columns = ['ID', 'Portfolio Name'];
+        let columns = ['ID', 'Portfolio Name', 'Classification'];
         const rows = this.state.rows;
 
         return (
