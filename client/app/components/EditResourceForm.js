@@ -8,15 +8,15 @@ class EditResourceForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.location.state.data[0].value,
-            managerId: this.props.location.state.data[1].value,
-            firstName: this.props.location.state.data[2].value,
-            lastName: this.props.location.state.data[3].value,
-            address: this.props.location.state.data[4].value,
-            email: this.props.location.state.data[5].value,
-            password: this.props.location.state.data[6].value,
-            status: this.props.location.state.data[7].value,
-            enabled: this.props.location.state.data[8].value,
+            id: this.props.location.state.data[0].Value,
+            managerId: this.props.location.state.data[1].Value,
+            firstName: this.props.location.state.data[2].Value,
+            lastName: this.props.location.state.data[3].Value,
+            address: this.props.location.state.data[4].Value,
+            email: this.props.location.state.data[5].Value,
+            password: this.props.location.state.data[6].Value,
+            status: this.props.location.state.data[7].Value,
+            enabled: this.props.location.state.data[8].Value,
             errors: {},
         };
 
