@@ -10,14 +10,17 @@ export default class Dropdown extends Component {
     }
 
     render() {
-        const { label, name, data, error, onSelect } = this.props;
+        const { label, name, data, preSelect, error, onSelect } = this.props;
 
         let options = data.map(val => {
+            if (val.id === preSelect) {
+                return <option selected key={val.id} value={val.id}>{val.name}</option>;
+            }
             return <option key={val.id} value={val.id}>{val.name}</option>;
         });
 
         return (
-            <div className={dropDown}>
+            <div className={ dropDown }>
                 <label>{label}</label>
                 {error && <span>{error}</span>}
                 <select name={name} onChange={onSelect}>
@@ -36,5 +39,6 @@ Dropdown.propTypes = {
     name: PropTypes.string.isRequired,
     error: React.PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
+    preSelect: PropTypes.any,
     onSelect: PropTypes.func.isRequired
 };

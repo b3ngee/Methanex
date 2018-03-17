@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import axios from 'axios';
 import Dropdown from './Dropdown';
 import TextFieldGroup from './TextFieldGroup';
@@ -6,12 +6,13 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import { STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
 
-class AddProjectForm extends React.Component {
+class AddProjectForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             portfolios: [],
             managers: [],
+            errors: {},
             portfolio: '',
             manager: '',
             name: '',
@@ -20,8 +21,10 @@ class AddProjectForm extends React.Component {
             budget: '',
             spentToDate: '',
             estimateToComplete: '',
+            complete: '',
             startDate: '',
             endDate: '',
+            ganttChart: '',
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -34,23 +37,20 @@ class AddProjectForm extends React.Component {
     }
 
     fetchPortfolios() {
-        // axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios').then((portfolioResp) => {
-        axios.get('http://localhost:8080/portfolios').then((portfolioResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios').then((portfolioResp) => {
             this.setState({ portfolios: portfolioResp.data });
         });
     }
 
     fetchManagers() {
-        // axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then((roleResp) => {
-        axios.get('http://localhost:8080/user-roles').then((roleResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then((roleResp) => {
             const projectManagerIDs = roleResp.data.filter(r => {
                 return r.role === 'PROJECT_MANAGER';
             }).map(ro => {
                 return ro.userId;
             });
 
-            // axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
-            axios.get('http://localhost:8080/users').then((userResp) => {
+            axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
                 const projectManagers = userResp.data.filter(u => {
                     return projectManagerIDs.includes(u.id);
                 });
@@ -60,29 +60,79 @@ class AddProjectForm extends React.Component {
         });
     }
 
+    isValid() {
+        let isValid = true;
+        if (!this.state.portfolio) {
+            this.setState({ errors: { porfolio: 'Portoflio is required'}});
+            isValid = false;
+        }
+        if (!this.state.name) {
+            this.setState({ errors: { name: 'Project name is required'}});
+            isValid = false;
+        }
+        if (!this.state.status) {
+            this.setState({ errors: { status: 'Project status is required'}});
+            isValid = false;
+        }
+        if (!this.state.rag) {
+            this.setState({ errors: { rag: 'RAG status is required' }});
+            isValid = false;
+        }
+        if (!this.state.budget) {
+            this.setState({ errors: { budget: 'Budget is required' }});
+            isValid = false;
+        }
+        if (!this.state.spentToDate) {
+            this.setState({ errors: { std: 'Spent to Date is required' }});
+            isValid = false;
+        }
+        if (!this.state.estimateToComplete) {
+            this.setState({ errors: { etc: 'Estimate to Complete is required' }});
+            isValid = false;
+        }
+        if (!this.state.manager) {
+            this.setState({ errors: { manager: 'Manager is required' }});
+            isValid = false;
+        }
+        if (!this.state.complete) {
+            this.setState({ errors: { complete: 'Completion status is required' }});
+            isValid = false;
+        }
+        if (!this.state.startDate) {
+            this.setState({ errors: { startDate: 'Start date is required' }});
+            isValid = false;
+        }
+        if (!this.state.endDate) {
+            this.setState({ errors: { endDate: 'End date is required' }});
+            isValid = false;
+        }
+        return isValid;
+    }
+
     onSubmit(e) {
         e.preventDefault();
-        // axios.post('https://methanex-portfolio-management.herokuapp.com/projects', {
-        axios.post('http://localhost:8080/projects', {
-            portfolioId: this.state.portfolio,
-            name: this.state.name,
-            projectStatus: this.state.status,
-            ragStatus: this.state.rag,
-            budget: this.state.budget,
-            spentToDate: this.state.spentToDate,
-            estimateToComplete: this.state.estimateToComplete,
-            managerId: this.state.manager,
-            complete: this.state.complete,
-            startDate: this.state.startDate,
-            endDate: this.state.endDate,
-            ganttChart: this.state.ganttChart,
-        }).then((response) => {
-            if (response.status === 201) {
-                console.log('Success!');
-            }
-        }).catch((error) => {
-            console.log(error);
-        });
+        if (this.isValid()) {
+            axios.post('https://methanex-portfolio-management.herokuapp.com/projects', {
+                portfolioId: this.state.portfolio,
+                name: this.state.name,
+                projectStatus: this.state.status,
+                ragStatus: this.state.rag,
+                budget: this.state.budget,
+                spentToDate: this.state.spentToDate,
+                estimateToComplete: this.state.estimateToComplete,
+                managerId: this.state.manager,
+                complete: this.state.complete,
+                startDate: this.state.startDate,
+                endDate: this.state.endDate,
+                ganttChart: this.state.ganttChart,
+            }).then((response) => {
+                if (response.status === 201) {
+                    this.props.history.push('/project');
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
     }
 
     onChange(e) {
@@ -90,7 +140,7 @@ class AddProjectForm extends React.Component {
     }
 
     render() {
-        const { name, budget, spentToDate, estimateToComplete, startDate, endDate } = this.state;
+        const { name, budget, spentToDate, estimateToComplete, startDate, endDate, errors } = this.state;
 
         const portfolioObjects = this.state.portfolios.map((po) => {
             return { id: po.id, name: po.name };
@@ -109,36 +159,42 @@ class AddProjectForm extends React.Component {
                         name="portfolio"
                         data={portfolioObjects}
                         onSelect={this.onChange}
+                        error={errors.porfolio}
                     />
                     <Dropdown
                         label="Project Manager"
                         name="manager"
                         data={managerObjects}
                         onSelect={this.onChange}
+                        error={errors.manager}
                     />
                     <TextFieldGroup
                         field="name"
                         label="Project Name"
                         value={name}
                         onChange={this.onChange}
+                        error={errors.name}
                     />
                     <TextFieldGroup
                         field="budget"
-                        label="Budget"
+                        label="Budget ($)"
                         value={budget}
                         onChange={this.onChange}
+                        error={errors.budget}
                     />
                     <TextFieldGroup
                         field="estimateToComplete"
-                        label="Estimate to Complete"
+                        label="Estimate to Complete ($)"
                         value={estimateToComplete}
                         onChange={this.onChange}
+                        error={errors.etc}
                     />
                     <TextFieldGroup
                         field="spentToDate"
-                        label="Spent to Date"
+                        label="Spent to Date ($)"
                         value={spentToDate}
                         onChange={this.onChange}
+                        error={errors.std}
                     />
                     <TextFieldGroup
                         type="date"
@@ -146,6 +202,7 @@ class AddProjectForm extends React.Component {
                         label="Start Date"
                         value={startDate}
                         onChange={this.onChange}
+                        error={errors.startDate}
                     />
                     <TextFieldGroup
                         type="date"
@@ -153,24 +210,28 @@ class AddProjectForm extends React.Component {
                         label="End Date"
                         value={endDate}
                         onChange={this.onChange}
+                        error={errors.endDate}
                     />
                     <Dropdown
                         label="Complete"
                         name="complete"
                         data={COMPLETE}
                         onSelect={this.onChange}
+                        error={errors.complete}
                     />
                     <Dropdown
                         label="Status"
                         name="status"
                         data={STATUS}
                         onSelect={this.onChange}
+                        error={errors.status}
                     />
                     <Dropdown
                         label="RAG Status"
                         name="rag"
                         data={RAG_STATUS}
                         onSelect={this.onChange}
+                        error={errors.rag}
                     />
                     <Button
                         type="submit"
@@ -181,5 +242,9 @@ class AddProjectForm extends React.Component {
         );
     }
 }
+
+AddProjectForm.propTypes = {
+    history: PropTypes.any
+};
 
 export default AddProjectForm;

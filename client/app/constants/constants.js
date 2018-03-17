@@ -11,19 +11,19 @@ export const PROJECT_MANAGER = 'PROJECT_MANAGER';
 
 // Statuses for Projects
 export const STATUS = [
-    {id: 'Pipeline', name: 'Pipeline'},
-    {id: 'Pre-Approval', name: 'Pre-Approval'},
-    {id: 'Seeking Funding', name: 'Seeking Funding'},
-    {id: 'On Hold', name: 'On Hold'},
-    {id: 'Underway', name: 'Underway'},
-    {id: 'Stopped', name: 'Stopped'}
+    {id: 'PIPELINE', name: 'Pipeline'},
+    {id: 'PRE_APPROVAL', name: 'Pre-Approval'},
+    {id: 'SEEKING_FUNDING', name: 'Seeking Funding'},
+    {id: 'ON_HOLD', name: 'On Hold'},
+    {id: 'UNDERWAY', name: 'Underway'},
+    {id: 'STOPPED', name: 'Stopped'}
 ];
 export const RAG_STATUS = [
-    {id: 'Red', name: 'Red'},
-    {id: 'Amber', name: 'Amber'},
-    {id: 'Green', name: 'Green'}
+    {id: 'RED', name: 'Red'},
+    {id: 'AMBER', name: 'Amber'},
+    {id: 'GREEN', name: 'Green'}
 ];
 export const COMPLETE = [
-    {id: 1, name: 'True'},
-    {id: 0, name: 'False'}
+    {id: 'true', name: 'True'},
+    {id: 'false', name: 'False'}
 ];

@@ -2,7 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
+import Dropdown from './Dropdown';
 import { formBox } from '../styles/form.scss';
+import { STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
 
 class EditProjectForm extends Component {
     constructor(props) {
@@ -21,11 +23,91 @@ class EditProjectForm extends Component {
             startDate: this.props.location.state.data[10].Value,
             endDate: this.props.location.state.data[11].Value,
             ganttChart: this.props.location.state.data[12].Value,
+            portfolios: [],
+            managers: [],
             errors: {},
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.fetchPortfolios();
+        this.fetchManagers();
+    }
+
+    fetchPortfolios() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios').then((portfolioResp) => {
+            this.setState({ portfolios: portfolioResp.data });
+        });
+    }
+
+    fetchManagers() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then((roleResp) => {
+            const projectManagerIDs = roleResp.data.filter(r => {
+                return r.role === 'PROJECT_MANAGER';
+            }).map(ro => {
+                return ro.userId;
+            });
+
+            axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
+                const projectManagers = userResp.data.filter(u => {
+                    return projectManagerIDs.includes(u.id);
+                });
+
+                this.setState({ managers: projectManagers });
+            });
+        });
+    }
+
+    isValid() {
+        let isValid = true;
+        if (!this.state.portfolioId) {
+            this.setState({ errors: { porfolio: 'Portoflio is required'}});
+            isValid = false;
+        }
+        if (!this.state.name) {
+            this.setState({ errors: { name: 'Project name is required'}});
+            isValid = false;
+        }
+        if (!this.state.projectStatus) {
+            this.setState({ errors: { status: 'Project status is required'}});
+            isValid = false;
+        }
+        if (!this.state.ragStatus) {
+            this.setState({ errors: { rag: 'RAG status is required' }});
+            isValid = false;
+        }
+        if (!this.state.budget) {
+            this.setState({ errors: { budget: 'Budget is required' }});
+            isValid = false;
+        }
+        if (!this.state.spentToDate) {
+            this.setState({ errors: { std: 'Spent to Date is required' }});
+            isValid = false;
+        }
+        if (!this.state.estimateToComplete) {
+            this.setState({ errors: { etc: 'Estimate to Complete is required' }});
+            isValid = false;
+        }
+        if (!this.state.managerId) {
+            this.setState({ errors: { manager: 'Manager is required' }});
+            isValid = false;
+        }
+        if (!this.state.complete) {
+            this.setState({ errors: { complete: 'Completion status is required' }});
+            isValid = false;
+        }
+        if (!this.state.startDate) {
+            this.setState({ errors: { startDate: 'Start date is required' }});
+            isValid = false;
+        }
+        if (!this.state.endDate) {
+            this.setState({ errors: { endDate: 'End date is required' }});
+            isValid = false;
+        }
+        return isValid;
     }
 
     onSubmit(e) {
@@ -47,11 +129,9 @@ class EditProjectForm extends Component {
                 endDate: this.state.endDate,
                 ganttChart: this.state.ganttChart,
             }).then((response) => {
-                console.log(response.status);
                 if (response.status === 200) {
                     this.props.history.push(`/project/${id}`);
                 }
-                console.log('in on submit');
             });
         }
     }
@@ -60,33 +140,36 @@ class EditProjectForm extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    isValid() {
-        let hasError = true;
-
-        if (!this.state.name) {
-            this.setState({ errors: { name: 'Project name is required'}});
-            hasError = false;
-        }
-        if (!this.state.budget) {
-            this.setState({ errors: { manager: 'Project budget is required'}});
-            hasError = false;
-        }
-        if (!this.state.portfolioId) {
-            this.setState({ errors: { owner: 'Portfolio ID is required' }});
-            hasError = false;
-        }
-
-        return hasError;
-    }
-
     render() {
-        const {portfolioId, name, projectStatus, ragStatus, budget, spentToDate, estimateToComplete, managerId, complete, startDate, endDate, errors} = this.state;
-        console.log(this.props.location.state.data);
+        const { portfolioId, managerId, name, projectStatus, ragStatus, budget, spentToDate, estimateToComplete, complete, startDate, endDate, errors } = this.state;
+
+        const portfolioObjects = this.state.portfolios.map((po) => {
+            return { id: po.id, name: po.name };
+        });
+        const managerObjects = this.state.managers.map((mo) => {
+            return { id: mo.id, name: mo.firstName + ' ' + mo.lastName };
+        });
+
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
                 <h2>Edit Project</h2>
-
+                <Dropdown
+                    label="Portfolio"
+                    name="portfolioId"
+                    data={portfolioObjects}
+                    preSelect={portfolioId}
+                    onSelect={this.onChange}
+                    error={errors.porfolio}
+                />
+                <Dropdown
+                    label="Project Manager"
+                    name="managerId"
+                    data={managerObjects}
+                    preSelect={managerId}
+                    onSelect={this.onChange}
+                    error={errors.manager}
+                />
                 <TextFieldGroup
                     field="name"
                     label="Project Name"
@@ -95,68 +178,66 @@ class EditProjectForm extends Component {
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
-                    field="portfolioId"
-                    label="Portfolio ID"
-                    value={portfolioId}
-                    error={errors.portfolioId}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
-                    field="projectStatus"
-                    label="Project Status"
-                    value={projectStatus}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
-                    field="ragStatus"
-                    label="RAG Status"
-                    value={ragStatus}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
                     field="budget"
-                    label="Budget"
+                    label="Budget ($)"
                     value={budget}
                     error={errors.budget}
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
-                    field="spentToDate"
-                    label="Spent To Date"
-                    value={spentToDate}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
-                    field="estToComplete"
-                    label="Estimate To Complete"
+                    field="estimateToComplete"
+                    label="Estimate to Complete ($)"
                     value={estimateToComplete}
                     onChange={this.onChange}
+                    error={errors.etc}
                 />
                 <TextFieldGroup
-                    field="managerId"
-                    label="Manager ID"
-                    value={managerId}
+                    field="spentToDate"
+                    label="Spent to Date ($)"
+                    value={spentToDate}
                     onChange={this.onChange}
+                    error={errors.std}
                 />
                 <TextFieldGroup
-                    field="complete"
-                    label="Complete"
-                    value={complete}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
+                    type="date"
                     field="startDate"
-                    label="Start Date MM-DD-YYYY"
+                    label="Start Date"
                     value={startDate}
                     onChange={this.onChange}
+                    error={errors.startDate}
                 />
                 <TextFieldGroup
+                    type="date"
                     field="endDate"
-                    label="End Date MM-DD-YYYY"
+                    label="End Date"
                     value={endDate}
                     onChange={this.onChange}
+                    error={errors.endDate}
                 />
-
+                <Dropdown
+                    label="Complete"
+                    name="complete"
+                    data={COMPLETE}
+                    preSelect={complete}
+                    onSelect={this.onChange}
+                    error={errors.complete}
+                />
+                <Dropdown
+                    label="Status"
+                    name="projectStatus"
+                    data={STATUS}
+                    preSelect={projectStatus}
+                    onSelect={this.onChange}
+                    error={errors.status}
+                />
+                <Dropdown
+                    label="RAG Status"
+                    name="ragStatus"
+                    data={RAG_STATUS}
+                    preSelect={ragStatus}
+                    onSelect={this.onChange}
+                    error={errors.rag}
+                />
                 <Button
                     type="submit"
                     label="Save"

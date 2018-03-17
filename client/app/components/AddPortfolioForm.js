@@ -26,16 +26,14 @@ class AddPortfolioForm extends React.Component {
     }
 
     listManagers() {
-        // axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then(response => {
-        axios.get('http://localhost:8080/user-roles').then(roleResp => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then(roleResp => {
             const portfolioManagerIDs = roleResp.data.filter(r => {
                 return r.role === 'PORTFOLIO_MANAGER';
             }).map(ro => {
                 return ro.userId;
             });
 
-            // axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
-            axios.get('http://localhost:8080/users').then(userResp => {
+            axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
                 const portfolioManager = userResp.data.filter(u => {
                     return portfolioManagerIDs.includes(u.id);
                 });
@@ -46,7 +44,7 @@ class AddPortfolioForm extends React.Component {
     }
 
     listClassifications() {
-        axios.get('http://localhost:8080/classifications').then((classificationResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then((classificationResp) => {
             this.setState({ classifications: classificationResp.data });
         });
     }
@@ -54,8 +52,7 @@ class AddPortfolioForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            // axios.post('https://methanex-portfolio-management.herokuapp.com/portfolios', {
-            axios.post('http://localhost:8080/portfolios', {
+            axios.post('https://methanex-portfolio-management.herokuapp.com/portfolios', {
                 name: this.state.portfolioName,
                 classificationId: this.state.portfolioClassificationID,
                 managerId: this.state.portfolioManagerID

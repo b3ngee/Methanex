@@ -1,6 +1,11 @@
 @import './global.scss';
 
 .dropDown {
+    span {
+        float: right;
+        color: red;
+    }  
+    
     label {
         float: left;
     }
