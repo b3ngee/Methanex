@@ -2,6 +2,8 @@ import React from 'react';
 import Table from './Table.js';
 import { resource } from '../styles/resource.scss';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import Button from './Button.js';
 
 class ResourceDetail extends React.Component {
 
@@ -20,14 +22,14 @@ class ResourceDetail extends React.Component {
 
     // TODO: need to fix up the apiary call
     getDetails() {
-        console.log('in getdetails');
-        console.log(this.props.match.params.resource_id);
-        axios.get('https://private-05c14-methanex.apiary-mock.com/resource/' + this.props.match.params.resource_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id).then(response => {
             const rows = [];
             const data = response.data;
             console.log(data);
             for (const key in data) {
-                if(key !== null) {
+                if(key !== null && typeof data[key] === 'boolean') {
+                    rows.push({'key': key, 'value': data[key] + ''});
+                } else if (key !== null) {
                     rows.push({'key': key, 'value': data[key]});
                 }
             }
@@ -39,10 +41,16 @@ class ResourceDetail extends React.Component {
 
     render() {
         let columns = ['key', 'value'];
+        const data = this.state.rows;
         return (
             <div className={ resource }>
                 <h1>Resource Details</h1>
                 <Table text="Resource Details" columns={columns} rows={this.state.rows}/>
+                <span>
+                    <Link to={{pathname: '/resource/edit', state: {data}}}>
+                        <Button label="Edit"/>
+                    </Link>
+                </span>
             </div>
         );
     }
