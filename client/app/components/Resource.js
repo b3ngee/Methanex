@@ -20,16 +20,15 @@ class Resource extends React.Component {
         this.getResources();
     }
 
-    // TODO: need to change the end points
     getResources() {
-        axios.get('https://private-05c14-methanex.apiary-mock.com/resources?managerId=').then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users?managerId=' + localStorage.user_id).then(response => {
             this.setState({ numResources: response.data.length });
             this.setState({ resources: response.data });
-
+            console.log(localStorage);
             const tableData = [];
             const resourceIDs = [];
             for (let i = 0; i < this.state.numResources; i++) {
-                tableData.push({ 'ID': this.state.resources[i].resource_id, 'Resource Name': this.state.resources[i].resource_name, 'Manager ID': this.state.resources[i].manager_id, 'Status': this.state.resources[i].status });
+                tableData.push({ 'ID': this.state.resources[i].id, 'Resource Name': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName, 'Manager ID': this.state.resources[i].managerId, 'Status': this.state.resources[i].status });
                 resourceIDs.push(this.state.resources[i].resource_id);
             }
             this.setState({ rows: tableData});
