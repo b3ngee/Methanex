@@ -24,15 +24,15 @@ class ResourceDetail extends React.Component {
     }
 
     getDetails() {
-        console.log('in getdetails');
-        console.log(this.props.match.params.resource_id);
-        axios.get('https://private-05c14-methanex.apiary-mock.com/resource/' + this.props.match.params.resource_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id).then(response => {
             const rows = [];
             const data = response.data;
             console.log(data);
             for (const key in data) {
-                if(key !== null) {
-                    rows.push({'key': key, 'value': data[key]});
+                if(key !== null && typeof data[key] === 'boolean') {
+                    rows.push({'Header': key, 'Value': data[key] + ''});
+                } else if (key !== null) {
+                    rows.push({'Header': key, 'Value': data[key]});
                 }
             }
             console.log(data);
