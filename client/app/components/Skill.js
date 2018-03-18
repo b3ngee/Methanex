@@ -77,11 +77,12 @@ class Skill extends React.Component {
     }
     render() {
         let columns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
+        const data = [{'Value': localStorage.user_id}];
         return(
             <div className={ skill }>
                 <h4>Skills</h4>
                 <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
-                <Link to = "/addSkill">
+                <Link to = {{pathname: '/addSkill', state: {data}}}>
                     <Button
                         type="submit"
                         label="Add Skill"

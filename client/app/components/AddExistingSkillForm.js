@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Dropdown from './Dropdown';
 import { formBox } from '../styles/form.scss';
 import { COMPETENCY } from '../constants/constants.js';
@@ -8,6 +8,8 @@ import axios from 'axios';
 class AddExistingSkillForm extends React.Component {
     constructor(props) {
         super(props);
+        console.log(this.props.location.state.data);
+        console.log(this.props.location.state.data[0].Value);
         this.state = {
             skillCategoryId: '',
             skillTypeId: '',
@@ -15,6 +17,7 @@ class AddExistingSkillForm extends React.Component {
             errors: {},
             skillCategoryData: [],
             skillTypeData: [],
+            userId: this.props.location.state.data[0].Value
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -69,12 +72,13 @@ class AddExistingSkillForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.userId, {
-                userId: this.props.userId,
+            axios.post('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId, {
+                userId: this.state.userId,
                 skillTypeId: this.state.skillTypeId,
                 competency: this.state.skillCompetency
             }).then( (response) => {
                 if (response.status === 201) {
+                    // TODO: this should go back to the last page
                     this.props.history.push('/');
                 }
             });
@@ -127,6 +131,9 @@ class AddExistingSkillForm extends React.Component {
 AddExistingSkillForm.propTypes = {
     history: React.PropTypes.any,
     userId: React.PropTypes.string.isRequired,
+    data: PropTypes.any,
+    location: PropTypes.any,
+    match: PropTypes.any
 };
 
 export default AddExistingSkillForm;
