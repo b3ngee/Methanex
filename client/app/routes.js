@@ -16,6 +16,9 @@ import AddPortfolioForm from './components/AddPortfolioForm';
 import EditProjectForm from './components/EditProjectForm';
 import AddProjectForm from './components/AddProjectForm';
 import EditResourceForm from './components/EditResourceForm';
+import UserSettings from './components/UserSettings';
+import SkillSettings from './components/SkillSettings';
+import PortfolioSettings from './components/PortfolioSettings';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -41,6 +44,9 @@ export default (
         <Route exact path="/resource/edit" component= {EditResourceForm} />
         	<Route path={'/resource/:resource_id'} component={ ResourceDetail } />
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
+		<Route exact path="/setting/user" component= {UserSettings} />
+		<Route exact path="/setting/skill" component= {SkillSettings} />
+		<Route exact path="/setting/portfolio" component= {PortfolioSettings} />
 		<Route exact path="/login" component={Login} />
         <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
 	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddSkill />) : (<Redirect to="/login"/>))} />
