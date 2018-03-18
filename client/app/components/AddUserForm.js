@@ -4,6 +4,7 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import isValidEmail from '../utils/validationHelpers';
 import { formBox } from '../styles/form.scss';
+import PopupBox from './PopupBox';
 
 class AddUserForm extends React.Component {
     constructor(props) {
@@ -18,10 +19,14 @@ class AddUserForm extends React.Component {
             status: 'available',
             enabled: true,
             errors: {},
+            successModalOpen: false,
+            errorModalOpen: false,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     onSubmit(e) {
@@ -37,8 +42,7 @@ class AddUserForm extends React.Component {
                 status: this.state.status,
                 enabled: this.state.enabled,
             }).then((response) => {
-                if (response.status === 201 && response.data.status === 'user_created') {
-                    console.log(response);
+                if (response.status === 201) {
                     this.setState({
                         firstName: '',
                         lastName: '',
@@ -47,15 +51,25 @@ class AddUserForm extends React.Component {
                         address: '',
                         location: '',
                         status: '',
-                        errors: {},
+                        errors: {}, successModalOpen: true
                     });
                 }
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
     }
 
     onChange(e) {
         this.setState({ [e.target.name]: e.target.value });
+    }
+
+    onCloseSuccess() {
+        window.history.back();
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
     }
 
     isValid() {
@@ -85,13 +99,22 @@ class AddUserForm extends React.Component {
     }
 
     render() {
-        const { firstName, lastName, email, password, address, location, errors } = this.state;
+        const { firstName, lastName, email, password, address, location, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
 
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
                 <h2>Add new user</h2>
-
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalOpen}
+                    onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
                 <TextFieldGroup
                     field="firstName"
                     label="First Name"

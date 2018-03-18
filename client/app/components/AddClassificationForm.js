@@ -3,17 +3,22 @@ import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
+import PopupBox from './PopupBox';
 
 class AddClassificationForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-              classification: '',
-              errors: {}
+            classification: '',
+            errors: {},
+            successModalOpen: false,
+            errorModalOpen: false,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     isValid() {
@@ -34,9 +39,11 @@ class AddClassificationForm extends React.Component {
                 if (response.status === 201) {
                     this.setState({
                     classification: '',
-                    errors: {},
+                    errors: {}, successModalOpen: true
                     });
                 }
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
     }
@@ -45,14 +52,31 @@ class AddClassificationForm extends React.Component {
             this.setState({ [e.target.name]: e.target.value });
     }
 
+    onCloseSuccess() {
+        window.history.back();
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     render() {
-        const { classification, errors } = this.state;
+        const { classification, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
 
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
                 <h2>Add New Classification</h2>
-
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalOpen}
+                    onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
                 <TextFieldGroup
                     field="classification"
                     label="New Classification"

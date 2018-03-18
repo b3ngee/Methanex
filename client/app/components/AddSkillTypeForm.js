@@ -4,19 +4,24 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import Dropdown from './Dropdown';
+import PopupBox from './PopupBox';
 
 class AddSkillTypeForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-              skillCategories: [],
-              categoryID: '',
-              skillType: '',
-              errors: {}
+            skillCategories: [],
+            categoryID: '',
+            skillType: '',
+            errors: {},
+            successModalOpen: false,
+            errorModalOpen: false,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
@@ -57,9 +62,11 @@ class AddSkillTypeForm extends React.Component {
                     this.setState({
                         categoryID: '',
                         skillType: '',
-                        errors: {},
+                        errors: {}, successModalOpen: true
                     });
                 }
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
     }
@@ -68,14 +75,31 @@ class AddSkillTypeForm extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    onCloseSuccess() {
+        window.history.back();
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     render() {
-        const { skillCategories, skillType, errors } = this.state;
+        const { skillCategories, skillType, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
 
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
                 <h2>Add New Skill Type</h2>
-
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalOpen}
+                    onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
                 <Dropdown
                     label="Select a Skill Category"
                     name="categoryID"
