@@ -49,6 +49,6 @@ export default (
 		<Route exact path="/setting/portfolio" component= {PortfolioSettings} />
 		<Route exact path="/login" component={Login} />
         <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
-	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddExistingSkillForm userId={localStorage.getItem('user_id')}/>) : (<Redirect to="/login"/>))} />
-	</Switch>
+        <Route exact path="/addSkill" component={AddExistingSkillForm} />
+    </Switch>
 );
