@@ -41,7 +41,6 @@ class Skill extends React.Component {
         this.state.userCompetencies = [];
         this.state.editedCompetencies = [];
         this.getSkillCategories();
-        console.log('refresh the page with ' + this.state.userSkillNum + ' skills');
     }
 
     handleMultipleSelects() {
@@ -137,12 +136,10 @@ class Skill extends React.Component {
     }
 
     handleEditing() {
-        console.log('Rhoda is in handleEditing -> ');
         let differenceCount = 0;
         this.setState({
             editMode: 0
         });
-        // this.state.userCompetencies.length === this.state.checkes.length
         for (let i = 0; i < this.state.userCompetencies.length; i++) {
             if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
                 differenceCount++;
@@ -158,15 +155,11 @@ class Skill extends React.Component {
         }
 
         if (this.state.numChecked !== 0) {
-            console.log('here because more than 1 checks' + this.state.checks);
             for (let i = 0; i < this.state.checks.length; i++ ) {
-                console.log(this.state.checks[i] === 1);
                 if ( this.state.checks[i] === 1) {
-                    console.log('->' + this.state.checks[i]);
                     const id = this.state.userSkillIds[i];
                     axios.delete('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
                     }).then((response) => {
-//                        this.state.userSkillNum--;
                         console.log(response.status);
                         console.log('--> DELETED! because check is ' + this.state.checks[i]);
                     });
@@ -180,27 +173,20 @@ class Skill extends React.Component {
             alert('no changes were made');
         } else {
             this.componentDidMount();
-//            this.getSkills(); // NOPE
             console.log(differenceCount);
             console.log(this.state.userCompetencies);
             console.log(this.state.editedCompetencies);
             alert('successful');
         }
-        console.log('Rhoda leaves handleEditing with ' + this.state.userSkillNum + ' skills for this user');
-        this.state.userSkillNum = 0; // update each time editing is completed otherwise
-                                     // it only updates when we manually refresh the page
+        this.state.userSkillNum = 0;
         alert('all changes made!!!!');
     }
 
     handleDelete() {
         let tempNumChecked = 0;
         const tempChecks = []; // temp: array of checks status for every user skill --> checks
-        console.log('Rhoda is in handleDelete');
-        console.log('There are ' + document.getElementsByTagName('input').length + ' checkboxes');
         for (let i = 0; i < document.getElementsByTagName('input').length; i++) {
             if (document.getElementsByTagName('input')[i].checked) {
-    //        if (document.querySelector('input[id="delete"]')[0].checked) {
-    //        document.querySelector('input[id="delete"]') // this returns the tag
                 console.log('checkbox #:' + i + 'is check');
                 tempNumChecked++;
                 tempChecks.push(1);
@@ -213,10 +199,6 @@ class Skill extends React.Component {
         this.state.checks = tempChecks;
         console.log('So far array checks: ' + this.state.checks);
         console.log('So far there are ' + tempNumChecked + ' checks');
-//        for (let i = 0; i < document.getElementsByTagName('select').length; i++) {
-//                    const skillCompetency = document.getElementsByTagName('select')[i].value;
-//                    competencies.push(skillCompetency);
-//        }
         this.state.numChecked = tempNumChecked;
         console.log('Overall So far there are ' + this.state.numChecked + ' checks');
         console.log('Rhoda leaves handleDelete');
