@@ -3,6 +3,7 @@ import { resource } from '../styles/resource.scss';
 import Table from './Table.js';
 import axios from 'axios/index';
 import {Link} from 'react-router-dom';
+import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
 
 class Resource extends React.Component {
     constructor(props) {
@@ -21,7 +22,15 @@ class Resource extends React.Component {
     }
 
     getResources() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?managerId=' + localStorage.user_id).then(response => {
+        const roles = localStorage.getItem('roles');
+        const isAdmin = roles.includes(SUPER_ADMIN);
+        let query;
+        if (isAdmin) {
+            query = '/users';
+        } else {
+            query = '/users?managerId=' + localStorage.user_id;
+        }
+        axios.get(prodAPIEndpoint + query).then(response => {
             this.setState({ numResources: response.data.length });
             this.setState({ resources: response.data });
             console.log(localStorage);

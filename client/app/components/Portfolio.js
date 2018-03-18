@@ -3,6 +3,7 @@ import { portfolio } from '../styles/portfolio.scss';
 import Table from './Table.js';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
 
 class Portfolio extends React.Component {
     constructor(props) {
@@ -36,7 +37,15 @@ class Portfolio extends React.Component {
     }
 
     listProjects() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios?managerId=' + localStorage.user_id).then(response => {
+        const roles = localStorage.getItem('roles');
+        const isAdmin = roles.includes(SUPER_ADMIN);
+        let query;
+        if (isAdmin) {
+            query = '/portfolios';
+        } else {
+            query = '/portfolios?managerId=' + localStorage.user_id;
+        }
+        axios.get(prodAPIEndpoint + query).then(response => {
             const data = [];
             this.setState({listOfProjects: response.data});
             console.log(response.data);

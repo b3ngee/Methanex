@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import Dropdown from './Dropdown';
+import PopupBox from './PopupBox';
 
-class AddPortfolioForm extends React.Component {
+class AddPortfolioForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            successModalOpen: false,
+            errorModalOpen: false,
             portfolioName: '',
             portfolioClassificationID: '',
             portfolioManagerID: '',
@@ -18,6 +21,8 @@ class AddPortfolioForm extends React.Component {
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
@@ -46,13 +51,10 @@ class AddPortfolioForm extends React.Component {
                 managerId: this.state.portfolioManagerID
             }).then((response) => {
                 if (response.status === 201) {
-                    this.setState({
-                        portfolioName: '',
-                        portfolioClassificationID: '',
-                        portfolioManagerID: '',
-                        errors: {}
-                    });
+                    this.setState({ successModalOpen: true });
                 }
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
     }
@@ -61,22 +63,30 @@ class AddPortfolioForm extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    onCloseSuccess() {
+        this.props.history.push('/portfolio');
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     isValid() {
-        let hasError = true;
+        let isValid = true;
 
         if (!this.state.portfolioName) {
             this.setState({ errors: { portfolioName: 'Portfolio name is required'}});
-            hasError = false;
+            isValid = false;
         }
         if (!this.state.portfolioClassificationID) {
             this.setState({ errors: { portfolioClassificationID: 'Portfolio Classification ID is required'}});
-            hasError = false;
+            isValid = false;
         }
-        return hasError;
+        return isValid;
     }
 
     render() {
-        const { portfolioName, errors } = this.state;
+        const { portfolioName, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
         const classificationObjects = this.state.classifications.map(co => {
             return { id: co.id, name: co.name };
         });
@@ -88,7 +98,16 @@ class AddPortfolioForm extends React.Component {
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
                     <h2>Add new portfolio</h2>
-
+                    <PopupBox
+                        label="Successful!"
+                        isOpen={successModalOpen}
+                        onClose={this.onCloseSuccess}
+                    />
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
                     <TextFieldGroup
                         field="portfolioName"
                         label="Portfolio Name"
@@ -101,6 +120,7 @@ class AddPortfolioForm extends React.Component {
                         name="portfolioClassificationID"
                         data={classificationObjects}
                         onSelect={this.onChange}
+                        error={errors.portfolioClassificationID}
                     />
                     <Dropdown
                         label="Portfolio Manager"
@@ -117,5 +137,9 @@ class AddPortfolioForm extends React.Component {
         );
     }
 }
+
+AddPortfolioForm.propTypes = {
+    history: PropTypes.any
+};
 
 export default AddPortfolioForm;
