@@ -8,8 +8,6 @@ import axios from 'axios';
 class AddExistingSkillForm extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props.location.state.data);
-        console.log(this.props.location.state.data[0].Value);
         this.state = {
             skillCategoryId: '',
             skillTypeId: '',
