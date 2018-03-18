@@ -1,42 +1,26 @@
 import React from 'react';
 import Dropdown from './Dropdown';
-import TextFieldGroup from './TextFieldGroup';
 import { formBox } from '../styles/form.scss';
+import { COMPETENCY } from '../constants/constants.js';
 import Button from './Button';
 import axios from 'axios';
 
-let competencyData = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5'];
-
 class AddExistingSkillForm extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            skillCategory: '',
-            skillType: '',
+            skillCategoryId: '',
+            skillTypeId: '',
             skillCompetency: '',
             errors: {},
-            numSkillType: 0,
-            theChosenCategoryId: '',
-            theChosenSkillId: '',
-            numUser: 0,
-            userId: localStorage.getItem('user_id'),
-            blank: '',
-            categoryData: [],
-            skillCategoryData: {},
-            skillData: [],
-            skillTypeData: {}
+            skillCategoryData: [],
+            skillTypeData: [],
         };
 
         this.onSubmit = this.onSubmit.bind(this);
-        this.handleSelect = this.handleSelect.bind(this);
-        this.handleCategorySelect = this.handleCategorySelect.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onSelect = this.onSelect.bind(this);
+        this.onSelectCategory = this.onSelectCategory.bind(this);
     }
 
     componentDidMount() {
@@ -44,101 +28,54 @@ class AddExistingSkillForm extends React.Component {
     }
 
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then( (response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then((response) => {
             this.setState({ skillCategoryData: response.data });
-            this.getCategories();
-        });
-    }
-    getCategories() {
-        for(let i = 0; i < this.state.skillCategoryData.length; i++) {
-            this.state.categoryData.push(this.state.skillCategoryData[i].name);
-        }
-        this.setState({
-            categoryData: this.state.categoryData
         });
     }
 
     getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types').then( (response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types?skillCategoryId=' + this.state.skillCategoryId).then( (response) => {
             this.setState({ skillTypeData: response.data });
-            this.getSkills();
-        });
-    }
-    getSkills() {
-        for(let i = 0; i < this.state.skillCategoryData.length; i++) {
-            if (this.state.skillCategory === this.state.skillCategoryData[i].name) {
-                this.setState({
-                    theChosenCategoryId: this.state.skillCategoryData[i].id
-                });
-            }
-        }
-        this.state.skillData = [];
-        for(let i = 0; i < this.state.skillTypeData.length; i++) {
-            if (this.state.theChosenCategoryId === this.state.skillTypeData[i].skillCategoryId) {
-                this.state.skillData.push(this.state.skillTypeData[i].name);
-            }
-        }
-        this.setState({
-            skillData: this.state.skillData
         });
     }
 
-    handleCategorySelect() {
-        document.getElementsByTagName('input')[0].value = document.getElementsByTagName('select')[0].value;
-        this.setState({
-            skillCategory: document.getElementsByTagName('select')[0].value,
-            skillType: 'Select ... '
-
-        });
-        document.getElementsByTagName('input')[2].value = document.getElementsByTagName('select')[2].value;
-        this.getSkillTypes();
+    onSelectCategory(e) {
+        this.setState({ skillCategoryId: e.target.value }, this.getSkillTypes);
     }
 
-    handleSelect() {
-        document.getElementsByTagName('input')[1].value = document.getElementsByTagName('select')[1].value;
-        this.setState({ skillType: document.getElementsByTagName('select')[1].value });
-        document.getElementsByTagName('input')[2].value = document.getElementsByTagName('select')[2].value;
-        this.setState({ skillCompetency: document.getElementsByTagName('select')[2].value });
-        for(let i = 0; i < this.state.skillTypeData.length; i++) {
-            if (this.state.skillType === this.state.skillTypeData[i].name) {
-                this.setState({ theChosenSkillId: this.state.skillTypeData[i].id });
-            }
-        }
+    onSelect(e) {
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     isValid() {
-        if (!this.state.skillCategory || document.getElementsByTagName('input')[0].value === 'Select ... ') {
-            this.setState({ errors: { skillCategory: 'skill category is required!' }});
-            return false;
+        let isValid = true;
+
+        if (!this.state.skillCategoryId) {
+            this.setState({ errors: { skillCategory: 'Skill category is required' }});
+            isValid = false;
         }
-        if (!this.state.skillType || document.getElementsByTagName('input')[1].value === 'Select ... ') {
-            this.setState({ errors: { skillType: 'skill type is required!' }});
-            return false;
+        if (!this.state.skillTypeId) {
+            this.setState({ errors: { skillType: 'Skill type is required' }});
+            isValid =  false;
         }
-        if (!this.state.skillCompetency || document.getElementsByTagName('input')[2].value === 'Select ... ') {
-            this.setState({errors: { skillCompetency: 'skill competency is required!'}});
-            return false;
+        if (!this.state.skillCompetency) {
+            this.setState({ errors: { skillCompetency: 'Skill competency is required'}});
+            isValid = false;
         }
 
-        return true;
+        return isValid;
     }
 
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/user-skills', {
-                userId: this.state.userId,
-                skillTypeId: this.state.theChosenSkillId,
+            axios.post('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.userId, {
+                userId: this.props.userId,
+                skillTypeId: this.state.skillTypeId,
                 competency: this.state.skillCompetency
             }).then( (response) => {
                 if (response.status === 201) {
-                    this.setState({
-                        userId: '',
-                        skillTypeId: '',
-                        competency: '',
-                        errors: {},
-                    });
-                    alert('new skill has been added');
+                    this.props.history.push('/');
                 }
             });
         }
@@ -149,57 +86,37 @@ class AddExistingSkillForm extends React.Component {
     }
 
     render() {
-        const { errors, skillCategory, skillType, skillCompetency, blank, categoryData, skillData } = this.state;
+        const { errors, skillCategoryData, skillTypeData } = this.state;
+
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
                     <h2> Add new skill</h2>
-                    <TextFieldGroup
-                        field="skillCategory"
-                        label=" "
-                        value={skillCategory}
-                        error={errors.skillCategory}
-                        onChange={this.onChange}
-                    />
-                    <Dropdown
-                        label="Select a Category first"
-                        value={blank}
-                        error={errors.blank}
-                        data={categoryData}
-                        controlFunc={this.handleCategorySelect}
-                    />
 
-                    <TextFieldGroup
-                        field="skillType"
-                        label=" "
-                        value={skillType}
-                        error={errors.skillType}
-                        onChange={this.onChange}
+                    <Dropdown
+                        label="Select a Category"
+                        name="skillCategoryId"
+                        data={skillCategoryData}
+                        onSelect={this.onSelectCategory}
+                        error={errors.skillCategory}
                     />
                     <Dropdown
                         label="Select a Skill"
-                        value={blank}
-                        error={errors.blank}
-                        data={skillData}
-                        controlFunc={this.handleSelect}
-                    />
-                    <TextFieldGroup
-                        field="skillCompetency"
-                        label=" "
-                        value={skillCompetency}
-                        error={errors.skillCompetency}
-                        onChange={this.onChange}
+                        name="skillTypeId"
+                        data={skillTypeData}
+                        onSelect={this.onSelect}
+                        error={errors.skillType}
                     />
                     <Dropdown
                         label="Select a Competency Level"
-                        value={blank}
-                        error={errors.blank}
-                        data={competencyData}
-                        controlFunc={this.handleSelect}
+                        name="skillCompetency"
+                        data={COMPETENCY}
+                        onSelect={this.onSelect}
+                        error={errors.skillCompetency}
                     />
                     <Button
                         type="submit"
-                        label="Submit"
+                        label="Create New Skill"
                     />
                 </form>
             </div>
@@ -208,7 +125,8 @@ class AddExistingSkillForm extends React.Component {
 }
 
 AddExistingSkillForm.propTypes = {
-    history: React.PropTypes.object
+    history: React.PropTypes.any,
+    userId: React.PropTypes.string.isRequired,
 };
 
 export default AddExistingSkillForm;
