@@ -209,6 +209,7 @@ class Skill extends React.Component {
         console.log('rendering: currently user has ' + userSkillNum + ' skills');
         let columns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
+        const data = [{'Value': localStorage.user_id}];
         if (editMode) {
             return(
                <div className={ skill }>
@@ -224,7 +225,7 @@ class Skill extends React.Component {
             return(
                <div className={ skill }>
                     <h4><i>you currently have no skill...</i></h4>
-                    <Link to = "/addSkill">
+                    <Link to = {{pathname: '/addSkill', state: {data}}}>
                         <Button
                             label="Add Skill"
                         />
@@ -236,7 +237,7 @@ class Skill extends React.Component {
             <div className={ skill }>
                 <h1>My Skills</h1>
                 <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
-                <Link to = "/addSkill">
+                <Link to = {{pathname: '/addSkill', state: {data}}}>
                     <Button
                         label="Add Skill"
                     />

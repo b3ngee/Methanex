@@ -3,6 +3,7 @@ import axios from 'axios';
 import Dropdown from './Dropdown';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
+import PopupBox from './PopupBox';
 import { formBox } from '../styles/form.scss';
 import { STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
 
@@ -10,6 +11,8 @@ class AddProjectForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            successModalOpen: false,
+            errorModalOpen: false,
             portfolios: [],
             managers: [],
             errors: {},
@@ -29,6 +32,8 @@ class AddProjectForm extends Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
@@ -115,10 +120,10 @@ class AddProjectForm extends Component {
                 ganttChart: this.state.ganttChart,
             }).then((response) => {
                 if (response.status === 201) {
-                    this.props.history.push('/project');
+                    this.setState({ successModalOpen: true });
                 }
             }).catch((error) => {
-                console.log(error);
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
     }
@@ -127,8 +132,16 @@ class AddProjectForm extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    onCloseSuccess() {
+        this.props.history.push('/project');
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     render() {
-        const { name, budget, spentToDate, estimateToComplete, startDate, endDate, errors } = this.state;
+        const { name, budget, spentToDate, estimateToComplete, startDate, endDate, errors, successModalOpen, errorModalOpen, errorMessage  } = this.state;
 
         const portfolioObjects = this.state.portfolios.map((po) => {
             return { id: po.id, name: po.name };
@@ -141,7 +154,16 @@ class AddProjectForm extends Component {
             <div className = { formBox }>
                 <form onSubmit = {this.onSubmit}>
                     <h2>Add new project</h2>
-
+                    <PopupBox
+                        label="Successful!"
+                        isOpen={successModalOpen}
+                        onClose={this.onCloseSuccess}
+                    />
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
                     <Dropdown
                         label="Portfolio"
                         name="portfolio"
