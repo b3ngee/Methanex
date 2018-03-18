@@ -8,7 +8,7 @@ import Resource from './components/Resource';
 import Setting from './components/Setting';
 import Login from './components/Login';
 import Skill from './components/Skill';
-import AddSkill from './components/AddSkill';
+import AddExistingSkillForm from './components/AddExistingSkillForm';
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
 import ReportingModule from './components/ReportingModule';
@@ -43,6 +43,6 @@ export default (
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/login" component={Login} />
         <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
-	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddSkill />) : (<Redirect to="/login"/>))} />
+	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddExistingSkillForm userId={localStorage.getItem('user_id')}/>) : (<Redirect to="/login"/>))} />
 	</Switch>
 );

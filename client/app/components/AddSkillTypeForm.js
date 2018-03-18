@@ -9,7 +9,7 @@ class AddSkillTypeForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-              skillCategories: {},
+              skillCategories: [],
               categoryID: '',
               skillType: '',
               errors: {}
@@ -17,7 +17,6 @@ class AddSkillTypeForm extends React.Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.handleOptionSelected = this.handleOptionSelected.bind(this);
     }
 
     componentDidMount() {
@@ -31,30 +30,20 @@ class AddSkillTypeForm extends React.Component {
         });
     }
 
-    // Retrieves category name to pass to dropdown
-    getCategoryName(skillCategory) {
-        this.skillCategory = this.state.skillCategories;
-
-        const options = [];
-        for(let i = 0; i < skillCategory.length; i++) {
-            options.push(skillCategory[i].name);
-        }
-
-        return options;
-    }
-
     isValid() {
-        if(this.state.categoryID === '') {
+        let isValid = true;
+
+        if (!this.state.categoryID) {
            this.setState({errors: { categoryID: 'Select a Skill Category' }});
-           return false;
+           isValid = false;
         }
 
-        if(!this.state.skillType) {
+        if (!this.state.skillType) {
             this.setState({ errors: { skillType: 'Skill Type is Required' }});
-            return false;
+            isValid = false;
         }
 
-        return true;
+        return isValid;
     }
 
     onSubmit(e) {
@@ -66,38 +55,21 @@ class AddSkillTypeForm extends React.Component {
             }).then((response) => {
                 if (response.status === 201) {
                     this.setState({
-                    categoryID: '',
-                    skillType: '',
-                    errors: {},
+                        categoryID: '',
+                        skillType: '',
+                        errors: {},
                     });
                 }
             });
-        }
-    }
-
-    handleOptionSelected(e) {
-        for (let i = 0; i < this.state.skillCategories.length; i++) {
-            if (this.state.skillCategories[i].name === e.target.value) {
-                this.setState({
-                    categoryID: this.state.skillCategories[i].id.toString()
-                    });
-                }
         }
     }
 
     onChange(e) {
-            this.setState({
-                [e.target.name]: e.target.value
-            });
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     render() {
-        const {
-            skillCategories,
-            categoryID,
-            skillType,
-            errors
-            } = this.state;
+        const { skillCategories, skillType, errors } = this.state;
 
         return (
         <div className={ formBox }>
@@ -106,10 +78,10 @@ class AddSkillTypeForm extends React.Component {
 
                 <Dropdown
                     label="Select a Skill Category"
-                    value={categoryID}
+                    name="categoryID"
+                    data={skillCategories}
+                    onSelect={this.onChange}
                     error={errors.categoryID}
-                    data={this.getCategoryName(skillCategories)}
-                    onSelect={this.handleOptionSelected}
                 />
 
                 <TextFieldGroup
