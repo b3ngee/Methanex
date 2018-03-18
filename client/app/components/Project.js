@@ -23,7 +23,7 @@ class Project extends React.Component {
 
     // TODO: need to change the end points
     getProjects() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/projects?portfolioType=&projectOwner=').then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/projects?managerId=' + localStorage.user_id).then(response => {
             this.setState({ numProject: response.data.length });
             this.setState({ projects: response.data });
 
