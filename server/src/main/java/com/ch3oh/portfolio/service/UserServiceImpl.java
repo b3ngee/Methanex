@@ -169,6 +169,10 @@ public class UserServiceImpl {
             user.setStatus((toUpdate.getStatus()));
         }
 
+        if (toUpdate.hasEnabled()) {
+            user.setEnabled(toUpdate.isEnabled());
+        }
+
         return userDao.save(user);
     }
 
