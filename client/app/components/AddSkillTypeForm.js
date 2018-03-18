@@ -76,8 +76,7 @@ class AddSkillTypeForm extends React.Component {
     }
 
     onCloseSuccess() {
-        // Maybe the user will want to add more than just one skill type
-        // window.history.back();
+        window.history.back();
     }
 
     onCloseError() {
