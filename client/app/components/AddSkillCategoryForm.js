@@ -52,8 +52,7 @@ class AddSkillCategoryForm extends React.Component {
     }
 
     onCloseSuccess() {
-        // left blank because the user probably will need to add some skill types to the category
-        // window.history.back();
+        window.history.back();
     }
 
     onCloseError() {
