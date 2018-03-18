@@ -4,6 +4,7 @@ import Table from './Table';
 import Button from './Button';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
 
 class Project extends React.Component {
     constructor(props) {
@@ -16,14 +17,19 @@ class Project extends React.Component {
         this.getProjects = this.getProjects.bind(this);
     }
 
-
     componentDidMount() {
         this.getProjects();
     }
-
-    // TODO: need to change the end points
     getProjects() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/projects?portfolioType=&projectOwner=').then(response => {
+        const roles = localStorage.getItem('roles');
+        const isAdmin = roles.includes(SUPER_ADMIN);
+        let query;
+        if (isAdmin) {
+            query = '/projects';
+        } else {
+            query = '/projects?managerId=' + localStorage.user_id;
+        }
+        axios.get(prodAPIEndpoint + query).then(response => {
             this.setState({ numProject: response.data.length });
             this.setState({ projects: response.data });
 
