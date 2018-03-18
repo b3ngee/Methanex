@@ -14,6 +14,9 @@ class ProjectDetail extends React.Component {
         super(props);
         this.state = {
             rows: [],
+            resourceIDs: [],
+            rowResource: [],
+            resourceData: {},
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -22,6 +25,7 @@ class ProjectDetail extends React.Component {
 
     componentDidMount() {
         this.getDetails();
+        this.getResourceData();
     }
 
     getDetails() {
@@ -52,8 +56,42 @@ class ProjectDetail extends React.Component {
         });
     }
 
+    getResourceData() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users')
+        .then(response => {
+            const data = {};
+            for (let i = 0; i < response.data.length; i++) {
+                data[response.data[i].id] = {'FirstName': response.data[i].firstName, 'LastName': response.data[i].lastName, 'Availability': response.data[i].status};
+            }
+            this.setState({resourceData: data});
+        })
+        .then(() => {
+            this.getResources();
+        });
+    }
+
+    getResources() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/project-resources?projectId=' + this.props.match.params.project_id)
+        .then(response => {
+            const tableData = [];
+            const resourceIDs = [];
+            console.log(response.data);
+            const userMap = this.state.resourceData;
+            console.log(userMap);
+            for (let i = 0; i < response.data.length; i++) {
+                const uid = response.data[i].resourceId;
+                tableData.push({ 'ID': response.data[i].id, 'Resource ID': response.data[i].resourceId, 'Assigned Hours': response.data[i].assignedHours, 'First Name': userMap[uid].FirstName, 'Last Name': userMap[uid].LastName, 'Availability': userMap[uid].Availability});
+                resourceIDs.push(response.data[i].resourceId);
+            }
+            this.setState({rowResource: tableData});
+            this.setState({resourceIDs: resourceIDs});
+        });
+    }
+
     render() {
         let columns = ['Header', 'Value'];
+        let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability'];
+
         const data = this.state.rows;
         return (
             <div className={ project }>
@@ -65,6 +103,9 @@ class ProjectDetail extends React.Component {
                     </Link>
                </span>
                <Button type="submit" label="Delete" onClick={this.deleteProject}/>
+
+               <h1>Resources</h1>
+               <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>
             </div>
         );
     }

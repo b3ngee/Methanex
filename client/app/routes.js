@@ -8,7 +8,11 @@ import Resource from './components/Resource';
 import Setting from './components/Setting';
 import Login from './components/Login';
 import Skill from './components/Skill';
+<<<<<<< HEAD
 // import AddSkill from './components/AddSkill';
+=======
+import AddExistingSkillForm from './components/AddExistingSkillForm';
+>>>>>>> 50f383b5e0a83a6c1463603ca4b14d953bea34b8
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
 import ReportingModule from './components/ReportingModule';
@@ -16,7 +20,13 @@ import AddPortfolioForm from './components/AddPortfolioForm';
 import EditProjectForm from './components/EditProjectForm';
 import AddProjectForm from './components/AddProjectForm';
 import EditResourceForm from './components/EditResourceForm';
+<<<<<<< HEAD
 import AddExistingSkillForm from './components/AddExistingSkillForm';
+=======
+import UserSettings from './components/UserSettings';
+import SkillSettings from './components/SkillSettings';
+import PortfolioSettings from './components/PortfolioSettings';
+>>>>>>> 50f383b5e0a83a6c1463603ca4b14d953bea34b8
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -43,8 +53,15 @@ export default (
         <Route exact path="/resource/addSkill" component = { AddExistingSkillForm } />
 			<Route path={'/resource/:resource_id'} component={ ResourceDetail } />
 		<Route exact path="/setting" render={() => (isLoggedIn() ? (<Setting />) : (<Redirect to="/login"/>))} />
+		<Route exact path="/setting/user" component= {UserSettings} />
+		<Route exact path="/setting/skill" component= {SkillSettings} />
+		<Route exact path="/setting/portfolio" component= {PortfolioSettings} />
 		<Route exact path="/login" component={Login} />
         <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
+<<<<<<< HEAD
 	        <Route exact path="/addExistingSkill" component={ AddExistingSkillForm } />
+=======
+	        <Route exact path="/addSkill" render={() => (isLoggedIn() ? (<AddExistingSkillForm userId={localStorage.getItem('user_id')}/>) : (<Redirect to="/login"/>))} />
+>>>>>>> 50f383b5e0a83a6c1463603ca4b14d953bea34b8
 	</Switch>
 );

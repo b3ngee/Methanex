@@ -24,7 +24,7 @@ export default class Dropdown extends Component {
                 <label>{label}</label>
                 {error && <span>{error}</span>}
                 <select name={name} onChange={onSelect}>
-                    <option value={this.state.initialState}>
+                    <option value="">
                         {this.state.initialState}
                     </option>
                     {options}
