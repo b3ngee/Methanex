@@ -36,7 +36,7 @@ class Portfolio extends React.Component {
     }
 
     listProjects() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios?' + localStorage.user_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios?managerId=' + localStorage.user_id).then(response => {
             const data = [];
             this.setState({listOfProjects: response.data});
             console.log(response.data);
