@@ -5,12 +5,7 @@ import Button from './Button';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Dropdown from './Dropdown';
-let competencyData = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5'];
+import { COMPETENCY } from '../constants/constants.js';
 
 class Skill extends React.Component {
 
@@ -35,7 +30,7 @@ class Skill extends React.Component {
             userSkillIds: []
         };
         this.getSkills = this.getSkills.bind(this);
-        this.handleSelect = this.handleSelect.bind(this);
+        this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
         this.handleMode = this.handleMode.bind(this);
         this.handleEditing = this.handleEditing.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -49,7 +44,7 @@ class Skill extends React.Component {
         console.log('refresh the page with ' + this.state.userSkillNum + ' skills');
     }
 
-    handleSelect() {
+    handleMultipleSelects() {
         const competencies = [];
         const updatedCompetencies = [];
         for (let i = 0; i < document.getElementsByTagName('select').length; i++) {
@@ -101,10 +96,10 @@ class Skill extends React.Component {
                                         'Competency': this.state.skills[i].competency,
                                         'New Competency': <Dropdown
                                                                 label=""
-                                                                value={this.state.blank}
-                                                                error={this.state.errors.blank}
-                                                                data={competencyData}
-                                                                controlFunc={this.handleSelect}
+                                                                name="sC"
+                                                                data={COMPETENCY}
+                                                                onSelect={this.handleMultipleSelects}
+                                                                error={this.state.errors.sC}
                                                              />,
                                         'Remove Skill': <input type="checkbox" onClick={this.handleDelete} />
                                     });
@@ -247,7 +242,7 @@ class Skill extends React.Component {
             return(
                <div className={ skill }>
                     <h4><i>you currently have no skill...</i></h4>
-                    <Link to = "/skill/addSkill">
+                    <Link to = "/addSkill">
                         <Button
                             label="Add Skill"
                         />
@@ -259,7 +254,7 @@ class Skill extends React.Component {
             <div className={ skill }>
                 <h1>My Skills</h1>
                 <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
-                <Link to = "/skill/addSkill">
+                <Link to = "/addSkill">
                     <Button
                         label="Add Skill"
                     />
@@ -271,5 +266,4 @@ class Skill extends React.Component {
         );
     }
 }
-//                <input type="checkbox" id="delete" onClick={this.handleDelete} />
 export default Skill;
