@@ -4,11 +4,14 @@ import { formBox } from '../styles/form.scss';
 import { COMPETENCY } from '../constants/constants.js';
 import Button from './Button';
 import axios from 'axios';
+import PopupBox from './PopupBox';
 
 class AddExistingSkillForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            successModalOpen: false,
+            errorModalOpen: false,
             skillCategoryId: '',
             skillTypeId: '',
             skillCompetency: '',
@@ -22,6 +25,8 @@ class AddExistingSkillForm extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onSelect = this.onSelect.bind(this);
         this.onSelectCategory = this.onSelectCategory.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
@@ -76,11 +81,20 @@ class AddExistingSkillForm extends React.Component {
                 competency: this.state.skillCompetency
             }).then( (response) => {
                 if (response.status === 201) {
-                    // TODO: this should go back to the last page
-                    this.props.history.push('/');
+                    this.setState({ successModalOpen: true });
                 }
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
+    }
+
+    onCloseSuccess() {
+        window.history.back();
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
     }
 
     onChange(e) {
@@ -88,13 +102,22 @@ class AddExistingSkillForm extends React.Component {
     }
 
     render() {
-        const { errors, skillCategoryData, skillTypeData } = this.state;
+        const { errors, skillCategoryData, skillTypeData, successModalOpen, errorModalOpen, errorMessage } = this.state;
 
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
                     <h2> Add new skill</h2>
-
+                    <PopupBox
+                        label="Successful!"
+                        isOpen={successModalOpen}
+                        onClose={this.onCloseSuccess}
+                    />
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
                     <Dropdown
                         label="Select a Category"
                         name="skillCategoryId"
@@ -128,7 +151,7 @@ class AddExistingSkillForm extends React.Component {
 
 AddExistingSkillForm.propTypes = {
     history: React.PropTypes.any,
-    userId: React.PropTypes.string.isRequired,
+    userId: React.PropTypes.string,
     data: PropTypes.any,
     location: PropTypes.any,
     match: PropTypes.any

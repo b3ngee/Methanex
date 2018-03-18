@@ -3,17 +3,22 @@ import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
+import PopupBox from './PopupBox';
 
 class AddSkillCategoryForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-              skillCategory: '',
-              errors: {}
+            skillCategory: '',
+            errors: {},
+            successModalOpen: false,
+            errorModalOpen: false,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     isValid() {
@@ -33,9 +38,11 @@ class AddSkillCategoryForm extends React.Component {
             }).then((response) => {
                 if (response.status === 201) {
                     const skillCategory = this.state.skillCategory;
-                    this.setState({ skillCategory: '' });
+                    this.setState({ skillCategory: '', successModalOpen: true});
                     this.props.onSubmit(skillCategory);
                 }
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
     }
@@ -44,14 +51,32 @@ class AddSkillCategoryForm extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    onCloseSuccess() {
+        // left blank because the user probably will need to add some skill types to the category
+        // window.history.back();
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     render() {
-        const { skillCategory, errors } = this.state;
+        const { skillCategory, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
 
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
                 <h2>Add New Skill Category</h2>
-
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalOpen}
+                    onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
                 <TextFieldGroup
                     field="skillCategory"
                     label="New Skill Category"
