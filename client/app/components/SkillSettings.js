@@ -1,6 +1,8 @@
 import React from 'react';
 import { setting } from '../styles/setting.scss';
 import AddSkillForm from './AddSkillForm';
+import DeleteSkillCategoryForm from './DeleteSkillCategoryForm';
+import DeleteSkillType from './DeleteSkillType';
 
 const SkillSettings = () =>
     <div className={ setting }>
@@ -8,6 +10,9 @@ const SkillSettings = () =>
         <br/>
         <AddSkillForm />
         <br />
+        <DeleteSkillCategoryForm />
+        <br />
+        <DeleteSkillType />
     </div>;
 
 export default SkillSettings;
