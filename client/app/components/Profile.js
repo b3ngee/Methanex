@@ -15,10 +15,6 @@ class Profile extends React.Component {
         // this.getUserSkills = this.getUserSkills.bind(this);
     }
 
-    componentDidMount() {
-        this.getUserSkills();
-    }
-
     render() {
         const data = [
             localStorage.getItem('email'),
