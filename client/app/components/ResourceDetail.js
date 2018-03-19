@@ -28,7 +28,6 @@ class ResourceDetail extends React.Component {
         axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const rows = [];
             const data = response.data;
-            console.log(data);
             for (const key in data) {
                 if(key !== null && typeof data[key] === 'boolean') {
                     rows.push({'Header': key, 'Value': data[key] + ''});
@@ -36,7 +35,6 @@ class ResourceDetail extends React.Component {
                     rows.push({'Header': key, 'Value': data[key]});
                 }
             }
-            console.log(data);
             this.setState({rows: rows});
         }).catch( () => {
         });

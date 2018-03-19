@@ -29,7 +29,6 @@ class Portfolio extends React.Component {
                 data[response.data[i].id] = response.data[i].name;
             }
             this.setState({classificationIDs: data});
-            console.log(this.state.classificationIDs);
         }).then(() => {
             this.listProjects();
         }).catch(()=>{
@@ -48,7 +47,6 @@ class Portfolio extends React.Component {
         axios.get(prodAPIEndpoint + query, {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = [];
             this.setState({listOfProjects: response.data});
-            console.log(response.data);
             const len = response.data.length;
             const portfolioIDs = [];
             for (let i = 0; i < len; i++) {

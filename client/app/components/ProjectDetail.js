@@ -39,18 +39,15 @@ class ProjectDetail extends React.Component {
     }
 
     getDetails() {
-    console.log(this.props.match.params.project_id);
         axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const rows = [];
             const data = response.data;
-            console.log(response.data);
             for (const key in data) {
                 if(key !== null) {
                     rows.push({'Header': key, 'Value': data[key]});
                 }
             }
-            console.log(data);
             this.setState({rows: rows});
         }).catch( () => {
         });
@@ -86,9 +83,7 @@ class ProjectDetail extends React.Component {
         .then(response => {
             const tableData = [];
             const resourceIDs = [];
-            console.log(response.data);
             const userMap = this.state.resourceData;
-            console.log(userMap);
             for (let i = 0; i < response.data.length; i++) {
                 const uid = response.data[i].resourceId;
                 tableData.push({ 'ID': response.data[i].id, 'Resource ID': response.data[i].resourceId, 'Assigned Hours': response.data[i].assignedHours, 'First Name': userMap[uid].FirstName, 'Last Name': userMap[uid].LastName, 'Availability': userMap[uid].Availability});

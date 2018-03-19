@@ -33,7 +33,6 @@ class Resource extends React.Component {
         axios.get(prodAPIEndpoint + query, {headers: {Pragma: 'no-cache'}}).then(response => {
             this.setState({ numResources: response.data.length });
             this.setState({ resources: response.data });
-            console.log(localStorage);
             const tableData = [];
             const resourceIDs = [];
             for (let i = 0; i < this.state.numResources; i++) {
