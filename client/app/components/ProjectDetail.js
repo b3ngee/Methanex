@@ -40,7 +40,7 @@ class ProjectDetail extends React.Component {
 
     getDetails() {
     console.log(this.props.match.params.project_id);
-        axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id)
+        axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const rows = [];
             const data = response.data;
@@ -67,7 +67,7 @@ class ProjectDetail extends React.Component {
     }
 
     getResourceData() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=RESOURCE')
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=RESOURCE', {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
@@ -82,7 +82,7 @@ class ProjectDetail extends React.Component {
     }
 
     getResources() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/project-resources?projectId=' + this.props.match.params.project_id)
+        axios.get('https://methanex-portfolio-management.herokuapp.com/project-resources?projectId=' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const tableData = [];
             const resourceIDs = [];

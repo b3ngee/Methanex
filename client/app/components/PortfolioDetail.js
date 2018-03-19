@@ -20,7 +20,7 @@ class PortfolioDetails extends React.Component {
     }
 
     getProjects() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/projects?portfolioId=' + this.props.match.params.portfolio_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/projects?portfolioId=' + this.props.match.params.portfolio_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             this.setState({ numProject: response.data.length });
             this.setState({ projects: response.data });
 

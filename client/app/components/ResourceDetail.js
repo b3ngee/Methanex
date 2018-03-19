@@ -25,7 +25,7 @@ class ResourceDetail extends React.Component {
 
     // TODO: need to fix up the apiary call
     getDetails() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const rows = [];
             const data = response.data;
             console.log(data);
@@ -43,7 +43,7 @@ class ResourceDetail extends React.Component {
     }
 
     getUserSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const skillsRows = [];
             const data = response.data;
 
@@ -56,7 +56,7 @@ class ResourceDetail extends React.Component {
     }
 
     getSkillsNames() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types').then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
                 data[response.data[i].id] = response.data[i].name;
