@@ -15,10 +15,19 @@ class Profile extends React.Component {
         // this.getUserSkills = this.getUserSkills.bind(this);
     }
 
+    sanitizeRoles(roles) {
+        let sanitizedRoles = roles.replace('SUPER_ADMIN', 'Super Admin');
+        sanitizedRoles = sanitizedRoles.replace('PORTFOLIO_MANAGER', 'Portfolio Manager');
+        sanitizedRoles = sanitizedRoles.replace('PROJECT_MANAGER', 'Project Manager');
+        sanitizedRoles = sanitizedRoles.replace('RESOURCE_MANAGER', 'Resource Manager');
+        sanitizedRoles = sanitizedRoles.replace('RESOURCE', 'Resource');
+        return sanitizedRoles;
+    }
+
     render() {
         const data = [
             localStorage.getItem('email'),
-            localStorage.getItem('roles'),
+            this.sanitizeRoles(localStorage.getItem('roles'))
         ];
         return (
             <div>
