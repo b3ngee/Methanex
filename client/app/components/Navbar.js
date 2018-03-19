@@ -28,7 +28,6 @@ class Navbar extends Component {
         let isProjectManager = false;
         const roles = localStorage.getItem('roles');
         if (roles) {
-            console.log(roles);
             isAdmin = roles.includes(SUPER_ADMIN);
             isPortfolioManager = roles.includes(PORTFOLIO_MANAGER);
             isResourceManager = roles.includes(RESOURCE_MANAGER);
