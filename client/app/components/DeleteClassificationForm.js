@@ -44,7 +44,6 @@ class DeleteClassificationForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        console.log(this.state.classID);
         if (this.isValid()) {
             axios.delete('https://methanex-portfolio-management.herokuapp.com/classifications/' + this.state.classID, {
                 id: this.state.classID
