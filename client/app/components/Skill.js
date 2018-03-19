@@ -1,19 +1,16 @@
-import React, { Component, PropTypes } from 'react';
-// import React, { Component } from 'react';
+import React, { Component } from 'react';
 import { skill } from '../styles/skill.scss';
 import Table from './Table';
-// import Button from './Button';
+ import Button from './Button';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-// import Dropdown from './Dropdown';
-// import { COMPETENCY } from '../constants/constants.js';
 
 class Skill extends Component {
     constructor(props) {
         super(props);
         this.state = {
-//            testingId: this.props.location.state.data[1].Value, // TODO testing
             userId: localStorage.getItem('user_id'),
+            userSkillNum: 0, // keep track of the number of user's skills
             skillTypeData: {},  // TODO ?
             skillCategoryData: {}, // TODO?
             numSkill: 0,  // TODO?
@@ -88,30 +85,44 @@ class Skill extends Component {
     }
 
     render() {
+        const { userSkillNum } = this.state;
         let columns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
         const data = [{'Value': localStorage.user_id}];
+
+        if (userSkillNum === 0) {
+            return(
+               <div className={ skill }>
+                    <h4><i>you currently have no skill...</i></h4>
+                    <Link to = {{pathname: '/skill/add', state: {data}}}>
+                        <Button
+                            type="submit"
+                            label="Add Skill"
+                        />
+                    </Link>
+                </div>
+            );
+        }
 
         return(
             <div className={ skill }>
                 <h1>My Skills</h1>
                 <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
                 <Link to = {{pathname: '/skill/add', state: {data}}}>
-                    <button>Add Skill</button>
+                    <Button
+                        type="submit"
+                        label="Add Skill"
+                    />
                 </Link>
                 <br />
                 <Link to = {{pathname: '/skill/edit', state: {data}}}>
-                    <button>Edit Skill</button>
+                    <Button
+                        type="submit"
+                        label="Edit Skills"
+                    />
                 </Link>
-                <br />
             </div>
         );
     }
 }
-export default Skill;
 
-Skill.propTypes = {
-    data: PropTypes.any,
-    location: PropTypes.any,
-//    history: PropTypes.any, // TODO ?
-//    match: PropTypes.any, // TODO ?
-};
+export default Skill;

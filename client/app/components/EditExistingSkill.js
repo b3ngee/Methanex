@@ -1,16 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { skill } from '../styles/skill.scss';
-// import Button from './Button';
+import Button from './Button';
 import Table from './Table';
 import Dropdown from './Dropdown';
 import { COMPETENCY } from '../constants/constants.js';
+import PopupBox from './PopupBox';
 
 class EditExistingSkill extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            successModalOpen: false,
             userId: localStorage.getItem('user_id'),
             skillTypeData: {}, // TODO?
             skillCategoryData: {},  // TODO ?
@@ -24,8 +26,9 @@ class EditExistingSkill extends Component {
             errors: {}, // TODO?
             userCompetencies: [], // TODO?
             userSkillIds: [], // TODO?
-            userSkillNum: 0 // required
+            userSkillNum: 0, // keep track of the number of user's skills
         };
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.getSkills = this.getSkills.bind(this);
         this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
         this.handleEditing = this.handleEditing.bind(this);
@@ -185,18 +188,17 @@ class EditExistingSkill extends Component {
             alert('no changes were made');
         } else {
             this.componentDidMount();
-            console.log(differenceCount);
-            console.log(this.state.userCompetencies);
-            console.log(this.state.editedCompetencies);
-            alert('successful');
         }
         this.state.userSkillNum = 0;
-        alert('all changes made!!!!');
+        this.setState({ successModalOpen: true });
+    }
+
+    onCloseSuccess() {
+        window.history.back();
     }
 
     render() {
-        const { userSkillNum } = this.state;
-        console.log('rendering: currently user has ' + userSkillNum + ' skills');
+        const { userSkillNum, successModalOpen } = this.state;
 
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
@@ -205,7 +207,10 @@ class EditExistingSkill extends Component {
                <div className={ skill }>
                     <h4><i>you currently have no skill...</i></h4>
                     <Link to = {{pathname: '/skill/add', state: {data}}}>
-                        <button>Add Skill</button>
+                        <Button
+                            type="submit"
+                            label="Add Skill"
+                        />
                     </Link>
                 </div>
             );
@@ -213,20 +218,30 @@ class EditExistingSkill extends Component {
         return(
             <div className={ skill }>
                 <h1>Editing Skills</h1>
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalOpen}
+                    onClose={this.onCloseSuccess}
+                />
                 <Table text="List of Skills" columns={editingColumns} rows={this.state.editingRows}/>
                 <Link to = {{pathname: '/', state: {data}}}>
-                    <button onClick={this.handleEditing}>save changes</button>
+                    <Button
+                        type="submit"
+                        label="save changes"
+                        onClick={this.handleEditing}
+                    />
                 </Link>
             </div>
         );
     }
 }
 
-export default EditExistingSkill;
-
 EditExistingSkill.propTypes = {
+    history: React.PropTypes.any,
+    userId: React.PropTypes.string,
     data: PropTypes.any,
     location: PropTypes.any,
-    history: PropTypes.any,
-    match: PropTypes.any,
+    match: PropTypes.any
 };
+
+export default EditExistingSkill;
