@@ -3,6 +3,7 @@ import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
+import PopupBox from './PopupBox';
 
 class AddUserRoleForm extends React.Component {
     constructor(props) {
@@ -10,11 +11,15 @@ class AddUserRoleForm extends React.Component {
         this.state = {
             userId: '',
             role: '',
-            errors: {}
+            errors: {},
+            successModalOpen: false,
+            errorModalOpen: false,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     isValid() {
@@ -38,13 +43,15 @@ class AddUserRoleForm extends React.Component {
                 userId: this.state.userId,
                 role: this.state.role
             }).then((response) => {
-                if (response.status === 201 && response.data.status === 'userRole_added') {
+                if (response.status === 201) {
                     this.setState({
                         userId: '',
                         role: '',
-                        errors: {},
+                        errors: {}, successModalOpen: true
                     });
                 }
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
     }
@@ -53,14 +60,31 @@ class AddUserRoleForm extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    onCloseSuccess() {
+        window.history.back();
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     render() {
-        const { userId, role, errors } = this.state;
+        const { userId, role, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
 
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
                     <h2>Add New User Role</h2>
-
+                    <PopupBox
+                        label="Successful!"
+                        isOpen={successModalOpen}
+                        onClose={this.onCloseSuccess}
+                    />
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
                     <TextFieldGroup
                         field="userId"
                         label="User ID"

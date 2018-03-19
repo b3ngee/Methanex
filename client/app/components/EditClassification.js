@@ -1,18 +1,19 @@
 import React from 'react';
 import axios from 'axios';
-import TextFieldGroup from './TextFieldGroup';
+import Dropdown from './Dropdown';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
-import Dropdown from './Dropdown';
 import PopupBox from './PopupBox';
+import TextFieldGroup from './TextFieldGroup';
 
-class AddSkillTypeForm extends React.Component {
+class DeleteClassificationForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            skillCategories: [],
-            categoryID: '',
-            skillType: '',
+            classifications: [],
+            newClassification: '',
+            classID: '',
+            hasOptionSelected: false,
             errors: {},
             successModalOpen: false,
             errorModalOpen: false,
@@ -20,48 +21,41 @@ class AddSkillTypeForm extends React.Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
-        this.getSkillCategories();
+        this.getClassifications();
     }
 
-    // Gets skill categories - with name and ID
-    getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then((response) => {
-            this.setState({skillCategories: response.data});
+    getClassifications() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then((response) => {
+            this.setState({classifications: response.data});
         });
     }
 
     isValid() {
         let isValid = true;
 
-        if (!this.state.categoryID) {
-           this.setState({errors: { categoryID: 'Select a Skill Category' }});
+        if (!this.state.classID) {
+           this.setState({errors: { classID: 'Select a Classification' }});
            isValid = false;
         }
-
-        if (!this.state.skillType) {
-            this.setState({ errors: { skillType: 'Skill Type is Required' }});
-            isValid = false;
-        }
-
         return isValid;
     }
 
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/skill-types', {
-                name: this.state.skillType,
-                skillCategoryId: this.state.categoryID
+            axios.put('https://methanex-portfolio-management.herokuapp.com/classifications/' + this.state.classID, {
+                name: this.state.newClassification
             }).then((response) => {
-                if (response.status === 201) {
+                if(response.status === 200) {
                     this.setState({
-                        categoryID: '',
-                        skillType: '',
+                        classID: '',
+                        hasOptionSelected: false,
                         errors: {}, successModalOpen: true
                     });
                 }
@@ -75,6 +69,13 @@ class AddSkillTypeForm extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    handleSelect(e) {
+        this.setState({
+            [e.target.name]: e.target.value,
+            hasOptionSelected: true
+        });
+    }
+
     onCloseSuccess() {
         window.history.back();
     }
@@ -84,12 +85,12 @@ class AddSkillTypeForm extends React.Component {
     }
 
     render() {
-        const { skillCategories, skillType, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
+        const { classifications, newClassification, successModalOpen, errorModalOpen, hasOptionSelected, errorMessage, errors } = this.state;
 
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
-                <h2>Add New Skill Type</h2>
+                <h2>Edit Project Classification</h2>
                 <PopupBox
                     label="Successful!"
                     isOpen={successModalOpen}
@@ -101,20 +102,22 @@ class AddSkillTypeForm extends React.Component {
                     onClose={this.onCloseError}
                 />
                 <Dropdown
-                    label="Select a Skill Category"
-                    name="categoryID"
-                    data={skillCategories}
-                    onSelect={this.onChange}
-                    error={errors.categoryID}
+                    label="Select a Classification"
+                    name="classID"
+                    data={classifications}
+                    onSelect={this.handleSelect}
+                    error={errors.classID}
                 />
 
-                <TextFieldGroup
-                    field="skillType"
-                    label="New Skill Type"
-                    value={skillType}
-                    error={errors.skillType}
-                    onChange={this.onChange}
-                />
+                {hasOptionSelected &&
+                    <TextFieldGroup
+                        field="newClassification"
+                        label="Enter New Name for Classification"
+                        value={newClassification}
+                        error={errors.classifications}
+                        onChange={this.onChange}
+                    />
+                }
 
                 <Button
                     type="submit"
@@ -126,4 +129,4 @@ class AddSkillTypeForm extends React.Component {
     }
 }
 
-export default AddSkillTypeForm;
+export default DeleteClassificationForm;

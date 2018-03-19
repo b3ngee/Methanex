@@ -1,15 +1,16 @@
 import React from 'react';
 import axios from 'axios';
-import TextFieldGroup from './TextFieldGroup';
+import Dropdown from './Dropdown';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
 
-class AddClassificationForm extends React.Component {
+class DeleteSkillTypeForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            classification: '',
+            skillTypes: [],
+            skillTypeID: '',
             errors: {},
             successModalOpen: false,
             errorModalOpen: false,
@@ -21,25 +22,36 @@ class AddClassificationForm extends React.Component {
         this.onCloseError = this.onCloseError.bind(this);
     }
 
-    isValid() {
-        if(!this.state.classification) {
-            this.setState({ errors: { classification: 'Classification is required' }});
-            return false;
-        }
+    componentDidMount() {
+        this.getSkillTypes();
+    }
 
-        return true;
+    getSkillTypes() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types').then((response) => {
+            this.setState({skillTypes: response.data});
+        });
+    }
+
+    isValid() {
+        let isValid = true;
+
+        if (!this.state.skillTypeID) {
+           this.setState({errors: { skillTypeID: 'Select a Skill Type' }});
+           isValid = false;
+        }
+        return isValid;
     }
 
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/classifications', {
-                name: this.state.classification
+            axios.delete('https://methanex-portfolio-management.herokuapp.com/skill-types/' + this.state.skillTypeID, {
+                id: this.state.skillTypeID
             }).then((response) => {
-                if (response.status === 201) {
+                if(response.status === 200) {
                     this.setState({
-                    classification: '',
-                    errors: {}, successModalOpen: true
+                        skillTypeID: '',
+                        errors: {}, successModalOpen: true
                     });
                 }
             }).catch((error) => {
@@ -49,7 +61,7 @@ class AddClassificationForm extends React.Component {
     }
 
     onChange(e) {
-            this.setState({ [e.target.name]: e.target.value });
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     onCloseSuccess() {
@@ -61,12 +73,12 @@ class AddClassificationForm extends React.Component {
     }
 
     render() {
-        const { classification, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
+        const { skillTypes, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
 
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
-                <h2>Add New Classification</h2>
+                <h2>Delete Skill Type</h2>
                 <PopupBox
                     label="Successful!"
                     isOpen={successModalOpen}
@@ -77,16 +89,16 @@ class AddClassificationForm extends React.Component {
                     isOpen={errorModalOpen}
                     onClose={this.onCloseError}
                 />
-                <TextFieldGroup
-                    field="classification"
-                    label="New Classification"
-                    value={classification}
-                    error={errors.classification}
-                    onChange={this.onChange}
+                <Dropdown
+                    label="Select a Skill Type to Delete"
+                    name="skillTypeID"
+                    data={skillTypes}
+                    onSelect={this.onChange}
+                    error={errors.skillTypeID}
                 />
                 <Button
                     type="submit"
-                    label="Submit"
+                    label="Delete"
                 />
             </form>
         </div>
@@ -94,4 +106,4 @@ class AddClassificationForm extends React.Component {
     }
 }
 
-export default AddClassificationForm;
+export default DeleteSkillTypeForm;

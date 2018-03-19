@@ -177,6 +177,10 @@ public class ProjectServiceImpl {
 
         validateStartAndEndDate(project.getStartDate(), project.getEndDate());
 
+        if (toUpdate.hasComplete()) {
+            project.setComplete(toUpdate.getComplete());
+        }
+
         if (toUpdate.hasGanttChart()) {
             project.setGanttChart(toUpdate.getGanttChart());
         }

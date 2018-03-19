@@ -11,11 +11,6 @@ import {
 } from '../constants/constants';
 import '../styles/global.scss';
 
-let isAdmin = false;
-let isPortfolioManager = false;
-let isResourceManager = false;
-let isProjectManager = false;
-
 class Navbar extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +22,10 @@ class Navbar extends Component {
     }
 
     render() {
+        let isAdmin = false;
+        let isPortfolioManager = false;
+        let isResourceManager = false;
+        let isProjectManager = false;
         const roles = localStorage.getItem('roles');
         if (roles) {
             isAdmin = roles.includes(SUPER_ADMIN);

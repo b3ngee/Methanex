@@ -47,10 +47,10 @@ public class Project {
     private Boolean complete;
 
     @Column(name = "START_DATE", nullable = false)
-    public String startDate;
+    private String startDate;
 
     @Column(name = "END_DATE", nullable = false)
-    public String endDate;
+    private String endDate;
 
     @Column(name = "GANTT_CHART")
     private byte[] ganttChart;

@@ -3,6 +3,7 @@ import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
+import PopupBox from './PopupBox';
 
 class EditResourceForm extends Component {
     constructor(props) {
@@ -18,10 +19,14 @@ class EditResourceForm extends Component {
             status: this.props.location.state.data[7].Value,
             enabled: this.props.location.state.data[8].Value,
             errors: {},
+            successModalOpen: false,
+            errorModalOpen: false,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     onSubmit(e) {
@@ -41,11 +46,21 @@ class EditResourceForm extends Component {
             }).then((response) => {
                 console.log(response.status);
                 if (response.status === 200) {
-                    this.props.history.push(`/resource/${id}`);
+                    this.setState({ successModalOpen: true });
                 }
                 console.log('in on submit');
+            }).catch((error) => {
+                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });
         }
+    }
+
+    onCloseSuccess() {
+        this.props.history.push(`/resource/${this.state.id}`);
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
     }
 
     onChange(e) {
@@ -91,12 +106,21 @@ class EditResourceForm extends Component {
     }
 
     render() {
-        const {id, managerId, firstName, lastName, address, email, status, enabled, errors} = this.state;
+        const {id, managerId, firstName, lastName, address, email, status, enabled, errors, successModalOpen, errorModalOpen, errorMessage} = this.state;
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
                     <h2>Edit Resource</h2>
-
+                    <PopupBox
+                        label="Successful!"
+                        isOpen={successModalOpen}
+                        onClose={this.onCloseSuccess}
+                    />
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
                     <TextFieldGroup
                         field="id"
                         label="Resource ID"

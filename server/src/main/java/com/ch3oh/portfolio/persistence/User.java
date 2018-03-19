@@ -42,7 +42,7 @@ public class User {
     private String status;
 
     @Column(nullable = false)
-    private boolean enabled;
+    private Boolean enabled;
 
     public Integer getId() {
         return id;
@@ -156,5 +156,9 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean hasEnabled() {
+        return this.enabled != null;
     }
 }
