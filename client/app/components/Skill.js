@@ -1,63 +1,35 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+// import React, { Component } from 'react';
 import { skill } from '../styles/skill.scss';
 import Table from './Table';
-import Button from './Button';
+// import Button from './Button';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Dropdown from './Dropdown';
-import { COMPETENCY } from '../constants/constants.js';
+// import Dropdown from './Dropdown';
+// import { COMPETENCY } from '../constants/constants.js';
 
-class Skill extends React.Component {
-
+class Skill extends Component {
     constructor(props) {
         super(props);
         this.state = {
+//            testingId: this.props.location.state.data[1].Value, // TODO testing
             userId: localStorage.getItem('user_id'),
-            skillTypeData: {},
-            skillCategoryData: {},
-            numSkill: 0,
-            rows: [],
-            num: 0,
-            editMode: 0, // 1 for edit mode
-            editingRows: [],
-            editedCompetencies: [],
-            checks: [], // array of checks status for every user skill
-            numChecked: 0, // number of checks for deleting skills
-            errors: {},
-            blank: '',
-            userSkillNum: 0,
-            userCompetencies: [],
-            userSkillIds: []
+            skillTypeData: {},  // TODO ?
+            skillCategoryData: {}, // TODO?
+            numSkill: 0,  // TODO?
+            rows: [], // TODO?
+            num: 0, // TODO?
+            errors: {}, // TODO?
+            userCompetencies: [], // TODO?
+            userSkillIds: [] // TODO?
         };
         this.getSkills = this.getSkills.bind(this);
-        this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
-        this.handleMode = this.handleMode.bind(this);
-        this.handleEditing = this.handleEditing.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentDidMount() {
         this.state.num = 0;
         this.state.userCompetencies = [];
-        this.state.editedCompetencies = [];
         this.getSkillCategories();
-    }
-
-    handleMultipleSelects() {
-        const competencies = [];
-        const updatedCompetencies = [];
-        for (let i = 0; i < document.getElementsByTagName('select').length; i++) {
-            const skillCompetency = document.getElementsByTagName('select')[i].value;
-            competencies.push(skillCompetency);
-        }
-        for (let i = 0; i < competencies.length; i++) {
-            if (competencies[i] === 'Select ... ') {
-                updatedCompetencies.push(this.state.userCompetencies[i]);
-            } else {
-                updatedCompetencies.push(competencies[i]);
-            }
-        }
-        this.state.editedCompetencies = updatedCompetencies;
     }
 
     getSkills() {
@@ -88,20 +60,6 @@ class Skill extends React.Component {
                                         'Skill Name': this.state.skillTypeData[j].name,
                                         'Skill Competency': this.state.skills[i].competency
                                     });
-                                    tableDataForEdit.push({
-                                        'ID': this.state.num + 1,
-                                        'Skill Category': this.state.skillCategoryData[k].name,
-                                        'Skill Name': this.state.skillTypeData[j].name,
-                                        'Competency': this.state.skills[i].competency,
-                                        'New Competency': <Dropdown
-                                                                label=""
-                                                                name="sC"
-                                                                data={COMPETENCY}
-                                                                onSelect={this.handleMultipleSelects}
-                                                                error={this.state.errors.sC}
-                                                             />,
-                                        'Remove Skill': <input type="checkbox" onClick={this.handleDelete} />
-                                    });
                                     this.state.num++;
                                 }
                             }
@@ -129,124 +87,31 @@ class Skill extends React.Component {
         });
     }
 
-    handleMode() {
-        this.setState({
-            editMode: 1
-        });
-    }
-
-    handleEditing() {
-        let differenceCount = 0;
-        this.setState({
-            editMode: 0
-        });
-        for (let i = 0; i < this.state.userCompetencies.length; i++) {
-            if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
-                differenceCount++;
-                const id = this.state.userSkillIds[i];
-                const c = this.state.editedCompetencies[i];
-                axios.put('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
-                    competency: c
-                }).then((response) => {
-                    console.log(response.status);
-                    console.log('PUT!');
-                });
-            }
-        }
-
-        if (this.state.numChecked !== 0) {
-            for (let i = 0; i < this.state.checks.length; i++ ) {
-                if ( this.state.checks[i] === 1) {
-                    const id = this.state.userSkillIds[i];
-                    axios.delete('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
-                    }).then((response) => {
-                        console.log(response.status);
-                        console.log('--> DELETED! because check is ' + this.state.checks[i]);
-                    });
-                }
-            }
-        }
-
-        if ( differenceCount === 0 && this.state.numChecked === 0 ||
-            this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
-        ) {
-            alert('no changes were made');
-        } else {
-            this.componentDidMount();
-            console.log(differenceCount);
-            console.log(this.state.userCompetencies);
-            console.log(this.state.editedCompetencies);
-            alert('successful');
-        }
-        this.state.userSkillNum = 0;
-        alert('all changes made!!!!');
-    }
-
-    handleDelete() {
-        let tempNumChecked = 0;
-        const tempChecks = []; // temp: array of checks status for every user skill --> checks
-        for (let i = 0; i < document.getElementsByTagName('input').length; i++) {
-            if (document.getElementsByTagName('input')[i].checked) {
-                console.log('checkbox #:' + i + 'is check');
-                tempNumChecked++;
-                tempChecks.push(1);
-            } else {
-                console.log('checkbox #:' + i + 'is uncheck');
-                tempChecks.push(0);
-            }
-        }
-        console.log('So far array tempChecks: ' + tempChecks);
-        this.state.checks = tempChecks;
-        console.log('So far array checks: ' + this.state.checks);
-        console.log('So far there are ' + tempNumChecked + ' checks');
-        this.state.numChecked = tempNumChecked;
-        console.log('Overall So far there are ' + this.state.numChecked + ' checks');
-        console.log('Rhoda leaves handleDelete');
-    }
-
     render() {
-        const { editMode, userSkillNum } = this.state;
-        console.log('rendering: currently user has ' + userSkillNum + ' skills');
         let columns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
-        let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
-        if (editMode) {
-            return(
-               <div className={ skill }>
-                    <h1>Editing Skills</h1>
-                    <Table text="List of Skills" columns={editingColumns} rows={this.state.editingRows}/>
-                    <Link to = "/">
-                        <button onClick={this.handleEditing}>save changes</button>
-                    </Link>
-                </div>
-            );
-        }
-        if (userSkillNum === 0) {
-            return(
-               <div className={ skill }>
-                    <h4><i>you currently have no skill...</i></h4>
-                    <Link to = {{pathname: '/addSkill', state: {data}}}>
-                        <Button
-                            label="Add Skill"
-                        />
-                    </Link>
-                </div>
-            );
-        }
+
         return(
             <div className={ skill }>
                 <h1>My Skills</h1>
                 <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
-                <Link to = {{pathname: '/addSkill', state: {data}}}>
-                    <Button
-                        label="Add Skill"
-                    />
+                <Link to = {{pathname: '/skill/add', state: {data}}}>
+                    <button>Add Skill</button>
                 </Link>
                 <br />
-                <button onClick={this.handleMode}>Edit Skill</button>
+                <Link to = {{pathname: '/skill/edit', state: {data}}}>
+                    <button>Edit Skill</button>
+                </Link>
                 <br />
             </div>
         );
     }
 }
 export default Skill;
+
+Skill.propTypes = {
+    data: PropTypes.any,
+    location: PropTypes.any,
+//    history: PropTypes.any, // TODO ?
+//    match: PropTypes.any, // TODO ?
+};
