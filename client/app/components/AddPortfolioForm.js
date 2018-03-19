@@ -31,13 +31,13 @@ class AddPortfolioForm extends Component {
     }
 
     listManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER').then((userResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
             this.setState({ managers: userResp.data });
         });
     }
 
     listClassifications() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then((classificationResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}}).then((classificationResp) => {
             this.setState({ classifications: classificationResp.data });
         });
     }

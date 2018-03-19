@@ -42,13 +42,13 @@ class AddProjectForm extends Component {
     }
 
     fetchPortfolios() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios').then((portfolioResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
             this.setState({ portfolios: portfolioResp.data });
         });
     }
 
     fetchManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PROJECT_MANAGER').then((userResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PROJECT_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
             this.setState({ managers: userResp.data });
         });
     }

@@ -30,7 +30,7 @@ class Resource extends React.Component {
         } else {
             query = '/users?managerId=' + localStorage.user_id;
         }
-        axios.get(prodAPIEndpoint + query).then(response => {
+        axios.get(prodAPIEndpoint + query, {headers: {Pragma: 'no-cache'}}).then(response => {
             this.setState({ numResources: response.data.length });
             this.setState({ resources: response.data });
             console.log(localStorage);

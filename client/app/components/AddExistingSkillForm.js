@@ -34,13 +34,13 @@ class AddExistingSkillForm extends React.Component {
     }
 
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then((response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({ skillCategoryData: response.data });
         });
     }
 
     getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types?skillCategoryId=' + this.state.skillCategoryId).then( (response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types?skillCategoryId=' + this.state.skillCategoryId, {headers: {Pragma: 'no-cache'}}).then( (response) => {
             this.setState({ skillTypeData: response.data });
         });
     }
