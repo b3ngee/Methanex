@@ -20,6 +20,39 @@ class Project extends React.Component {
     componentDidMount() {
         this.getProjects();
     }
+
+    sanitizeProjectStatus(status) {
+        switch(status) {
+            case 'PIPELINE':
+                return 'Pipeline';
+            case 'PRE_APPROVAL':
+                return 'Pre Approval';
+            case 'SEEKING_FUNDING':
+                return 'Seeking Funding';
+            case 'ON_HOLD':
+                return 'On Hold';
+            case 'UNDERWAY':
+                return 'Underway';
+            case 'STOPPED':
+                return 'Stopped';
+            default:
+                return status;
+        }
+    }
+
+    sanitizeRagStatus(status) {
+        switch(status) {
+            case 'RED':
+                return 'Red';
+            case 'AMBER':
+                return 'Amber';
+            case 'Green':
+                return 'Green';
+            default:
+                return status;
+        }
+    }
+
     getProjects() {
         const roles = localStorage.getItem('roles');
         const isAdmin = roles.includes(SUPER_ADMIN);
@@ -35,7 +68,7 @@ class Project extends React.Component {
 
             const tableData = [];
             for (let i = 0; i < this.state.numProject; i++) {
-                tableData.push({ 'ID': this.state.projects[i].id, 'Project Name': this.state.projects[i].name, 'Project Status': this.state.projects[i].projectStatus, 'Status': this.state.projects[i].ragStatus, 'Budget': this.state.projects[i].budget });
+                tableData.push({ 'ID': this.state.projects[i].id, 'Project Name': this.state.projects[i].name, 'Project Status': this.sanitizeProjectStatus(this.state.projects[i].projectStatus), 'Status': this.sanitizeRagStatus(this.state.projects[i].ragStatus), 'Budget': this.state.projects[i].budget });
             }
             this.setState({ rows: tableData});
         }).catch( () => {
