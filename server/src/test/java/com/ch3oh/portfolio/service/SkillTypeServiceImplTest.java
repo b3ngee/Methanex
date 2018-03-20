@@ -58,10 +58,10 @@ public class SkillTypeServiceImplTest {
 
     @Test
     public void testGetSkillType() {
-        SkillType c = skillCategoryService.getSkillType(ST0_ID.toString());
-        assertEquals(ST0_ID, c.getId());
-        assertEquals(ST0_SKILLCATEGORY_ID, c.getSkillCategoryId());
-        assertEquals(ST0_NAME, c.getName());
+        SkillType st = skillCategoryService.getSkillType(ST0_ID.toString());
+        assertEquals(ST0_ID, st.getId());
+        assertEquals(ST0_SKILLCATEGORY_ID, st.getSkillCategoryId());
+        assertEquals(ST0_NAME, st.getName());
     }
 
     @Test (expected = GeneralRestNotFoundException.class)
@@ -71,10 +71,10 @@ public class SkillTypeServiceImplTest {
 
     @Test
     public void testCreateSkillType() {
-        SkillType c = skillCategoryService.createSkillType(ST0);
-        assertEquals(ST0_ID, c.getId());
-        assertEquals(ST0_SKILLCATEGORY_ID, c.getSkillCategoryId());
-        assertEquals(ST0_NAME, c.getName());
+        SkillType st = skillCategoryService.createSkillType(ST0);
+        assertEquals(ST0_ID, st.getId());
+        assertEquals(ST0_SKILLCATEGORY_ID, st.getSkillCategoryId());
+        assertEquals(ST0_NAME, st.getName());
     }
 
     @Test (expected = RestBadRequestException.class)
@@ -108,11 +108,11 @@ public class SkillTypeServiceImplTest {
         updatedC0.setName(UPDATED_SST0_NAME);
         updatedC0.setSkillCategoryId(EXISTENT_SKILLCATEGORY_ID);
 
-        SkillType c = skillCategoryService.updateSkillType(ST0_ID.toString(), updatedC0);
+        SkillType st = skillCategoryService.updateSkillType(ST0_ID.toString(), updatedC0);
 
-        assertEquals(ST0_ID, c.getId());
-        assertEquals(EXISTENT_SKILLCATEGORY_ID, c.getSkillCategoryId());
-        assertEquals(UPDATED_SST0_NAME, c.getName());
+        assertEquals(ST0_ID, st.getId());
+        assertEquals(EXISTENT_SKILLCATEGORY_ID, st.getSkillCategoryId());
+        assertEquals(UPDATED_SST0_NAME, st.getName());
     }
 
     @Test (expected = RestBadRequestException.class)
