@@ -15,7 +15,7 @@ class Skill extends Component {
             rows: [], // TODO?
             rowNum: 0,
             errors: {}, // TODO?
-            userSkillIds: [] // TODO?
+            userSkillIds: []
         };
         this.getSkills = this.getSkills.bind(this);
     }
@@ -32,26 +32,26 @@ class Skill extends Component {
             const tableDataForEdit = [];
 
             for (let i = 0; i < this.state.numSkill; i++) {
-                    // loop through SkillTypes
-                    for(let j = 0; j < this.state.skillTypeData.length; j++) {
-                        // we are trying to find the row that has the same skillTypeId
-                        if (this.state.skillTypeData[j].id === this.state.skills[i].skillTypeId) {
-                            // loop through SkillCategories
-                            for(let k = 0; k < this.state.skillCategoryData.length; k++) {
-                                // we are trying to find the row that has the same skillCategoryId
-                                if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
-                                    this.state.userSkillIds.push(this.state.skills[i].id);
-                                    tableData.push({
-                                        'ID': this.state.rowNum + 1,
-                                        'Skill Category': this.state.skillCategoryData[k].name,
-                                        'Skill Name': this.state.skillTypeData[j].name,
-                                        'Skill Competency': this.state.skills[i].competency
-                                    });
-                                    this.state.rowNum++;
-                                }
+                // loop through SkillTypes
+                for(let j = 0; j < this.state.skillTypeData.length; j++) {
+                    // we are trying to find the row that has the same skillTypeId
+                    if (this.state.skillTypeData[j].id === this.state.skills[i].skillTypeId) {
+                        // loop through SkillCategories
+                        for(let k = 0; k < this.state.skillCategoryData.length; k++) {
+                            // we are trying to find the row that has the same skillCategoryId
+                            if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
+                                this.state.userSkillIds.push(this.state.skills[i].id);
+                                tableData.push({
+                                    'ID': this.state.rowNum + 1,
+                                    'Skill Category': this.state.skillCategoryData[k].name,
+                                    'Skill Name': this.state.skillTypeData[j].name,
+                                    'Skill Competency': this.state.skills[i].competency
+                                });
+                                this.state.rowNum++;
                             }
                         }
                     }
+                }
             }
             this.setState({ rows: tableData});
             this.setState({ editingRows: tableDataForEdit});
@@ -77,7 +77,8 @@ class Skill extends Component {
         const { numSkill } = this.state;
         let columns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
         const data = [{'Value': localStorage.user_id}];
-
+        const skillsData = this.state.rows;
+        const skillIdsData = this.state.userSkillIds;
         if (numSkill === 0) {
             return(
                <div className={ skill }>
@@ -103,7 +104,7 @@ class Skill extends Component {
                     />
                 </Link>
                 <br />
-                <Link to = {{pathname: '/skill/edit', state: {data}}}>
+                <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData}}}>
                     <Button
                         type="submit"
                         label="Edit Skills"

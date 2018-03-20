@@ -14,6 +14,9 @@ class EditExistingSkill extends Component {
         this.state = {
             successModalOpen: false,
             userId: localStorage.getItem('user_id'),
+            skills: this.props.location.state.skillsData,
+            userSkillIds: this.props.location.state.skillIdsData,
+            numSkills: this.props.location.state.skillsData.length,
             skillTypeData: {}, // TODO?
             skillCategoryData: {},  // TODO ?
             rows: [], // TODO?
@@ -24,85 +27,39 @@ class EditExistingSkill extends Component {
             numChecked: 0, // number of checks for deleting skills
             errors: {}, // TODO?
             userCompetencies: [], // TODO?
-            userSkillIds: [], // TODO?
         };
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
-        this.getSkills = this.getSkills.bind(this);
+
         this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
         this.handleEditing = this.handleEditing.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentDidMount() {
-        this.getSkillCategories();
+        this.getRows();
     }
 
-    getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then( (response) => {
-            this.setState({ skillCategoryData: response.data });
-            this.getSkillTypes();
-        });
-    }
-
-    getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types').then( (response) => {
-            this.setState({ skillTypeData: response.data });
-            this.getSkills();
-        });
-    }
-
-    getSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId).then(response => {
-            this.setState({ numSkill: response.data.length });
-            this.setState({ skills: response.data });
-
-            const tableData = [];
-            const tableDataForEdit = [];
-            // loop through  UserSkills
-            for (let i = 0; i < this.state.numSkill; i++) {
-                // we are only interested in rows that has the current user's id
-                if (this.state.skills[i].userId.toString() === this.state.userId) {
-                    // loop through SkillTypes
-                    for(let j = 0; j < this.state.skillTypeData.length; j++) {
-                        // we are trying to find the row that has the same skillTypeId
-                        if (this.state.skillTypeData[j].id === this.state.skills[i].skillTypeId) {
-                            // loop through SkillCategories
-                            for(let k = 0; k < this.state.skillCategoryData.length; k++) {
-                                // we are trying to find the row that has the same skillCategoryId
-                                if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
-                                    this.state.userCompetencies.push(this.state.skills[i].competency);
-                                    this.state.userSkillIds.push(this.state.skills[i].id);
-                                    tableData.push({
-                                        'ID': this.state.rowNum + 1,
-                                        'Skill Category': this.state.skillCategoryData[k].name,
-                                        'Skill Name': this.state.skillTypeData[j].name,
-                                        'Skill Competency': this.state.skills[i].competency
-                                    });
-                                    tableDataForEdit.push({
-                                        'ID': this.state.rowNum + 1,
-                                        'Skill Category': this.state.skillCategoryData[k].name,
-                                        'Skill Name': this.state.skillTypeData[j].name,
-                                        'Competency': this.state.skills[i].competency,
-                                        'New Competency': <Dropdown
-                                                                label=""
-                                                                name="sC"
-                                                                data={COMPETENCY}
-                                                                onSelect={this.handleMultipleSelects}
-                                                                error={this.state.errors.sC}
-                                                             />,
-                                        'Remove Skill': <input type="checkbox" onClick={this.handleDelete} />
-                                    });
-                                    this.state.rowNum++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            this.setState({ rows: tableData});
-            this.setState({ editingRows: tableDataForEdit});
-        }).catch( () => {
-        });
+    getRows() {
+        const tableDataForEdit = [];
+        for (let i = 0; i < this.state.numSkills; i++) {
+            this.state.userCompetencies.push(Object.values(this.state.skills[i])[3]);
+            tableDataForEdit.push({
+                'ID': this.state.rowNum + 1,
+                'Skill Category': Object.values(this.state.skills[i])[1],
+                'Skill Name': Object.values(this.state.skills[i])[2],
+                'Competency': Object.values(this.state.skills[i])[3],
+                'New Competency': <Dropdown
+                                      label=""
+                                      name="sC"
+                                      data={COMPETENCY}
+                                      onSelect={this.handleMultipleSelects}
+                                      error={this.state.errors.sC}
+                                   />,
+                'Remove Skill': <input type="checkbox" onClick={this.handleDelete} />
+            });
+            this.state.rowNum++;
+        }
+        this.setState({ editingRows: tableDataForEdit});
     }
 
     handleMultipleSelects() {
@@ -124,24 +81,17 @@ class EditExistingSkill extends Component {
 
     handleDelete() {
         let tempNumChecked = 0;
-        const tempChecks = []; // temp: array of checks status for every user skill --> checks
+        const tempChecks = [];
         for (let i = 0; i < document.getElementsByTagName('input').length; i++) {
             if (document.getElementsByTagName('input')[i].checked) {
-                console.log('checkbox #:' + i + 'is check');
                 tempNumChecked++;
                 tempChecks.push(1);
             } else {
-                console.log('checkbox #:' + i + 'is uncheck');
                 tempChecks.push(0);
             }
         }
-        console.log('So far array tempChecks: ' + tempChecks);
         this.state.checks = tempChecks;
-        console.log('So far array checks: ' + this.state.checks);
-        console.log('So far there are ' + tempNumChecked + ' checks');
         this.state.numChecked = tempNumChecked;
-        console.log('Overall So far there are ' + this.state.numChecked + ' checks');
-        console.log('Rhoda leaves handleDelete');
     }
 
     handleEditing() {
@@ -192,7 +142,6 @@ class EditExistingSkill extends Component {
 
     render() {
         const { numSkill, successModalOpen } = this.state;
-
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
         if (numSkill === 0) {
@@ -231,10 +180,7 @@ class EditExistingSkill extends Component {
 
 EditExistingSkill.propTypes = {
     history: React.PropTypes.any,
-    userId: React.PropTypes.string,
-    data: PropTypes.any,
     location: PropTypes.any,
-    match: PropTypes.any
 };
 
 export default EditExistingSkill;
