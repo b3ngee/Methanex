@@ -4,6 +4,7 @@ import { resource } from '../styles/resource.scss';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Button from './Button.js';
+import { skill } from '../styles/skill.scss';
 
 class ResourceDetail extends React.Component {
 
@@ -63,7 +64,6 @@ class ResourceDetail extends React.Component {
             const data = response.data;
             const numSkill = response.data.length;
             const skillsRows = [];
-            let rowNum = 0;
             for (let i = 0; i < numSkill; i++) {
                 for(let j = 0; j < this.state.skillTypeData.length; j++) {
                     if (this.state.skillTypeData[j].id === data[i].skillTypeId) {
@@ -71,12 +71,10 @@ class ResourceDetail extends React.Component {
                             if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
                                 this.state.userSkillIds.push(data[i].id);
                                 skillsRows.push({
-                                    'ID': rowNum + 1,
                                     'Skill Category': this.state.skillCategoryData[k].name,
                                     'Skill Name': this.state.skillTypeData[j].name,
                                     'Skill Competency': data[i].competency
                                 });
-                                rowNum++;
                             }
                         }
                     }
@@ -104,7 +102,7 @@ class ResourceDetail extends React.Component {
 
     render() {
         let columns = ['Header', 'Value'];
-        let skillsColumns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
+        let skillsColumns = ['Skill Category', 'Skill Name', 'Skill Competency'];
         const data = this.state.rows;
         const skillsData = this.state.skillsRows;
         const skillIdsData = this.state.userSkillIds;
@@ -119,7 +117,9 @@ class ResourceDetail extends React.Component {
                             <Button label="Edit"/>
                         </Link>
                     </span>
-                    <h4><i>this resource currently has no skill...</i></h4>
+                    <div className = { skill }>
+                        <h4><i>this resource currently has no skill...</i></h4>
+                    </div>
                     <Link to = {{pathname: '/skill/add', state: {data}}}>
                         <Button
                             type="submit"
@@ -138,7 +138,10 @@ class ResourceDetail extends React.Component {
                         <Button label="Edit"/>
                     </Link>
                 </span>
-                <Table text="Resource Skills" columns={skillsColumns} rows={skillsData} />
+                <div className={ skill }>
+                    <h1>Skills</h1>
+                    <Table text="Resource Skills" columns={skillsColumns} rows={skillsData} />
+                </div>
                 <Link to = {{pathname: '/skill/add', state: {data}}}>
                     <Button
                         type="submit"

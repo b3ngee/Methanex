@@ -13,7 +13,6 @@ class Skill extends Component {
             skillTypeData: {},
             skillCategoryData: {},
             rows: [],
-            rowNum: 0,
             userSkillIds: []
         };
     }
@@ -35,12 +34,10 @@ class Skill extends Component {
                             if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
                                 this.state.userSkillIds.push(this.state.skills[i].id);
                                 tableData.push({
-                                    'ID': this.state.rowNum + 1,
                                     'Skill Category': this.state.skillCategoryData[k].name,
                                     'Skill Name': this.state.skillTypeData[j].name,
                                     'Skill Competency': this.state.skills[i].competency
                                 });
-                                this.state.rowNum++;
                             }
                         }
                     }
@@ -67,7 +64,7 @@ class Skill extends Component {
 
     render() {
         const { numSkill } = this.state;
-        let columns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
+        let columns = ['Skill Category', 'Skill Name', 'Skill Competency'];
         const data = [{'Value': localStorage.user_id}];
         const skillsData = this.state.rows;
         const skillIdsData = this.state.userSkillIds;
@@ -87,7 +84,7 @@ class Skill extends Component {
 
         return(
             <div className={ skill }>
-                <h1>My Skills</h1>
+                <p>My Skills</p>
                 <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
                 <Link to = {{pathname: '/skill/add', state: {data}}}>
                     <Button
