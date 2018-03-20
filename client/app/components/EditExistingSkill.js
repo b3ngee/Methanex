@@ -16,9 +16,8 @@ class EditExistingSkill extends Component {
             userId: localStorage.getItem('user_id'),
             skillTypeData: {}, // TODO?
             skillCategoryData: {},  // TODO ?
-            numSkill: 0, // TODO?
             rows: [], // TODO?
-            num: 0, // TODO?
+            rowNum: 0,
             editingRows: [], // REQUIRED
             editedCompetencies: [], // REQUIRED
             checks: [], // array of checks status for every user skill
@@ -26,7 +25,6 @@ class EditExistingSkill extends Component {
             errors: {}, // TODO?
             userCompetencies: [], // TODO?
             userSkillIds: [], // TODO?
-            userSkillNum: 0, // keep track of the number of user's skills
         };
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.getSkills = this.getSkills.bind(this);
@@ -36,9 +34,6 @@ class EditExistingSkill extends Component {
     }
 
     componentDidMount() {
-        this.state.num = 0;
-        this.state.userCompetencies = [];
-        this.state.editedCompetencies = [];
         this.getSkillCategories();
     }
 
@@ -57,7 +52,7 @@ class EditExistingSkill extends Component {
     }
 
     getSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills').then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId).then(response => {
             this.setState({ numSkill: response.data.length });
             this.setState({ skills: response.data });
 
@@ -75,17 +70,16 @@ class EditExistingSkill extends Component {
                             for(let k = 0; k < this.state.skillCategoryData.length; k++) {
                                 // we are trying to find the row that has the same skillCategoryId
                                 if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
-                                    this.state.userSkillNum++;
                                     this.state.userCompetencies.push(this.state.skills[i].competency);
                                     this.state.userSkillIds.push(this.state.skills[i].id);
                                     tableData.push({
-                                        'ID': this.state.num + 1,
+                                        'ID': this.state.rowNum + 1,
                                         'Skill Category': this.state.skillCategoryData[k].name,
                                         'Skill Name': this.state.skillTypeData[j].name,
                                         'Skill Competency': this.state.skills[i].competency
                                     });
                                     tableDataForEdit.push({
-                                        'ID': this.state.num + 1,
+                                        'ID': this.state.rowNum + 1,
                                         'Skill Category': this.state.skillCategoryData[k].name,
                                         'Skill Name': this.state.skillTypeData[j].name,
                                         'Competency': this.state.skills[i].competency,
@@ -98,7 +92,7 @@ class EditExistingSkill extends Component {
                                                              />,
                                         'Remove Skill': <input type="checkbox" onClick={this.handleDelete} />
                                     });
-                                    this.state.num++;
+                                    this.state.rowNum++;
                                 }
                             }
                         }
@@ -189,7 +183,6 @@ class EditExistingSkill extends Component {
         } else {
             this.componentDidMount();
         }
-        this.state.userSkillNum = 0;
         this.setState({ successModalOpen: true });
     }
 
@@ -198,11 +191,11 @@ class EditExistingSkill extends Component {
     }
 
     render() {
-        const { userSkillNum, successModalOpen } = this.state;
+        const { numSkill, successModalOpen } = this.state;
 
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
-        if (userSkillNum === 0) {
+        if (numSkill === 0) {
             return(
                <div className={ skill }>
                     <h4><i>you currently have no skill...</i></h4>

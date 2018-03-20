@@ -10,36 +10,28 @@ class Skill extends Component {
         super(props);
         this.state = {
             userId: localStorage.getItem('user_id'),
-            userSkillNum: 0, // keep track of the number of user's skills
             skillTypeData: {},  // TODO ?
             skillCategoryData: {}, // TODO?
-            numSkill: 0,  // TODO?
             rows: [], // TODO?
-            num: 0, // TODO?
+            rowNum: 0,
             errors: {}, // TODO?
-            userCompetencies: [], // TODO?
             userSkillIds: [] // TODO?
         };
         this.getSkills = this.getSkills.bind(this);
     }
 
     componentDidMount() {
-        this.state.num = 0;
-        this.state.userCompetencies = [];
         this.getSkillCategories();
     }
 
     getSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills').then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId).then(response => {
             this.setState({ numSkill: response.data.length });
             this.setState({ skills: response.data });
-
             const tableData = [];
             const tableDataForEdit = [];
-            // loop through  UserSkills
+
             for (let i = 0; i < this.state.numSkill; i++) {
-                // we are only interested in rows that has the current user's id
-                if (this.state.skills[i].userId.toString() === this.state.userId) {
                     // loop through SkillTypes
                     for(let j = 0; j < this.state.skillTypeData.length; j++) {
                         // we are trying to find the row that has the same skillTypeId
@@ -48,21 +40,18 @@ class Skill extends Component {
                             for(let k = 0; k < this.state.skillCategoryData.length; k++) {
                                 // we are trying to find the row that has the same skillCategoryId
                                 if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
-                                    this.state.userSkillNum++;
-                                    this.state.userCompetencies.push(this.state.skills[i].competency);
                                     this.state.userSkillIds.push(this.state.skills[i].id);
                                     tableData.push({
-                                        'ID': this.state.num + 1,
+                                        'ID': this.state.rowNum + 1,
                                         'Skill Category': this.state.skillCategoryData[k].name,
                                         'Skill Name': this.state.skillTypeData[j].name,
                                         'Skill Competency': this.state.skills[i].competency
                                     });
-                                    this.state.num++;
+                                    this.state.rowNum++;
                                 }
                             }
                         }
                     }
-                }
             }
             this.setState({ rows: tableData});
             this.setState({ editingRows: tableDataForEdit});
@@ -85,11 +74,11 @@ class Skill extends Component {
     }
 
     render() {
-        const { userSkillNum } = this.state;
+        const { numSkill } = this.state;
         let columns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
         const data = [{'Value': localStorage.user_id}];
 
-        if (userSkillNum === 0) {
+        if (numSkill === 0) {
             return(
                <div className={ skill }>
                     <h4><i>you currently have no skill...</i></h4>
