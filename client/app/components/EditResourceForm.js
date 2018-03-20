@@ -44,11 +44,9 @@ class EditResourceForm extends Component {
                 status: this.state.status,
                 enabled: this.state.enabled,
             }).then((response) => {
-                console.log(response.status);
                 if (response.status === 200) {
                     this.setState({ successModalOpen: true });
                 }
-                console.log('in on submit');
             }).catch((error) => {
                 this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
             });

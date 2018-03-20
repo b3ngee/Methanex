@@ -10,9 +10,6 @@ export default class Table extends Component {
         const cols = this.props.columns;
         const rows = this.props.rows;
 
-        // console.log('Columns: ', cols);
-        // console.log('Rows: ', rows);
-
         let headers = (<thead>
             <tr>
               {cols.map((column, ci) => {

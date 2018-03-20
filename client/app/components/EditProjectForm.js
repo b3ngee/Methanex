@@ -43,20 +43,20 @@ class EditProjectForm extends Component {
     }
 
     fetchPortfolios() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios').then((portfolioResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
             this.setState({ portfolios: portfolioResp.data });
         });
     }
 
     fetchManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles').then((roleResp) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles', {headers: {Pragma: 'no-cache'}}).then((roleResp) => {
             const projectManagerIDs = roleResp.data.filter(r => {
                 return r.role === 'PROJECT_MANAGER';
             }).map(ro => {
                 return ro.userId;
             });
 
-            axios.get('https://methanex-portfolio-management.herokuapp.com/users').then((userResp) => {
+            axios.get('https://methanex-portfolio-management.herokuapp.com/users', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
                 const projectManagers = userResp.data.filter(u => {
                     return projectManagerIDs.includes(u.id);
                 });

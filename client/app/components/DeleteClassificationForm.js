@@ -27,7 +27,7 @@ class DeleteClassificationForm extends React.Component {
     }
 
     getClassifications() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then((response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({classifications: response.data});
         });
     }
@@ -44,7 +44,6 @@ class DeleteClassificationForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        console.log(this.state.classID);
         if (this.isValid()) {
             axios.delete('https://methanex-portfolio-management.herokuapp.com/classifications/' + this.state.classID, {
                 id: this.state.classID

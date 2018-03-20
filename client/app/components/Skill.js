@@ -24,7 +24,7 @@ class Skill extends Component {
     }
 
     getSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId, {headers: {Pragma: 'no-cache'}}).then(response => {
             this.setState({ numSkill: response.data.length });
             this.setState({ skills: response.data });
             const tableData = [];
@@ -55,14 +55,14 @@ class Skill extends Component {
     }
 
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then( (response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then( (response) => {
             this.setState({ skillCategoryData: response.data });
             this.getSkillTypes();
         });
     }
 
     getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types').then( (response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
             this.setState({ skillTypeData: response.data });
             this.getSkills();
         });

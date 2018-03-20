@@ -27,7 +27,7 @@ class DeleteSkillCategoryForm extends React.Component {
     }
 
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories').then((response) => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({skillCategories: response.data});
         });
     }

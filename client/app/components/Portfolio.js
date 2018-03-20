@@ -23,13 +23,12 @@ class Portfolio extends React.Component {
 
     listClassifications() {
         // TODO: need to filter for Portfolio Managers only
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
                 data[response.data[i].id] = response.data[i].name;
             }
             this.setState({classificationIDs: data});
-            console.log(this.state.classificationIDs);
         }).then(() => {
             this.listProjects();
         }).catch(()=>{
@@ -45,10 +44,9 @@ class Portfolio extends React.Component {
         } else {
             query = '/portfolios?managerId=' + localStorage.user_id;
         }
-        axios.get(prodAPIEndpoint + query).then(response => {
+        axios.get(prodAPIEndpoint + query, {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = [];
             this.setState({listOfProjects: response.data});
-            console.log(response.data);
             const len = response.data.length;
             const portfolioIDs = [];
             for (let i = 0; i < len; i++) {

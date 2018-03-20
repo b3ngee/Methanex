@@ -40,9 +40,6 @@ export default class ReportingModule extends Component {
             marginRight: 'auto'
         };
 
-         console.log('Columns: ', cols);
-         console.log('Rows: ', rows);
-
         let data = rows;
 
         let columns = cols.map((colname) => {

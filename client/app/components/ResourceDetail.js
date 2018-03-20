@@ -25,10 +25,9 @@ class ResourceDetail extends React.Component {
 
     // TODO: need to fix up the apiary call
     getDetails() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const rows = [];
             const data = response.data;
-            console.log(data);
             for (const key in data) {
                 if(key !== null && typeof data[key] === 'boolean') {
                     rows.push({'Header': key, 'Value': data[key] + ''});
@@ -36,14 +35,13 @@ class ResourceDetail extends React.Component {
                     rows.push({'Header': key, 'Value': data[key]});
                 }
             }
-            console.log(data);
             this.setState({rows: rows});
         }).catch( () => {
         });
     }
 
     getUserSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id).then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const skillsRows = [];
             const data = response.data;
             for (let i = 0; i < response.data.length; i++) {
@@ -56,7 +54,7 @@ class ResourceDetail extends React.Component {
     }
 
     getSkillsNames() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types').then(response => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
                 data[response.data[i].id] = response.data[i].name;

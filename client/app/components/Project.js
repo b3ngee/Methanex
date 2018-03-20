@@ -62,7 +62,7 @@ class Project extends React.Component {
         } else {
             query = '/projects?managerId=' + localStorage.user_id;
         }
-        axios.get(prodAPIEndpoint + query).then(response => {
+        axios.get(prodAPIEndpoint + query, {headers: {Pragma: 'no-cache'}}).then(response => {
             this.setState({ numProject: response.data.length });
             this.setState({ projects: response.data });
 
