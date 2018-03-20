@@ -1,6 +1,8 @@
 package com.ch3oh.portfolio.util;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 public class PasswordUtilTest {
@@ -10,7 +12,7 @@ public class PasswordUtilTest {
         String password = "asdf";
         String hashedPassword = PasswordUtil.hashPassword(password);
 
-        Assert.assertTrue(PasswordUtil.checkPassword(password, hashedPassword));
+        assertTrue(PasswordUtil.checkPassword(password, hashedPassword));
     }
 
     @Test
@@ -18,7 +20,7 @@ public class PasswordUtilTest {
         String password = "asdf";
         String hashedPassword = PasswordUtil.hashPassword(password);
 
-        Assert.assertFalse(PasswordUtil.checkPassword("incorrect password", hashedPassword));
+        assertFalse(PasswordUtil.checkPassword("incorrect password", hashedPassword));
     }
 
     @Test
@@ -26,6 +28,6 @@ public class PasswordUtilTest {
         String password = "asdf";
         String hashedPassword = PasswordUtil.hashPassword(password);
 
-        Assert.assertFalse(PasswordUtil.checkPassword("ASDF", hashedPassword));
+        assertFalse(PasswordUtil.checkPassword("ASDF", hashedPassword));
     }
 }

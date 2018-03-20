@@ -1,6 +1,7 @@
 package com.ch3oh.portfolio.util;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -17,9 +18,9 @@ public class DateUtilTest {
         Date date = DateUtil.stringToDate(validDateStr);
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        Assert.assertEquals(2018, localDate.getYear());
-        Assert.assertEquals(1, localDate.getMonthValue());
-        Assert.assertEquals(1, localDate.getDayOfMonth());
+        assertEquals(2018, localDate.getYear());
+        assertEquals(1, localDate.getMonthValue());
+        assertEquals(1, localDate.getDayOfMonth());
     }
 
     @Test (expected = ParseException.class)
