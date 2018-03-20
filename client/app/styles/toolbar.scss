@@ -1,0 +1,31 @@
+@import './global.scss';
+
+.toolbar{
+    background: $lighten-primary-color;
+    height: 50px;
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+
+        li {
+            float: right;
+
+            a {
+                display: inline-block;
+                text-decoration: none;
+                padding: 14px 30px;
+
+                &:hover {
+                    background-color: $hover-color;
+                }
+
+                &:active {
+                    color: $navbar-active-color;
+                }
+            }
+        }
+    }
+}

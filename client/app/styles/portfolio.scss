@@ -1,0 +1,25 @@
+@import './global.scss';
+
+.portfolio {
+    text-align: center;
+    span {
+        text-decoration: none;
+        display: inline-block;
+        &:hover {
+            background-color: $hover-color;
+        }
+    }
+    a {
+        color: black;
+        text-decoration: none;
+        display: block;
+        &:hover {
+            background-color: $hover-color;
+        }
+    }
+}
+
+.portfolio-status {
+    width: 15px;
+    height: 20px;
+}
