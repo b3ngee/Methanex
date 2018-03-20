@@ -50,6 +50,7 @@ class Project extends React.Component {
         return(
             <div className={ project }>
                 <h1>My Projects</h1>
+                <h3>Number of projects: {this.state.rows.length}</h3>
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>

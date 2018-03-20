@@ -19,6 +19,7 @@ class AddUserForm extends React.Component {
             status: 'available',
             enabled: true,
             errors: {},
+            userID: '',
             successModalOpen: false,
             errorModalOpen: false,
         };
@@ -51,6 +52,7 @@ class AddUserForm extends React.Component {
                         address: '',
                         location: '',
                         status: '',
+                        userId: 'Successful! The new user\'s userID is ' + response.data.id,
                         errors: {}, successModalOpen: true
                     });
                 }
@@ -99,14 +101,14 @@ class AddUserForm extends React.Component {
     }
 
     render() {
-        const { firstName, lastName, email, password, address, location, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
+        const { firstName, lastName, email, password, address, location, errors, successModalOpen, errorModalOpen, userId, errorMessage } = this.state;
 
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>
                 <h2>Add new user</h2>
                 <PopupBox
-                    label="Successful!"
+                    label={userId}
                     isOpen={successModalOpen}
                     onClose={this.onCloseSuccess}
                 />
