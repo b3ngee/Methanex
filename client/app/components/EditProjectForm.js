@@ -165,7 +165,6 @@ class EditProjectForm extends Component {
         const managerObjects = this.state.managers.map((mo) => {
             return { id: mo.id, name: mo.firstName + ' ' + mo.lastName };
         });
-        console.log(this.props.location);
         return (
         <div className={ formBox }>
             <form onSubmit={this.onSubmit}>

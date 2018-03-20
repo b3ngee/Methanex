@@ -54,7 +54,6 @@ class Resource extends React.Component {
             for (let i = 0; i < response.data.length; i++) {
                 data[response.data[i].id] = response.data[i].firstName + ' ' + response.data[i].lastName;
             }
-            console.log(data);
             this.setState({ managerNames: data });
             this.getResources();
         }).catch( () => {

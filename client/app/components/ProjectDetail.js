@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { formBox } from '../styles/form.scss';
 import { project } from '../styles/project.scss';
-import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
+import { sanitizeProjectStatus, sanitizeRagStatus, sanitizeBudget } from '../utils/sanitizer';
 
  // const id = localStorage.getItem('project_id');
  // change 2 to id after routing is set-up
@@ -49,7 +49,7 @@ class ProjectDetail extends React.Component {
                 {'Header': 'Name', 'Value': data.name},
                 {'Header': 'Project Status', 'Value': sanitizeProjectStatus(data.projectStatus)},
                 {'Header': 'Status', 'Value': sanitizeRagStatus(data.ragStatus)},
-                {'Header': 'Budget', 'Value': data.budget},
+                {'Header': 'Budget', 'Value': sanitizeBudget(data.budget)},
                 {'Header': 'Spent To Date', 'Value': data.spentToDate},
                 {'Header': 'Estimate To Complete', 'Value': data.estimateToComplete},
                 {'Header': 'Manager ID', 'Value': data.managerId},

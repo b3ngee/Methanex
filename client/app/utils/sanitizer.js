@@ -1,3 +1,7 @@
+export function sanitizeBudget(budget) {
+    return `\$${budget}.00`;
+}
+
 export function sanitizeProjectStatus(status) {
     switch(status) {
         case 'PIPELINE':
