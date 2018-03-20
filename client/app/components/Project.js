@@ -5,7 +5,7 @@ import Button from './Button';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
-import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
+import { sanitizeProjectStatus, sanitizeRagStatus, sanitizeBudget } from '../utils/sanitizer';
 
 class Project extends React.Component {
     constructor(props) {
@@ -37,7 +37,11 @@ class Project extends React.Component {
 
             const tableData = [];
             for (let i = 0; i < this.state.numProject; i++) {
-                tableData.push({ 'ID': this.state.projects[i].id, 'Project Name': this.state.projects[i].name, 'Project Status': sanitizeProjectStatus(this.state.projects[i].projectStatus), 'Status': sanitizeRagStatus(this.state.projects[i].ragStatus), 'Budget': this.state.projects[i].budget });
+                tableData.push({ 'ID': this.state.projects[i].id,
+                    'Project Name': this.state.projects[i].name,
+                    'Project Status': sanitizeProjectStatus(this.state.projects[i].projectStatus),
+                    'Status': sanitizeRagStatus(this.state.projects[i].ragStatus),
+                    'Budget': sanitizeBudget(this.state.projects[i].budget) });
             }
             this.setState({ rows: tableData});
         }).catch( () => {
