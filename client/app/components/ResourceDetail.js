@@ -12,7 +12,9 @@ class ResourceDetail extends React.Component {
         this.state = {
             rows: [],
             skillsRows: [],
-            skillsNames: {}
+            userSkillIds: [],
+            skillTypeData: {},
+            skillCategoryData: {}
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -20,7 +22,7 @@ class ResourceDetail extends React.Component {
 
     componentDidMount() {
         this.getDetails();
-        this.getSkillsNames();
+        this.getSkillCategories();
     }
 
     // TODO: need to fix up the apiary call
@@ -40,35 +42,65 @@ class ResourceDetail extends React.Component {
         });
     }
 
-    getUserSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
-            const skillsRows = [];
-            const data = response.data;
-            for (let i = 0; i < response.data.length; i++) {
-                skillsRows.push({ 'Skill': this.state.skillsNames[data[i].skillTypeId], 'Competency': data[i].competency });
-            }
-            this.setState({skillsRows: skillsRows});
-            console.log(skillsRows);
-        }).catch( () => {
+    getSkillCategories() {
+         axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+             this.setState({ skillCategoryData: response.data });
+             this.getSkillTypes();
+         });
+    }
+
+    getSkillTypes() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+            this.setState({ skillTypeData: response.data });
+            this.getUserSkills();
         });
     }
 
-    getSkillsNames() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then(response => {
-            const data = {};
-            for (let i = 0; i < response.data.length; i++) {
-                data[response.data[i].id] = response.data[i].name;
+    getUserSkills() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
+            const data = response.data;
+            console.log(data);
+            const numSkill = response.data.length;
+            const skillsRows = [];
+            let rowNum = 0;
+            console.log('Rhoda1');
+            for (let i = 0; i < numSkill; i++) {
+                console.log('Rhoda2');
+                for(let j = 0; j < this.state.skillTypeData.length; j++) {
+                    console.log('Rhoda3');
+                    if (this.state.skillTypeData[j].id === data[i].skillTypeId) {
+                        console.log('Rhoda4');
+                        for(let k = 0; k < this.state.skillCategoryData.length; k++) {
+                            console.log('Rhoda5');
+                            if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
+                                console.log('Rhoda6');
+                                this.state.userSkillIds.push(data[i].id);
+                                console.log(skillsRows);
+                                console.log(data[i].competency);
+                                skillsRows.push({
+                                    'ID': rowNum + 1,
+                                    'Skill Category': this.state.skillCategoryData[k].name,
+                                    'Skill Name': this.state.skillTypeData[j].name,
+                                    'Skill Competency': data[i].competency
+                                });
+                                console.log(skillsRows);
+                                rowNum++;
+                            }
+                        }
+                    }
+                }
             }
-            this.setState({ skillsNames: data });
-            this.getUserSkills();
+            this.setState({ skillsRows: skillsRows});
         }).catch( () => {
         });
     }
 
     render() {
         let columns = ['Header', 'Value'];
-        let skillsColumns = ['Skill', 'Competency'];
+        let skillsColumns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
         const data = this.state.rows;
+        const skillsData = this.state.skillsRows;
+        const skillIdsData = this.state.userSkillIds;
         console.log('Rhoda? ' + Object.values(this.state.skillsRows));
         return (
             <div className={ resource }>
@@ -79,14 +111,14 @@ class ResourceDetail extends React.Component {
                         <Button label="Edit"/>
                     </Link>
                 </span>
-                <Table text="Resource Skills" columns={skillsColumns} rows={this.state.skillsRows} />
+                <Table text="Resource Skills" columns={skillsColumns} rows={skillsData} />
                 <Link to = {{pathname: '/skill/add', state: {data}}}>
                     <Button
                         type="submit"
                         label="Add Skill"
                     />
                 </Link>
-                <Link to = {{pathname: '/skill/edit', state: {data}}}>
+                <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData, data}}}>
                     <Button
                         type="submit"
                         label="Edit Skills"

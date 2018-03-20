@@ -16,7 +16,6 @@ class Skill extends Component {
             rowNum: 0,
             userSkillIds: []
         };
-        this.getSkills = this.getSkills.bind(this);
     }
 
     componentDidMount() {
@@ -28,7 +27,6 @@ class Skill extends Component {
             this.setState({ numSkill: response.data.length });
             this.setState({ skills: response.data });
             const tableData = [];
-            const tableDataForEdit = [];
 
             for (let i = 0; i < this.state.numSkill; i++) {
                 for(let j = 0; j < this.state.skillTypeData.length; j++) {
@@ -49,7 +47,6 @@ class Skill extends Component {
                 }
             }
             this.setState({ rows: tableData});
-            this.setState({ editingRows: tableDataForEdit});
         }).catch( () => {
         });
     }
