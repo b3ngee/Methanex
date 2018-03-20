@@ -69,7 +69,7 @@ public class UserSkillServiceImplTest {
     }
 
     @Test
-    public void testGetSkillCategory() {
+    public void testGetUserSkill() {
         UserSkill us = userSkillService.getUserSkill(US0_ID.toString());
         assertEquals(US0_ID, us.getId());
         assertEquals(US0_USER_ID, us.getUserId());
@@ -78,7 +78,7 @@ public class UserSkillServiceImplTest {
     }
 
     @Test(expected = GeneralRestNotFoundException.class)
-    public void testGetSkillCategory_notFound() {
+    public void testGetUserSkill_notFound() {
         userSkillService.getUserSkill(NON_EXISTENT_USERSKILL_ID.toString());
     }
 
@@ -142,30 +142,30 @@ public class UserSkillServiceImplTest {
     }
 
     @Test (expected = UserNotFoundException.class)
-    public void testUpdateSkillCategory_nonExistentUserId() {
+    public void testUpdateUserSkill_nonExistentUserId() {
         US0.setUserId(NON_EXISTENT_USER_ID);
         userSkillService.updateUserSkill(US0_ID.toString(), US0);
     }
 
     @Test (expected = RestBadRequestException.class)
-    public void testUpdateSkillCategory_nonExistentSkillTypeId() {
+    public void testUpdateUserSkill_nonExistentSkillTypeId() {
         US0.setSkillTypeId(NON_EXISTENT_SKILLTYPE_ID);
         userSkillService.updateUserSkill(US0_ID.toString(), US0);
     }
 
     @Test (expected = RestBadRequestException.class)
-    public void testUpdateSkillCategory_invalidCompetency() {
+    public void testUpdateUserSkill_invalidCompetency() {
         US0.setCompetency(INVALID_COMPETENCY);
         userSkillService.updateUserSkill(US0_ID.toString(), US0);
     }
 
     @Test
-    public void testDeleteSkillCategory() {
+    public void testDeleteUserSkill() {
         userSkillService.deleteUserSkill(US0_ID.toString());
     }
 
     @Test(expected = GeneralRestNotFoundException.class)
-    public void testDeleteSkillCategory_notFound() {
+    public void testDeleteUserSkill_notFound() {
         userSkillService.deleteUserSkill(NON_EXISTENT_USERSKILL_ID.toString());
     }
 }
