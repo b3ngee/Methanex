@@ -1,14 +1,17 @@
 import React from 'react';
 import axios from 'axios';
-import TextFieldGroup from './TextFieldGroup';
+import Dropdown from './Dropdown';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
+import {RESOURCE_MANAGER, SUPER_ADMIN, PORTFOLIO_MANAGER, RESOURCE, PROJECT_MANAGER } from '../constants/constants';
 
 class AddUserRoleForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            roles: [],
+            users: [],
             userId: '',
             role: '',
             errors: {},
@@ -17,9 +20,27 @@ class AddUserRoleForm extends React.Component {
         };
 
         this.onSubmit = this.onSubmit.bind(this);
-        this.onChange = this.onChange.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
+    }
+
+    componentDidMount() {
+        this.getUsers();
+        this.getUserRoles();
+    }
+
+    getUsers() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users', {headers: {Pragma: 'no-cache'}}).then((response) => {
+            this.setState({users: response.data});
+        });
+    }
+
+    getUserRoles() {
+        const roles_ = [{ id: RESOURCE_MANAGER, name: 'Resource Manager' }, { id: SUPER_ADMIN, name: 'Super Admin' }, { id: PORTFOLIO_MANAGER, name: 'Portfolio Manager' }, { id: RESOURCE, name: 'Resource' }, { id: PROJECT_MANAGER, name: 'Project Manager' }];
+        this.setState({
+            roles: roles_
+        });
     }
 
     isValid() {
@@ -37,7 +58,6 @@ class AddUserRoleForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        // TODO: need to make apiary call for /newSkillType
         if (this.isValid()) {
             axios.post('https://methanex-portfolio-management.herokuapp.com/user-roles', {
                 userId: this.state.userId,
@@ -56,7 +76,7 @@ class AddUserRoleForm extends React.Component {
         }
     }
 
-    onChange(e) {
+    handleSelect(e) {
         this.setState({ [e.target.name]: e.target.value });
     }
 
@@ -69,12 +89,15 @@ class AddUserRoleForm extends React.Component {
     }
 
     render() {
-        const { userId, role, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
+        const { roles, errors, successModalOpen, errorModalOpen, errorMessage } = this.state;
 
+        const userObjects = this.state.users.map((uo) => {
+            return {id: uo.id, name: uo.firstName + ' ' + uo.lastName};
+        });
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
-                    <h2>Add New User Role</h2>
+                    <h2>Assign Role to User</h2>
                     <PopupBox
                         label="Successful!"
                         isOpen={successModalOpen}
@@ -85,19 +108,19 @@ class AddUserRoleForm extends React.Component {
                         isOpen={errorModalOpen}
                         onClose={this.onCloseError}
                     />
-                    <TextFieldGroup
-                        field="userId"
-                        label="User ID"
-                        value={userId}
+                    <Dropdown
+                        label="Select a User"
+                        name="userId"
+                        data={userObjects}
+                        onSelect={this.handleSelect}
                         error={errors.userId}
-                        onChange={this.onChange}
                     />
-                    <TextFieldGroup
-                        field="role"
-                        label="Assign Role"
-                        value={role}
-                        error={errors.role}
-                        onChange={this.onChange}
+                     <Dropdown
+                         label="Select a Role"
+                         name="role"
+                         data={roles}
+                         onSelect={this.handleSelect}
+                         error={errors.role}
                     />
                     <Button
                         type="submit"

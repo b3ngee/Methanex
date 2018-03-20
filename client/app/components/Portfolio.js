@@ -68,6 +68,7 @@ class Portfolio extends React.Component {
         return (
             <div className={ portfolio }>
                 <h1>Hello {localStorage.getItem('user_name')}</h1>
+                <h3>Number of portfolios {this.state.rows.length} </h3>
                 <p>{"Here's an overview of your portfolios."}</p>
                 <Table columns={columns} rows={this.state.rows} ids={this.state.portfolioIDs}/>
                 <span>

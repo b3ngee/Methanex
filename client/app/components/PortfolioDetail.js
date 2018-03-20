@@ -2,6 +2,7 @@ import React from 'react';
 import { project } from '../styles/project.scss';
 import Table from './Table';
 import axios from 'axios';
+import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 
 class PortfolioDetails extends React.Component {
     constructor(props) {
@@ -26,7 +27,7 @@ class PortfolioDetails extends React.Component {
 
             const tableData = [];
             for (let i = 0; i < this.state.numProject; i++) {
-                tableData.push({ 'ID': this.state.projects[i].id, 'Project Name': this.state.projects[i].name, 'Project Status': this.state.projects[i].projectStatus, 'Status': this.state.projects[i].ragStatus, 'Budget': this.state.projects[i].budget });
+                tableData.push({ 'ID': this.state.projects[i].id, 'Project Name': this.state.projects[i].name, 'Project Status': sanitizeProjectStatus(this.state.projects[i].projectStatus), 'Status': sanitizeRagStatus(this.state.projects[i].ragStatus), 'Budget': this.state.projects[i].budget });
             }
             this.setState({ rows: tableData});
         }).catch( () => {

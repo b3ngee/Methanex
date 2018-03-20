@@ -11,14 +11,16 @@ class Resource extends React.Component {
         this.state = {
             numResources: 0,
             rows: [],
-            resourceIDs: []
+            resourceIDs: [],
+            managerNames: {}
         };
 
         this.getResources = this.getResources.bind(this);
+        this.getManagerNames = this.getManagerNames.bind(this);
     }
 
     componentDidMount() {
-        this.getResources();
+        this.getManagerNames();
     }
 
     getResources() {
@@ -36,7 +38,7 @@ class Resource extends React.Component {
             const tableData = [];
             const resourceIDs = [];
             for (let i = 0; i < this.state.numResources; i++) {
-                tableData.push({ 'ID': this.state.resources[i].id, 'Resource Name': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName, 'Manager ID': this.state.resources[i].managerId, 'Status': this.state.resources[i].status });
+                tableData.push({ 'ID': this.state.resources[i].id, 'Resource Name': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName, 'Manager ID': this.state.managerNames[response.data[i].managerId], 'Status': this.state.resources[i].status });
                 resourceIDs.push(this.state.resources[i].resource_id);
             }
             this.setState({ rows: tableData});
@@ -46,12 +48,26 @@ class Resource extends React.Component {
         });
     }
 
+    getManagerNames() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users', {headers: {Pragma: 'no-cache'}}).then(response => {
+            const data = {};
+            for (let i = 0; i < response.data.length; i++) {
+                data[response.data[i].id] = response.data[i].firstName + ' ' + response.data[i].lastName;
+            }
+            console.log(data);
+            this.setState({ managerNames: data });
+            this.getResources();
+        }).catch( () => {
+        });
+    }
+
     render() {
         let columns = ['ID', 'Resource Name', 'Manager ID', 'Status'];
         const rows = this.state.rows;
         return(
             <div className={ resource }>
                 <h1>My Resources</h1>
+                <h3>Number of resources: {this.state.rows.length} </h3>
                 <Table text="List of Resources" columns={columns} rows={this.state.rows} ids={this.state.resourceIDs}/>
                 <span>
                     <Link to={{pathname: '/resource/report', state: {c: {columns}, r: {rows}}}}>

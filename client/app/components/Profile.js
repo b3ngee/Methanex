@@ -1,5 +1,4 @@
 import React from 'react';
-// import axios from 'axios/index';
 import VerticalTable from './VerticalTable.js';
 import { profile } from '../styles/profile.scss';
 import Skill from './Skill';
@@ -12,7 +11,6 @@ class Profile extends React.Component {
         this.state = {
             skills: []
         };
-        // this.getUserSkills = this.getUserSkills.bind(this);
     }
 
     sanitizeRoles(roles) {

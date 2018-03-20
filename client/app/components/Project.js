@@ -5,6 +5,7 @@ import Button from './Button';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
+import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 
 class Project extends React.Component {
     constructor(props) {
@@ -19,38 +20,6 @@ class Project extends React.Component {
 
     componentDidMount() {
         this.getProjects();
-    }
-
-    sanitizeProjectStatus(status) {
-        switch(status) {
-            case 'PIPELINE':
-                return 'Pipeline';
-            case 'PRE_APPROVAL':
-                return 'Pre Approval';
-            case 'SEEKING_FUNDING':
-                return 'Seeking Funding';
-            case 'ON_HOLD':
-                return 'On Hold';
-            case 'UNDERWAY':
-                return 'Underway';
-            case 'STOPPED':
-                return 'Stopped';
-            default:
-                return status;
-        }
-    }
-
-    sanitizeRagStatus(status) {
-        switch(status) {
-            case 'RED':
-                return 'Red';
-            case 'AMBER':
-                return 'Amber';
-            case 'Green':
-                return 'Green';
-            default:
-                return status;
-        }
     }
 
     getProjects() {
@@ -68,7 +37,7 @@ class Project extends React.Component {
 
             const tableData = [];
             for (let i = 0; i < this.state.numProject; i++) {
-                tableData.push({ 'ID': this.state.projects[i].id, 'Project Name': this.state.projects[i].name, 'Project Status': this.sanitizeProjectStatus(this.state.projects[i].projectStatus), 'Status': this.sanitizeRagStatus(this.state.projects[i].ragStatus), 'Budget': this.state.projects[i].budget });
+                tableData.push({ 'ID': this.state.projects[i].id, 'Project Name': this.state.projects[i].name, 'Project Status': sanitizeProjectStatus(this.state.projects[i].projectStatus), 'Status': sanitizeRagStatus(this.state.projects[i].ragStatus), 'Budget': this.state.projects[i].budget });
             }
             this.setState({ rows: tableData});
         }).catch( () => {
@@ -81,6 +50,7 @@ class Project extends React.Component {
         return(
             <div className={ project }>
                 <h1>My Projects</h1>
+                <h3>Number of projects: {this.state.rows.length}</h3>
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>
