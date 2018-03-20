@@ -138,7 +138,7 @@ class EditExistingSkill extends Component {
     render() {
         const { numSkills, successModalOpen } = this.state;
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
-        const data = [{'Value': localStorage.user_id}];
+        let data = [{'Value': localStorage.user_id}];
         if (numSkills === 0) {
             if (this.props.location.state.data[0].Value === localStorage.user_id) {
                 return(
@@ -153,14 +153,17 @@ class EditExistingSkill extends Component {
                     </div>
                 );
             }
+            const indirectId = this.props.location.state.data[0].Value.toString();
+            data = [{'Value': indirectId}];
             return(
                <div className={ skill }>
                     <h4><i> this resource has no skill...</i></h4>
-                    <PopupBox
-                        label="this resource has no skills to edit!"
-                        isOpen={successModalOpen}
-                        onClose={this.onCloseSuccess}
-                    />
+                    <Link to = {{pathname: '/skill/add', state: {data}}}>
+                        <Button
+                            type="submit"
+                            label="Add Skill"
+                        />
+                    </Link>
                 </div>
             );
         }
