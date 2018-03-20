@@ -17,16 +17,13 @@ class EditExistingSkill extends Component {
             skills: this.props.location.state.skillsData,
             userSkillIds: this.props.location.state.skillIdsData,
             numSkills: this.props.location.state.skillsData.length,
-            skillTypeData: {}, // TODO?
-            skillCategoryData: {},  // TODO ?
-            rows: [], // TODO?
             rowNum: 0,
-            editingRows: [], // REQUIRED
-            editedCompetencies: [], // REQUIRED
+            editingRows: [],
+            editedCompetencies: [],
             checks: [], // array of checks status for every user skill
             numChecked: 0, // number of checks for deleting skills
-            errors: {}, // TODO?
-            userCompetencies: [], // TODO?
+            errors: {},
+            userCompetencies: [],
         };
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
 
@@ -65,7 +62,7 @@ class EditExistingSkill extends Component {
     handleMultipleSelects() {
         const competencies = [];
         const updatedCompetencies = [];
-        for (let i = 0; i < document.getElementsByTagName('select').length; i++) {
+        for (let i = 0; i < this.state.numSkills; i++) {
             const skillCompetency = document.getElementsByTagName('select')[i].value;
             competencies.push(skillCompetency);
         }
@@ -82,7 +79,8 @@ class EditExistingSkill extends Component {
     handleDelete() {
         let tempNumChecked = 0;
         const tempChecks = [];
-        for (let i = 0; i < document.getElementsByTagName('input').length; i++) {
+        console.log(this.state.numSkills);
+        for (let i = 0; i < this.state.numSkills; i++) {
             if (document.getElementsByTagName('input')[i].checked) {
                 tempNumChecked++;
                 tempChecks.push(1);
@@ -96,9 +94,6 @@ class EditExistingSkill extends Component {
 
     handleEditing() {
         let differenceCount = 0;
-        this.setState({
-            editMode: 0
-        });
         for (let i = 0; i < this.state.userCompetencies.length; i++) {
             if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
                 differenceCount++;
@@ -141,10 +136,10 @@ class EditExistingSkill extends Component {
     }
 
     render() {
-        const { numSkill, successModalOpen } = this.state;
+        const { numSkills, successModalOpen } = this.state;
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
-        if (numSkill === 0) {
+        if (numSkills === 0) {
             return(
                <div className={ skill }>
                     <h4><i>you currently have no skill...</i></h4>

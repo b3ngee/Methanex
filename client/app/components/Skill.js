@@ -10,11 +10,10 @@ class Skill extends Component {
         super(props);
         this.state = {
             userId: localStorage.getItem('user_id'),
-            skillTypeData: {},  // TODO ?
-            skillCategoryData: {}, // TODO?
-            rows: [], // TODO?
+            skillTypeData: {},
+            skillCategoryData: {},
+            rows: [],
             rowNum: 0,
-            errors: {}, // TODO?
             userSkillIds: []
         };
         this.getSkills = this.getSkills.bind(this);
@@ -32,13 +31,9 @@ class Skill extends Component {
             const tableDataForEdit = [];
 
             for (let i = 0; i < this.state.numSkill; i++) {
-                // loop through SkillTypes
                 for(let j = 0; j < this.state.skillTypeData.length; j++) {
-                    // we are trying to find the row that has the same skillTypeId
                     if (this.state.skillTypeData[j].id === this.state.skills[i].skillTypeId) {
-                        // loop through SkillCategories
                         for(let k = 0; k < this.state.skillCategoryData.length; k++) {
-                            // we are trying to find the row that has the same skillCategoryId
                             if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
                                 this.state.userSkillIds.push(this.state.skills[i].id);
                                 tableData.push({
