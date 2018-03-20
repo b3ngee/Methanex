@@ -97,7 +97,7 @@ class AddUserRoleForm extends React.Component {
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
-                    <h2>Add New User Role</h2>
+                    <h2>Assign Role to User</h2>
                     <PopupBox
                         label="Successful!"
                         isOpen={successModalOpen}
