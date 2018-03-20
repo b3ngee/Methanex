@@ -12,7 +12,8 @@ class ResourceDetail extends React.Component {
         this.state = {
             rows: [],
             skillsRows: [],
-            skillsNames: {}
+            skillsNames: {},
+            tableHeaders: {}
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -21,6 +22,7 @@ class ResourceDetail extends React.Component {
     componentDidMount() {
         this.getDetails();
         this.getSkillsNames();
+        this.sanitizeTableHeaders();
     }
 
     // TODO: need to fix up the apiary call
@@ -30,9 +32,9 @@ class ResourceDetail extends React.Component {
             const data = response.data;
             for (const key in data) {
                 if(key !== null && typeof data[key] === 'boolean') {
-                    rows.push({'Header': key, 'Value': data[key] + ''});
+                    rows.push({'Header': this.state.tableHeaders[key], 'Value': data[key] + ''});
                 } else if (key !== null) {
-                    rows.push({'Header': key, 'Value': data[key]});
+                    rows.push({'Header': this.state.tableHeaders[key], 'Value': data[key]});
                 }
             }
             this.setState({rows: rows});
@@ -63,6 +65,21 @@ class ResourceDetail extends React.Component {
             this.getUserSkills();
         }).catch( () => {
         });
+    }
+
+    sanitizeTableHeaders() {
+        const tableHeaders = {
+            id: 'ID',
+            managerId: 'Manager ID',
+            firstName: 'First Name',
+            lastName: 'Last Name',
+            address: 'Address',
+            email: 'Email',
+            location: 'Location',
+            status: 'Status',
+            enabled: 'Enabled'
+        };
+        this.setState({ tableHeaders: tableHeaders});
     }
 
     render() {
