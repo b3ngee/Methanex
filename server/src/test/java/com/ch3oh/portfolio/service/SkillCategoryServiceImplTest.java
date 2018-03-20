@@ -18,10 +18,10 @@ import com.ch3oh.portfolio.repository.SkillCategoryDao;
 @RunWith(MockitoJUnitRunner.class)
 public class SkillCategoryServiceImplTest {
     private static SkillCategory SC0;
-    private static Integer SC0_ID = 0;
-    private static String SC0_NAME = "SC0_NAME";
+    private static final Integer SC0_ID = 0;
+    private static final String SC0_NAME = "SC0_NAME";
 
-    private static Integer NON_EXISTENT_ID = 1;
+    private static final Integer NON_EXISTENT_ID = 1;
 
     @Mock
     private SkillCategoryDao skillCategoryDao;

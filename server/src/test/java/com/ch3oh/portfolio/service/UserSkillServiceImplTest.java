@@ -21,20 +21,20 @@ import com.ch3oh.portfolio.repository.UserSkillDao;
 @RunWith(MockitoJUnitRunner.class)
 public class UserSkillServiceImplTest {
     private static UserSkill US0;
-    private static Integer US0_ID = 0;
-    private static Integer US0_USER_ID = 0;
-    private static Integer US0_SKILLTYPE_ID = 0;
-    private static Integer US0_COMPETENCY = 5;
+    private static final Integer US0_ID = 0;
+    private static final Integer US0_USER_ID = 0;
+    private static final Integer US0_SKILLTYPE_ID = 0;
+    private static final Integer US0_COMPETENCY = 5;
 
-    private static Integer EXISTENT_USER_ID = 2;
-    private static Integer EXISTENT_SKILLTYPE_ID = 2;
+    private static final Integer EXISTENT_USER_ID = 2;
+    private static final Integer EXISTENT_SKILLTYPE_ID = 2;
 
-    private static Integer NON_EXISTENT_USERSKILL_ID = 1;
-    private static Integer NON_EXISTENT_USER_ID = 1;
-    private static Integer NON_EXISTENT_SKILLTYPE_ID = 1;
+    private static final Integer NON_EXISTENT_USERSKILL_ID = 1;
+    private static final Integer NON_EXISTENT_USER_ID = 1;
+    private static final Integer NON_EXISTENT_SKILLTYPE_ID = 1;
 
-    private static Integer VALID_COMPETENCY = 1;
-    private static Integer INVALID_COMPETENCY = 6;
+    private static final Integer VALID_COMPETENCY = 1;
+    private static final Integer INVALID_COMPETENCY = 6;
 
     @Mock
     private UserSkillDao userSkillDao;

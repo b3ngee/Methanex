@@ -18,10 +18,10 @@ import com.ch3oh.portfolio.repository.ClassificationDao;
 @RunWith(MockitoJUnitRunner.class)
 public class ClassificationServiceImplTest {
     private static Classification C0;
-    private static Integer C0_ID = 0;
-    private static String C0_NAME = "C0_NAME";
+    private static final Integer C0_ID = 0;
+    private static final String C0_NAME = "C0_NAME";
 
-    private static Integer NON_EXISTENT_ID = 1;
+    private static final Integer NON_EXISTENT_ID = 1;
 
     @Mock
     private ClassificationDao classificationDao;

@@ -19,14 +19,14 @@ import com.ch3oh.portfolio.repository.SkillTypeDao;
 @RunWith(MockitoJUnitRunner.class)
 public class SkillTypeServiceImplTest {
     private static SkillType ST0;
-    private static Integer ST0_ID = 0;
-    private static Integer ST0_SKILLCATEGORY_ID = 0;
-    private static String ST0_NAME = "ST0_NAME";
+    private static final Integer ST0_ID = 0;
+    private static final Integer ST0_SKILLCATEGORY_ID = 0;
+    private static final String ST0_NAME = "ST0_NAME";
 
-    private static Integer EXISTENT_SKILLCATEGORY_ID = 2;
+    private static final Integer EXISTENT_SKILLCATEGORY_ID = 2;
 
-    private static Integer NON_EXISTENT_SKILLTYPE_ID = 1;
-    private static Integer NON_EXISTENT_SKILLCATEGORY_ID = 1;
+    private static final Integer NON_EXISTENT_SKILLTYPE_ID = 1;
+    private static final Integer NON_EXISTENT_SKILLCATEGORY_ID = 1;
 
     @Mock
     private SkillTypeDao skillTypeDao;
