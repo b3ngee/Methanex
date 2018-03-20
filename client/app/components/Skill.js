@@ -87,7 +87,7 @@ class Skill extends Component {
 
         return(
             <div className={ skill }>
-                <h1>My Skills</h1>
+                <p>My Skills</p>
                 <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
                 <Link to = {{pathname: '/skill/add', state: {data}}}>
                     <Button

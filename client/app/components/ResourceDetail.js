@@ -4,6 +4,7 @@ import { resource } from '../styles/resource.scss';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Button from './Button.js';
+import { skill } from '../styles/skill.scss';
 
 class ResourceDetail extends React.Component {
 
@@ -119,7 +120,9 @@ class ResourceDetail extends React.Component {
                             <Button label="Edit"/>
                         </Link>
                     </span>
-                    <h4><i>this resource currently has no skill...</i></h4>
+                    <div className = { skill }>
+                        <h4><i>this resource currently has no skill...</i></h4>
+                    </div>
                     <Link to = {{pathname: '/skill/add', state: {data}}}>
                         <Button
                             type="submit"
@@ -138,7 +141,10 @@ class ResourceDetail extends React.Component {
                         <Button label="Edit"/>
                     </Link>
                 </span>
-                <Table text="Resource Skills" columns={skillsColumns} rows={skillsData} />
+                <div className={ skill }>
+                    <h1>Skills</h1>
+                    <Table text="Resource Skills" columns={skillsColumns} rows={skillsData} />
+                </div>
                 <Link to = {{pathname: '/skill/add', state: {data}}}>
                     <Button
                         type="submit"
