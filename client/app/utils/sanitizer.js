@@ -3,7 +3,7 @@ export function sanitizeProjectStatus(status) {
         case 'PIPELINE':
             return 'Pipeline';
         case 'PRE_APPROVAL':
-            return 'Pre Approval';
+            return 'Pre-Approval';
         case 'SEEKING_FUNDING':
             return 'Seeking Funding';
         case 'ON_HOLD':
@@ -23,8 +23,40 @@ export function sanitizeRagStatus(status) {
             return 'Red';
         case 'AMBER':
             return 'Amber';
-        case 'Green':
+        case 'GREEN':
             return 'Green';
+        default:
+            return status;
+    }
+}
+
+export function enumifyProjectStatus(status) {
+    switch(status) {
+        case 'Pipeline':
+            return 'PIPELINE';
+        case 'Pre-Approval':
+            return 'PRE_APPROVAL';
+        case 'Seeking Funding':
+            return 'SEEKING_FUNDING';
+        case 'On Hold':
+            return 'ON_HOLD';
+        case 'Underway':
+            return 'UNDERWAY';
+        case 'Stopped':
+            return 'STOPPED';
+        default:
+            return status;
+    }
+}
+
+export function enumifyRagStatus(status) {
+    switch(status) {
+        case 'Red':
+            return 'RED';
+        case 'Amber':
+            return 'AMBER';
+        case 'Green':
+            return 'GREEN';
         default:
             return status;
     }
