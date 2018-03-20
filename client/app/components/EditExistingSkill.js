@@ -18,7 +18,6 @@ class EditExistingSkill extends Component {
             skills: this.props.location.state.skillsData,
             userSkillIds: this.props.location.state.skillIdsData,
             numSkills: this.props.location.state.skillsData.length,
-            rowNum: 0,
             editingRows: [],
             editedCompetencies: [],
             checks: [], // array of checks status for every user skill
@@ -42,7 +41,6 @@ class EditExistingSkill extends Component {
         for (let i = 0; i < this.state.numSkills; i++) {
             this.state.userCompetencies.push(Object.values(this.state.skills[i])[3]);
             tableDataForEdit.push({
-                'ID': this.state.rowNum + 1,
                 'Skill Category': Object.values(this.state.skills[i])[1],
                 'Skill Name': Object.values(this.state.skills[i])[2],
                 'Competency': Object.values(this.state.skills[i])[3],
@@ -55,7 +53,6 @@ class EditExistingSkill extends Component {
                                    />,
                 'Remove Skill': <input type="checkbox" onClick={this.handleDelete} />
             });
-            this.state.rowNum++;
         }
         this.setState({ editingRows: tableDataForEdit});
     }
@@ -135,7 +132,7 @@ class EditExistingSkill extends Component {
 
     render() {
         const { numSkills, successModalOpen, errorModalOpen } = this.state;
-        let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
+        let editingColumns = ['Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
         if (numSkills === 0) {
             if (this.props.location.state.data[0].Value === localStorage.user_id) {
