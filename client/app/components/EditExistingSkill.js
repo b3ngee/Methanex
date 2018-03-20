@@ -140,18 +140,31 @@ class EditExistingSkill extends Component {
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
         if (numSkills === 0) {
+            if (this.props.location.state.data[0].Value === localStorage.user_id) {
+                return(
+                   <div className={ skill }>
+                        <h4><i>you currently have no skill...</i></h4>
+                        <Link to = {{pathname: '/skill/add', state: {data}}}>
+                            <Button
+                                type="submit"
+                                label="Add Skill"
+                            />
+                        </Link>
+                    </div>
+                );
+            }
             return(
                <div className={ skill }>
-                    <h4><i>you currently have no skill...</i></h4>
-                    <Link to = {{pathname: '/skill/add', state: {data}}}>
-                        <Button
-                            type="submit"
-                            label="Add Skill"
-                        />
-                    </Link>
+                    <h4><i> this resource has no skill...</i></h4>
+                    <PopupBox
+                        label="this resource has no skills to edit!"
+                        isOpen={successModalOpen}
+                        onClose={this.onCloseSuccess}
+                    />
                 </div>
             );
         }
+
         return(
             <div className={ skill }>
                 <h1>Editing Skills</h1>
@@ -161,13 +174,11 @@ class EditExistingSkill extends Component {
                     onClose={this.onCloseSuccess}
                 />
                 <Table text="List of Skills" columns={editingColumns} rows={this.state.editingRows}/>
-                <Link to = {{pathname: '/', state: {data}}}>
-                    <Button
-                        type="submit"
-                        label="save changes"
-                        onClick={this.handleEditing}
-                    />
-                </Link>
+                <Button
+                    type="submit"
+                    label="save changes"
+                    onClick={this.handleEditing}
+                />
             </div>
         );
     }

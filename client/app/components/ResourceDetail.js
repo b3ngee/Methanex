@@ -59,31 +59,21 @@ class ResourceDetail extends React.Component {
     getUserSkills() {
         axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = response.data;
-            console.log(data);
             const numSkill = response.data.length;
             const skillsRows = [];
             let rowNum = 0;
-            console.log('Rhoda1');
             for (let i = 0; i < numSkill; i++) {
-                console.log('Rhoda2');
                 for(let j = 0; j < this.state.skillTypeData.length; j++) {
-                    console.log('Rhoda3');
                     if (this.state.skillTypeData[j].id === data[i].skillTypeId) {
-                        console.log('Rhoda4');
                         for(let k = 0; k < this.state.skillCategoryData.length; k++) {
-                            console.log('Rhoda5');
                             if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
-                                console.log('Rhoda6');
                                 this.state.userSkillIds.push(data[i].id);
-                                console.log(skillsRows);
-                                console.log(data[i].competency);
                                 skillsRows.push({
                                     'ID': rowNum + 1,
                                     'Skill Category': this.state.skillCategoryData[k].name,
                                     'Skill Name': this.state.skillTypeData[j].name,
                                     'Skill Competency': data[i].competency
                                 });
-                                console.log(skillsRows);
                                 rowNum++;
                             }
                         }
@@ -101,7 +91,6 @@ class ResourceDetail extends React.Component {
         const data = this.state.rows;
         const skillsData = this.state.skillsRows;
         const skillIdsData = this.state.userSkillIds;
-        console.log('Rhoda? ' + Object.values(this.state.skillsRows));
         return (
             <div className={ resource }>
                 <h1>Resource Details</h1>
