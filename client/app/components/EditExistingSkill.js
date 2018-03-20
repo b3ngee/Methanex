@@ -13,6 +13,7 @@ class EditExistingSkill extends Component {
         super(props);
         this.state = {
             successModalOpen: false,
+            errorModalOpen: false,
             userId: this.props.location.state.data[0].Value,
             skills: this.props.location.state.skillsData,
             userSkillIds: this.props.location.state.skillIdsData,
@@ -26,7 +27,7 @@ class EditExistingSkill extends Component {
             userCompetencies: [],
         };
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
-
+        this.onCloseError = this.onCloseError.bind(this);
         this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
         this.handleEditing = this.handleEditing.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -79,7 +80,6 @@ class EditExistingSkill extends Component {
     handleDelete() {
         let tempNumChecked = 0;
         const tempChecks = [];
-        console.log(this.state.numSkills);
         for (let i = 0; i < this.state.numSkills; i++) {
             if (document.getElementsByTagName('input')[i].checked) {
                 tempNumChecked++;
@@ -103,7 +103,6 @@ class EditExistingSkill extends Component {
                     competency: c
                 }).then((response) => {
                     console.log(response.status);
-                    console.log('PUT!');
                 });
             }
         }
@@ -115,7 +114,6 @@ class EditExistingSkill extends Component {
                     axios.delete('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
                     }).then((response) => {
                         console.log(response.status);
-                        console.log('--> DELETED! because check is ' + this.state.checks[i]);
                     });
                 }
             }
@@ -124,21 +122,25 @@ class EditExistingSkill extends Component {
         if ( differenceCount === 0 && this.state.numChecked === 0 ||
             this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
         ) {
-            alert('no changes were made');
+            this.setState({ errorModalOpen: true });
         } else {
+            this.setState({ successModalOpen: true });
             this.componentDidMount();
         }
-        this.setState({ successModalOpen: true });
     }
 
     onCloseSuccess() {
         window.history.back();
     }
 
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     render() {
-        const { numSkills, successModalOpen } = this.state;
+        const { numSkills, successModalOpen, errorModalOpen } = this.state;
         let editingColumns = ['ID', 'Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
-        let data = [{'Value': localStorage.user_id}];
+        const data = [{'Value': localStorage.user_id}];
         if (numSkills === 0) {
             if (this.props.location.state.data[0].Value === localStorage.user_id) {
                 return(
@@ -153,21 +155,7 @@ class EditExistingSkill extends Component {
                     </div>
                 );
             }
-            const indirectId = this.props.location.state.data[0].Value.toString();
-            data = [{'Value': indirectId}];
-            return(
-               <div className={ skill }>
-                    <h4><i> this resource has no skill...</i></h4>
-                    <Link to = {{pathname: '/skill/add', state: {data}}}>
-                        <Button
-                            type="submit"
-                            label="Add Skill"
-                        />
-                    </Link>
-                </div>
-            );
         }
-
         return(
             <div className={ skill }>
                 <h1>Editing Skills</h1>
@@ -175,6 +163,11 @@ class EditExistingSkill extends Component {
                     label="Successful!"
                     isOpen={successModalOpen}
                     onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label="no changes were made"
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
                 />
                 <Table text="List of Skills" columns={editingColumns} rows={this.state.editingRows}/>
                 <Button

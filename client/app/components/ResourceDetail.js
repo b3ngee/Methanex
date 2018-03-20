@@ -91,6 +91,27 @@ class ResourceDetail extends React.Component {
         const data = this.state.rows;
         const skillsData = this.state.skillsRows;
         const skillIdsData = this.state.userSkillIds;
+
+        if (skillsData.length === 0) {
+            return (
+                <div className={ resource }>
+                    <h1>Resource Details</h1>
+                    <Table text="Resource Details" columns={columns} rows={this.state.rows}/>
+                    <span>
+                        <Link to={{pathname: '/resource/edit', state: {data}}}>
+                            <Button label="Edit"/>
+                        </Link>
+                    </span>
+                    <h4><i>this resource currently has no skill...</i></h4>
+                    <Link to = {{pathname: '/skill/add', state: {data}}}>
+                        <Button
+                            type="submit"
+                            label="Add Skill"
+                        />
+                    </Link>
+                </div>
+            );
+        }
         return (
             <div className={ resource }>
                 <h1>Resource Details</h1>
