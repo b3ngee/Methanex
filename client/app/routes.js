@@ -9,6 +9,7 @@ import Setting from './components/Setting';
 import Login from './components/Login';
 import Skill from './components/Skill';
 import AddExistingSkillForm from './components/AddExistingSkillForm';
+import EditExistingSkill from './components/EditExistingSkill';
 import ProjectDetail from './components/ProjectDetail';
 import ResourceDetail from './components/ResourceDetail';
 import ReportingModule from './components/ReportingModule';
@@ -49,6 +50,7 @@ export default (
 		<Route exact path="/setting/portfolio" component= {PortfolioSettings} />
 		<Route exact path="/login" component={Login} />
         <Route exact path="/skill" render={() => (isLoggedIn() ? (<Skill />) : (<Redirect to="/login"/>))} />
-        <Route exact path="/addSkill" component={AddExistingSkillForm} />
-    </Switch>
+        <Route exact path="/skill/add" component={ AddExistingSkillForm } />
+        <Route exact path="/skill/edit" component={ EditExistingSkill } />
+	</Switch>
 );

@@ -12,7 +12,9 @@ class ResourceDetail extends React.Component {
         this.state = {
             rows: [],
             skillsRows: [],
-            skillsNames: {},
+            userSkillIds: [],
+            skillTypeData: {},
+            skillCategoryData: {},
             tableHeaders: {}
         };
 
@@ -21,7 +23,7 @@ class ResourceDetail extends React.Component {
 
     componentDidMount() {
         this.getDetails();
-        this.getSkillsNames();
+        this.getSkillCategories();
         this.sanitizeTableHeaders();
     }
 
@@ -42,27 +44,45 @@ class ResourceDetail extends React.Component {
         });
     }
 
-    getUserSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
-            const skillsRows = [];
-            const data = response.data;
+    getSkillCategories() {
+         axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+             this.setState({ skillCategoryData: response.data });
+             this.getSkillTypes();
+         });
+    }
 
-            for (let i = 0; i < response.data.length; i++) {
-                skillsRows.push({ 'Skill': this.state.skillsNames[data[i].skillTypeId], 'Competency': data[i].competency });
-            }
-            this.setState({skillsRows: skillsRows});
-        }).catch( () => {
+    getSkillTypes() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+            this.setState({ skillTypeData: response.data });
+            this.getUserSkills();
         });
     }
 
-    getSkillsNames() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then(response => {
-            const data = {};
-            for (let i = 0; i < response.data.length; i++) {
-                data[response.data[i].id] = response.data[i].name;
+    getUserSkills() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
+            const data = response.data;
+            const numSkill = response.data.length;
+            const skillsRows = [];
+            let rowNum = 0;
+            for (let i = 0; i < numSkill; i++) {
+                for(let j = 0; j < this.state.skillTypeData.length; j++) {
+                    if (this.state.skillTypeData[j].id === data[i].skillTypeId) {
+                        for(let k = 0; k < this.state.skillCategoryData.length; k++) {
+                            if (this.state.skillCategoryData[k].id === this.state.skillTypeData[j].skillCategoryId) {
+                                this.state.userSkillIds.push(data[i].id);
+                                skillsRows.push({
+                                    'ID': rowNum + 1,
+                                    'Skill Category': this.state.skillCategoryData[k].name,
+                                    'Skill Name': this.state.skillTypeData[j].name,
+                                    'Skill Competency': data[i].competency
+                                });
+                                rowNum++;
+                            }
+                        }
+                    }
+                }
             }
-            this.setState({ skillsNames: data });
-            this.getUserSkills();
+            this.setState({ skillsRows: skillsRows});
         }).catch( () => {
         });
     }
@@ -84,8 +104,31 @@ class ResourceDetail extends React.Component {
 
     render() {
         let columns = ['Header', 'Value'];
-        let skillsColumns = ['Skill', 'Competency'];
+        let skillsColumns = ['ID', 'Skill Category', 'Skill Name', 'Skill Competency'];
         const data = this.state.rows;
+        const skillsData = this.state.skillsRows;
+        const skillIdsData = this.state.userSkillIds;
+
+        if (skillsData.length === 0) {
+            return (
+                <div className={ resource }>
+                    <h1>Resource Details</h1>
+                    <Table text="Resource Details" columns={columns} rows={this.state.rows}/>
+                    <span>
+                        <Link to={{pathname: '/resource/edit', state: {data}}}>
+                            <Button label="Edit"/>
+                        </Link>
+                    </span>
+                    <h4><i>this resource currently has no skill...</i></h4>
+                    <Link to = {{pathname: '/skill/add', state: {data}}}>
+                        <Button
+                            type="submit"
+                            label="Add Skill"
+                        />
+                    </Link>
+                </div>
+            );
+        }
         return (
             <div className={ resource }>
                 <h1>Resource Details</h1>
@@ -95,23 +138,17 @@ class ResourceDetail extends React.Component {
                         <Button label="Edit"/>
                     </Link>
                 </span>
-                <Table text="Resource Skills" columns={skillsColumns} rows={this.state.skillsRows} />
-                <Link to = {{pathname: '/addSkill', state: {data}}}>
+                <Table text="Resource Skills" columns={skillsColumns} rows={skillsData} />
+                <Link to = {{pathname: '/skill/add', state: {data}}}>
                     <Button
                         type="submit"
                         label="Add Skill"
                     />
                 </Link>
-                <Link to = "/">
+                <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData, data}}}>
                     <Button
                         type="submit"
-                        label="Edit Skill"
-                    />
-                </Link>
-                <Link to = "/">
-                    <Button
-                        type="submit"
-                        label="Delete Skill"
+                        label="Edit Skills"
                     />
                 </Link>
             </div>
