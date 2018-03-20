@@ -101,8 +101,6 @@ class EditExistingSkill extends Component {
                 const c = this.state.editedCompetencies[i];
                 axios.put('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
                     competency: c
-                }).then((response) => {
-                    console.log(response.status);
                 });
             }
         }
@@ -112,8 +110,6 @@ class EditExistingSkill extends Component {
                 if ( this.state.checks[i] === 1) {
                     const id = this.state.userSkillIds[i];
                     axios.delete('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
-                    }).then((response) => {
-                        console.log(response.status);
                     });
                 }
             }
