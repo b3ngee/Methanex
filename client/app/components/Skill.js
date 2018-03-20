@@ -99,7 +99,7 @@ class Skill extends Component {
                     />
                 </Link>
                 <br />
-                <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData}}}>
+                <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData, data}}}>
                     <Button
                         type="submit"
                         label="Edit Skills"

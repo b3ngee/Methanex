@@ -46,11 +46,11 @@ class ResourceDetail extends React.Component {
         axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id).then(response => {
             const skillsRows = [];
             const data = response.data;
-
             for (let i = 0; i < response.data.length; i++) {
                 skillsRows.push({ 'Skill': this.state.skillsNames[data[i].skillTypeId], 'Competency': data[i].competency });
             }
             this.setState({skillsRows: skillsRows});
+            console.log(skillsRows);
         }).catch( () => {
         });
     }
@@ -71,6 +71,7 @@ class ResourceDetail extends React.Component {
         let columns = ['Header', 'Value'];
         let skillsColumns = ['Skill', 'Competency'];
         const data = this.state.rows;
+        console.log('Rhoda? ' + Object.values(this.state.skillsRows));
         return (
             <div className={ resource }>
                 <h1>Resource Details</h1>
@@ -81,22 +82,16 @@ class ResourceDetail extends React.Component {
                     </Link>
                 </span>
                 <Table text="Resource Skills" columns={skillsColumns} rows={this.state.skillsRows} />
-                <Link to = {{pathname: '/addSkill', state: {data}}}>
+                <Link to = {{pathname: '/skill/add', state: {data}}}>
                     <Button
                         type="submit"
                         label="Add Skill"
                     />
                 </Link>
-                <Link to = "/">
+                <Link to = {{pathname: '/skill/edit', state: {data}}}>
                     <Button
                         type="submit"
-                        label="Edit Skill"
-                    />
-                </Link>
-                <Link to = "/">
-                    <Button
-                        type="submit"
-                        label="Delete Skill"
+                        label="Edit Skills"
                     />
                 </Link>
             </div>

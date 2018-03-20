@@ -13,7 +13,7 @@ class EditExistingSkill extends Component {
         super(props);
         this.state = {
             successModalOpen: false,
-            userId: localStorage.getItem('user_id'),
+            userId: this.props.location.state.data[0].Value,
             skills: this.props.location.state.skillsData,
             userSkillIds: this.props.location.state.skillIdsData,
             numSkills: this.props.location.state.skillsData.length,
