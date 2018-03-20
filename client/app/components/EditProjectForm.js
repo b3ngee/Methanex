@@ -6,6 +6,7 @@ import Dropdown from './Dropdown';
 import { formBox } from '../styles/form.scss';
 import { STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
 import PopupBox from './PopupBox';
+import { enumifyProjectStatus, enumifyRagStatus } from '../utils/sanitizer';
 
 class EditProjectForm extends Component {
     constructor(props) {
@@ -14,13 +15,13 @@ class EditProjectForm extends Component {
             id: this.props.location.state.data[0].Value,
             portfolioId: this.props.location.state.data[1].Value,
             name: this.props.location.state.data[2].Value,
-            projectStatus: this.props.location.state.data[3].Value,
-            ragStatus: this.props.location.state.data[4].Value,
+            projectStatus: enumifyProjectStatus(this.props.location.state.data[3].Value),
+            ragStatus: enumifyRagStatus(this.props.location.state.data[4].Value),
             budget: this.props.location.state.data[5].Value,
             spentToDate: this.props.location.state.data[6].Value,
             estimateToComplete: this.props.location.state.data[7].Value,
             managerId: this.props.location.state.data[8].Value,
-            complete: this.props.location.state.data[9].Value,
+            complete: this.props.location.state.data[9].Value ? 'true' : 'false',
             startDate: this.props.location.state.data[10].Value,
             endDate: this.props.location.state.data[11].Value,
             ganttChart: this.props.location.state.data[12].Value,

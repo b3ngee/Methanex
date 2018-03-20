@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { formBox } from '../styles/form.scss';
 import { project } from '../styles/project.scss';
+import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 
  // const id = localStorage.getItem('project_id');
  // change 2 to id after routing is set-up
@@ -41,13 +42,23 @@ class ProjectDetail extends React.Component {
     getDetails() {
         axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
         .then(response => {
-            const rows = [];
             const data = response.data;
-            for (const key in data) {
-                if(key !== null) {
-                    rows.push({'Header': key, 'Value': data[key]});
-                }
-            }
+            const rows = [
+                {'Header': 'ID', 'Value': data.id},
+                {'Header': 'Portfolio ID', 'Value': data.portfolioId},
+                {'Header': 'Name', 'Value': data.name},
+                {'Header': 'Project Status', 'Value': sanitizeProjectStatus(data.projectStatus)},
+                {'Header': 'Status', 'Value': sanitizeRagStatus(data.ragStatus)},
+                {'Header': 'Budget', 'Value': data.budget},
+                {'Header': 'Spent To Date', 'Value': data.spentToDate},
+                {'Header': 'Estimate To Complete', 'Value': data.estimateToComplete},
+                {'Header': 'Manager ID', 'Value': data.managerId},
+                {'Header': 'Complete', 'Value': data.complete ? 'True' : 'False'},
+                {'Header': 'Start Date', 'Value': data.startDate},
+                {'Header': 'End Date', 'Value': data.endDate},
+                {'Header': 'Gantt Chart', 'Value': data.ganttChart}
+            ];
+
             this.setState({rows: rows});
         }).catch( () => {
         });
