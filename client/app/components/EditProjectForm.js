@@ -133,7 +133,7 @@ class EditProjectForm extends Component {
                 spentToDate: this.state.spentToDate,
                 estimateToComplete: this.state.estimateToComplete,
                 managerId: this.state.managerId,
-                complete: JSON.parse(this.state.complete),
+                complete: this.state.complete,
                 startDate: this.state.startDate,
                 endDate: this.state.endDate,
                 ganttChart: this.state.ganttChart,
