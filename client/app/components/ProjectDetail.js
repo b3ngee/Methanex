@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { formBox } from '../styles/form.scss';
 import { project } from '../styles/project.scss';
-import { sanitizeProjectStatus, sanitizeRagStatus, sanitizeBudget } from '../utils/sanitizer';
+import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 
  // const id = localStorage.getItem('project_id');
  // change 2 to id after routing is set-up
@@ -24,6 +24,10 @@ class ProjectDetail extends React.Component {
             resources: [],
             resourceId: '',
             assignedHours: '',
+            projectName: '',
+            portfoliId: '',
+            managerId: '',
+
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -40,27 +44,35 @@ class ProjectDetail extends React.Component {
     }
 
     getDetails() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
-        .then(response => {
-            const data = response.data;
-            const rows = [
-                {'Header': 'ID', 'Value': data.id},
-                {'Header': 'Portfolio ID', 'Value': data.portfolioId},
-                {'Header': 'Name', 'Value': data.name},
-                {'Header': 'Project Status', 'Value': sanitizeProjectStatus(data.projectStatus)},
-                {'Header': 'Status', 'Value': sanitizeRagStatus(data.ragStatus)},
-                {'Header': 'Budget', 'Value': sanitizeBudget(data.budget)},
-                {'Header': 'Spent To Date', 'Value': data.spentToDate},
-                {'Header': 'Estimate To Complete', 'Value': data.estimateToComplete},
-                {'Header': 'Manager ID', 'Value': data.managerId},
-                {'Header': 'Complete', 'Value': data.complete ? 'True' : 'False'},
-                {'Header': 'Start Date', 'Value': data.startDate},
-                {'Header': 'End Date', 'Value': data.endDate},
-                {'Header': 'Gantt Chart', 'Value': data.ganttChart}
-            ];
-
-            this.setState({rows: rows});
-        }).catch( () => {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}}).then(response => {
+            axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + response.data.managerId, {headers: {Pragma: 'no-cache'}}).then(managerRes => {
+                axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios/' + response.data.portfolioId, {headers: {Pragma: 'no-cache'}}).then(portfolioRes => {
+                    const managerName = managerRes.data.firstName;
+                    const portfolioName = portfolioRes.data.name;
+                    const data = response.data;
+                    const rows = [
+                        {'Header': 'ID', 'Value': data.id},
+                        {'Header': 'Portfolio Name', 'Value': portfolioName},
+                        {'Header': 'Name', 'Value': data.name},
+                        {'Header': 'Project Status', 'Value': sanitizeProjectStatus(data.projectStatus)},
+                        {'Header': 'Status', 'Value': sanitizeRagStatus(data.ragStatus)},
+                        {'Header': 'Budget ($)', 'Value': data.budget},
+                        {'Header': 'Spent To Date ($)', 'Value': data.spentToDate},
+                        {'Header': 'Estimate To Complete ($)', 'Value': data.estimateToComplete},
+                        {'Header': 'Manager Name', 'Value': managerName},
+                        {'Header': 'Complete', 'Value': data.complete ? 'True' : 'False'},
+                        {'Header': 'Start Date', 'Value': data.startDate},
+                        {'Header': 'End Date', 'Value': data.endDate},
+                        {'Header': 'Gantt Chart', 'Value': data.ganttChart}
+                    ];
+                    this.setState({projectName: response.data.name});
+                    this.setState({portfolioId: response.data.portfolioId});
+                    this.setState({managerId: response.data.managerId});
+                    this.setState({rows: rows});
+                });
+            });
+        })
+        .catch( () => {
         });
     }
 
@@ -143,6 +155,7 @@ class ProjectDetail extends React.Component {
         let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability'];
 
         const data = this.state.rows;
+        const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
         const {resourceId, assignedHours} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
@@ -150,19 +163,22 @@ class ProjectDetail extends React.Component {
 
         return (
             <div className={ project }>
-                <h1>Project Details</h1>
+                <h1>{this.state.projectName}</h1>
+                <h2>Project Details</h2>
                 <Table text="Project Details" columns={columns} rows={this.state.rows}/>
                 <span>
-                    <Link to={{pathname: '/project/edit', state: {data}}}>
+                    <Link to={{pathname: '/project/edit', state: {data}, state2: {data2}}}>
                         <Button type="submit" label="Edit"/>
                     </Link>
-               </span>
-               <Button type="submit" label="Delete" onClick={this.deleteProject}/>
+                </span>
+                <Button type="submit" label="Delete" onClick={this.deleteProject}/>
 
-               <h1>Resources</h1>
-               <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>
-               <div className={ formBox }>
-               <Dropdown
+                <h2>Resources</h2>
+                {this.state.rowResource.length > 0 &&
+                    <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>}
+                {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
+                <div className={ formBox }>
+                <Dropdown
                     label="Resources"
                     name="resourceId"
                     data={resourceObjects}
