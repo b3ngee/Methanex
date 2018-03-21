@@ -35,7 +35,7 @@ export default class Table extends Component {
                         endPoint = 'portfolio';
                     } if (endPoint !== '') {
                         return (
-                            <td key={ci}><Link to={`/${endPoint}/${id}`} >{row[column]}</Link></td>
+                            <td key={ci}><Link to={{pathname: `/${endPoint}/${id}`, state: {row}}} >{row[column]}</Link></td>
                         );
                     }
                     return (<td key={ci}>{row[column]}</td>);
