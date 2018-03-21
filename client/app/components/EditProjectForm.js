@@ -13,18 +13,21 @@ class EditProjectForm extends Component {
         super(props);
         this.state = {
             id: this.props.location.state.data[0].Value,
-            portfolioId: this.props.location.state.data[1].Value,
+            portfolioName: this.props.location.state.data[1].Value,
             name: this.props.location.state.data[2].Value,
             projectStatus: enumifyProjectStatus(this.props.location.state.data[3].Value),
             ragStatus: enumifyRagStatus(this.props.location.state.data[4].Value),
             budget: this.props.location.state.data[5].Value,
             spentToDate: this.props.location.state.data[6].Value,
             estimateToComplete: this.props.location.state.data[7].Value,
-            managerId: this.props.location.state.data[8].Value,
+            managerName: this.props.location.state.data[8].Value,
             complete: this.props.location.state.data[9].Value ? 'true' : 'false',
             startDate: this.props.location.state.data[10].Value,
             endDate: this.props.location.state.data[11].Value,
             ganttChart: this.props.location.state.data[12].Value,
+            portfolioId: this.props.location.state.data[13].portfolioId,
+            managerId: this.props.location.state.data[13].managerId,
+            projectName: this.props.location.state.data[13].projectName,
             portfolios: [],
             managers: [],
             errors: {},
@@ -130,7 +133,7 @@ class EditProjectForm extends Component {
                 spentToDate: this.state.spentToDate,
                 estimateToComplete: this.state.estimateToComplete,
                 managerId: this.state.managerId,
-                complete: this.state.complete,
+                complete: JSON.parse(this.state.complete),
                 startDate: this.state.startDate,
                 endDate: this.state.endDate,
                 ganttChart: this.state.ganttChart,
@@ -165,9 +168,9 @@ class EditProjectForm extends Component {
         const managerObjects = this.state.managers.map((mo) => {
             return { id: mo.id, name: mo.firstName + ' ' + mo.lastName };
         });
-        console.log(this.props.location);
         return (
         <div className={ formBox }>
+            <h1>{this.state.projectName}</h1>
             <form onSubmit={this.onSubmit}>
                 <h2>Edit Project</h2>
                 <PopupBox
