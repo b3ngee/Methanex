@@ -84,7 +84,10 @@ class AddExistingSkillForm extends React.Component {
                     this.setState({ successModalOpen: true });
                 }
             }).catch((error) => {
-                this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
+                this.setState({
+                    errorMessage: 'Error: ' + error.response.data.message,
+                    errorModalOpen: true
+                });
             });
         }
     }

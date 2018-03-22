@@ -7,6 +7,7 @@ import PopupBox from './PopupBox.js';
 import axios from 'axios';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import { Promise } from 'es6-promise';
+import PopupBoxForDeletion from './PopupBoxForDeletion';
 
 class PortfolioDetails extends React.Component {
     constructor(props) {
@@ -19,12 +20,17 @@ class PortfolioDetails extends React.Component {
             projects: [],
             rows: [],
             successModalOpen: false,
+            errorModalOpen: false,
+            deletionModalOpen: false
         };
 
         this.deletePortfolio = this.deletePortfolio.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
+        this.handleDeletePortfolio = this.handleDeletePortfolio.bind(this);
+        this.onCloseDeletion = this.onCloseDeletion.bind(this);
+        this.onCancelDeletion = this.onCancelDeletion.bind(this);
     }
-
 
     componentDidMount() {
         this.fetchPortfolioData();
@@ -63,11 +69,35 @@ class PortfolioDetails extends React.Component {
         });
     }
 
+    handleDeletePortfolio() {
+        this.setState({deletionModalOpen: true});
+    }
+
+    onCloseDeletion() {
+        this.deletePortfolio();
+    }
+
+    onCancelDeletion() {
+        this.setState({
+            deletionModalOpen: false,
+            errorMessage: 'deletion has been canceled',
+            errorModalOpen: true
+        });
+    }
+
     deletePortfolio() {
         axios.delete('https://methanex-portfolio-management.herokuapp.com/portfolios/' + this.state.currentPortfolio[0].ID).then(response => {
             if (response.status === 200) {
-                this.setState({ successModalOpen: true });
+                this.setState({
+                    deletionModalOpen: false,
+                    successModalOpen: true
+                });
             }
+        }).catch((error) => {
+            this.setState({
+                errorMessage: 'Error: ' + error.response.data.message,
+                errorModalOpen: true
+            });
         });
     }
 
@@ -75,8 +105,13 @@ class PortfolioDetails extends React.Component {
         window.history.back();
     }
 
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+//        window.history.back();
+    }
+
     render() {
-        const { currentPortfolio, projects, classifications, managerNames } = this.state;
+        const { currentPortfolio, projects, classifications, managerNames, deletionModalOpen, errorModalOpen, errorMessage } = this.state;
         const projectColumns = ['ID', 'Project Name', 'Project Status', 'RAG Status', 'Budget'];
         const portfolioColumns = ['ID', 'Portfolio Name', 'Classification', 'Manager'];
 
@@ -91,12 +126,23 @@ class PortfolioDetails extends React.Component {
                         <Button type="submit" label="Edit"/>
                     </Link>
                 </span>
+                <PopupBoxForDeletion
+                    label="Are you sure?"
+                    isOpen={deletionModalOpen}
+                    onClose={this.onCloseDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
                 <PopupBox
                     label="Successfully Deleted!"
                     isOpen={this.state.successModalOpen}
                     onClose={this.onCloseSuccess}
                 />
-                <Button type="submit" label="Delete" onClick={this.deletePortfolio}/>
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
+                <Button type="submit" label="Delete" onClick={this.handleDeletePortfolio}/>
                 <h2>Projects</h2>
                 <p>Click on project name to see more details</p>
                 <Table columns={projectColumns} rows={projects}/>

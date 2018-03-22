@@ -4,6 +4,7 @@ import Button from './Button';
 import { popupBoxForDeletion } from '../styles/popupBoxForDeletion.scss';
 
 const PopupBox = ({ label, isOpen, onClose, onCancel}) => {
+    Modal.setAppElement('body');
     return (
         <Modal
             className={popupBoxForDeletion}

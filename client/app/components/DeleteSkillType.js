@@ -93,7 +93,6 @@ class DeleteSkillTypeForm extends React.Component {
             errorMessage: 'deletion has been canceled',
             errorModalOpen: true
         });
-//        window.history.back();
     }
 
     render() {
