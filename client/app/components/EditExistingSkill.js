@@ -135,7 +135,7 @@ class EditExistingSkill extends Component {
 
         return(
             <div className={ skill }>
-                <h1>Editing Skills</h1>
+                <h1>Edit Skills</h1>
                 <PopupBox
                     label="Successful!"
                     isOpen={successModalOpen}
