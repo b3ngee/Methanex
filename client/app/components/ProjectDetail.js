@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import { formBox } from '../styles/form.scss';
 import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
+import PopupBox from './PopupBox';
+import PopupBoxForDeletion from './PopupBoxForDeletion';
 
  // const id = localStorage.getItem('project_id');
  // change 2 to id after routing is set-up
@@ -27,15 +29,22 @@ class ProjectDetail extends React.Component {
             projectName: '',
             portfoliId: '',
             managerId: '',
-
+            successModalOpen: false,
+            errorModalOpen: false,
+            deletionModalOpen: false
         };
 
         this.getDetails = this.getDetails.bind(this);
+        this.handleDeleteProject = this.handleDeleteProject.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
         this.onChange = this.onChange.bind(this);
         this.getResourceData = this.getResourceData.bind(this);
         this.addResource = this.addResource.bind(this);
         this.deleteResource = this.deleteResource.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseDeletion = this.onCloseDeletion.bind(this);
+        this.onCancelDeletion = this.onCancelDeletion.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
@@ -76,13 +85,22 @@ class ProjectDetail extends React.Component {
         });
     }
 
+    handleDeleteProject() {
+        this.setState({deletionModalOpen: true});
+    }
+
     deleteProject() {
         const id = this.props.match.params.project_id;
         axios.delete('https://methanex-portfolio-management.herokuapp.com/projects/' + id)
         .then(response => {
             if (response.status === 200) {
-                this.props.history.push('/project');
+                this.setState({
+                    deletionModalOpen: false,
+                    successModalOpen: true
+                });
             }
+        }).catch((error) => {
+            this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
         });
     }
 
@@ -150,13 +168,36 @@ class ProjectDetail extends React.Component {
         });
     }
 
+    onCloseSuccess() {
+        this.props.history.push('/project');
+//        window.history.back();
+    }
+
+    onCloseDeletion() {
+        this.deleteProject();
+    }
+
+    onCancelDeletion() {
+        this.setState({
+            deletionModalOpen: false,
+            errorMessage: 'deletion has been canceled',
+            errorModalOpen: true
+        });
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+        this.props.history.push('/project');
+        window.history.back();
+    }
+
     render() {
         let columns = ['Header', 'Value'];
         let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability'];
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
-        const {resourceId, assignedHours} = this.state;
+        const {resourceId, assignedHours, deletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
@@ -171,7 +212,23 @@ class ProjectDetail extends React.Component {
                         <Button type="submit" label="Edit"/>
                     </Link>
                 </span>
-                <Button type="submit" label="Delete" onClick={this.deleteProject}/>
+                <PopupBoxForDeletion
+                    label="Are you sure?"
+                    isOpen={deletionModalOpen}
+                    onClose={this.onCloseDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalOpen}
+                    onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
+                <Button type="submit" label="Delete" onClick={this.handleDeleteProject}/>
 
                 <h2>Resources</h2>
                 {this.state.rowResource.length > 0 &&
