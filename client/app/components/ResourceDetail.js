@@ -107,8 +107,8 @@ class ResourceDetail extends React.Component {
         const skillsData = this.state.skillsRows;
         const skillIdsData = this.state.userSkillIds;
 
-        if (skillsData.length === 0) {
-            return (
+        return (
+            <div>
                 <div className={ resource }>
                     <h1>Resource Details</h1>
                     <Table text="Resource Details" columns={columns} rows={this.state.rows}/>
@@ -117,43 +117,25 @@ class ResourceDetail extends React.Component {
                             <Button label="Edit"/>
                         </Link>
                     </span>
-                    <div className = { skill }>
-                        <h4><i>this resource currently has no skill...</i></h4>
-                    </div>
-                    <Link to = {{pathname: '/skill/add', state: {data}}}>
-                        <Button
-                            type="submit"
-                            label="Add Skill"
-                        />
-                    </Link>
                 </div>
-            );
-        }
-        return (
-            <div className={ resource }>
-                <h1>Resource Details</h1>
-                <Table text="Resource Details" columns={columns} rows={this.state.rows}/>
-                <span>
-                    <Link to={{pathname: '/resource/edit', state: {data}}}>
-                        <Button label="Edit"/>
-                    </Link>
-                </span>
                 <div className={ skill }>
                     <h1>Skills</h1>
                     <Table text="Resource Skills" columns={skillsColumns} rows={skillsData} />
+                    <div>
+                        <Link to = {{pathname: '/skill/add', state: {data}}}>
+                            <Button
+                                type="submit"
+                                label="Add Skill"
+                            />
+                        </Link>
+                        <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData, data}}}>
+                            <Button
+                                type="submit"
+                                label="Edit Skills"
+                            />
+                        </Link>
+                    </div>
                 </div>
-                <Link to = {{pathname: '/skill/add', state: {data}}}>
-                    <Button
-                        type="submit"
-                        label="Add Skill"
-                    />
-                </Link>
-                <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData, data}}}>
-                    <Button
-                        type="submit"
-                        label="Edit Skills"
-                    />
-                </Link>
             </div>
         );
     }

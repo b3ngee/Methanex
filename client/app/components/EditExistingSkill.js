@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { skill } from '../styles/skill.scss';
 import Button from './Button';
 import Table from './Table';
@@ -131,24 +130,9 @@ class EditExistingSkill extends Component {
     }
 
     render() {
-        const { numSkills, successModalOpen, errorModalOpen } = this.state;
+        const { successModalOpen, errorModalOpen } = this.state;
         let editingColumns = ['Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
-        const data = [{'Value': localStorage.user_id}];
-        if (numSkills === 0) {
-            if (this.props.location.state.data[0].Value === localStorage.user_id) {
-                return(
-                   <div className={ skill }>
-                        <h4><i>you currently have no skill...</i></h4>
-                        <Link to = {{pathname: '/skill/add', state: {data}}}>
-                            <Button
-                                type="submit"
-                                label="Add Skill"
-                            />
-                        </Link>
-                    </div>
-                );
-            }
-        }
+
         return(
             <div className={ skill }>
                 <h1>Editing Skills</h1>
