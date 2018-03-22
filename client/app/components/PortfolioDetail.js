@@ -127,7 +127,7 @@ class PortfolioDetails extends React.Component {
                     </Link>
                 </span>
                 <PopupBoxForDeletion
-                    label="Are you sure?"
+                    label="Deleting this portfolio will delete all associated projects. Are you sure you want to continue?"
                     isOpen={deletionModalOpen}
                     onClose={this.onCloseDeletion}
                     onCancel={this.onCancelDeletion}
