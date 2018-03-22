@@ -39,11 +39,11 @@ class EditExistingSkill extends Component {
     getRows() {
         const tableDataForEdit = [];
         for (let i = 0; i < this.state.numSkills; i++) {
-            this.state.userCompetencies.push(Object.values(this.state.skills[i])[3]);
+            this.state.userCompetencies.push(Object.values(this.state.skills[i])[2]);
             tableDataForEdit.push({
-                'Skill Category': Object.values(this.state.skills[i])[1],
-                'Skill Name': Object.values(this.state.skills[i])[2],
-                'Competency': Object.values(this.state.skills[i])[3],
+                'Skill Category': Object.values(this.state.skills[i])[0],
+                'Skill Name': Object.values(this.state.skills[i])[1],
+                'Competency': Object.values(this.state.skills[i])[2],
                 'New Competency': <Dropdown
                                       label=""
                                       name="sC"
