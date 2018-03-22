@@ -19,7 +19,7 @@ const PopupBox = ({ label, isOpen, onClose }) => {
 };
 
 PopupBox.propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired
 };

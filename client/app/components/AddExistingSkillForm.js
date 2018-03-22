@@ -141,7 +141,7 @@ class AddExistingSkillForm extends React.Component {
                     />
                     <Button
                         type="submit"
-                        label="Create New Skill"
+                        label="Add New Skill"
                     />
                 </form>
             </div>
