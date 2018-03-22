@@ -18,11 +18,11 @@ class DeleteSkillTypeForm extends React.Component {
             deletionModalOpen: false
         };
 
-        this.handleDeletion = this.handleDeletion.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.handleDeletion = this.handleDeletion.bind(this);
         this.onCloseDeletion = this.onCloseDeletion.bind(this);
         this.onCancelDeletion = this.onCancelDeletion.bind(this);
     }
