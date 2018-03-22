@@ -7,11 +7,13 @@ import Table from './Table';
 import Dropdown from './Dropdown';
 import { COMPETENCY } from '../constants/constants.js';
 import PopupBox from './PopupBox';
+import PopupBoxForDeletion from './PopupBoxForDeletion';
 
 class EditExistingSkill extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            deletionModalOpen: false,
             successModalOpen: false,
             errorModalOpen: false,
             userId: this.props.location.state.data[0].Value,
@@ -25,10 +27,13 @@ class EditExistingSkill extends Component {
             errors: {},
             userCompetencies: [],
         };
+        this.onCloseDeletion = this.onCloseDeletion.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
+        this.onCancelDeletion = this.onCancelDeletion.bind(this);
         this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
         this.handleEditing = this.handleEditing.bind(this);
+        this.confirmEditing = this.confirmEditing.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
 
@@ -39,11 +44,11 @@ class EditExistingSkill extends Component {
     getRows() {
         const tableDataForEdit = [];
         for (let i = 0; i < this.state.numSkills; i++) {
-            this.state.userCompetencies.push(Object.values(this.state.skills[i])[3]);
+            this.state.userCompetencies.push(Object.values(this.state.skills[i])[2]);
             tableDataForEdit.push({
-                'Skill Category': Object.values(this.state.skills[i])[1],
-                'Skill Name': Object.values(this.state.skills[i])[2],
-                'Competency': Object.values(this.state.skills[i])[3],
+                'Skill Category': Object.values(this.state.skills[i])[0],
+                'Skill Name': Object.values(this.state.skills[i])[1],
+                'Competency': Object.values(this.state.skills[i])[2],
                 'New Competency': <Dropdown
                                       label=""
                                       name="sC"
@@ -94,6 +99,21 @@ class EditExistingSkill extends Component {
         for (let i = 0; i < this.state.userCompetencies.length; i++) {
             if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
                 differenceCount++;
+            }
+        }
+
+        if ( differenceCount === 0 && this.state.numChecked === 0 ||
+            this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
+        ) {
+            this.setState({ errorModalOpen: true });
+        } else {
+            this.setState({deletionModalOpen: true });
+        }
+    }
+
+    confirmEditing() {
+        for (let i = 0; i < this.state.userCompetencies.length; i++) {
+            if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
                 const id = this.state.userSkillIds[i];
                 const c = this.state.editedCompetencies[i];
                 axios.put('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
@@ -112,14 +132,13 @@ class EditExistingSkill extends Component {
             }
         }
 
-        if ( differenceCount === 0 && this.state.numChecked === 0 ||
-            this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
-        ) {
-            this.setState({ errorModalOpen: true });
-        } else {
-            this.setState({ successModalOpen: true });
-            this.componentDidMount();
-        }
+        this.setState({ successModalOpen: true });
+        this.componentDidMount();
+    }
+
+    onCloseDeletion() {
+        this.confirmEditing();
+        window.history.back();
     }
 
     onCloseSuccess() {
@@ -130,8 +149,13 @@ class EditExistingSkill extends Component {
         this.setState({ errorModalOpen: false });
     }
 
+    onCancelDeletion() {
+        this.setState({ deletionModalOpen: false });
+        window.history.back();
+    }
+
     render() {
-        const { numSkills, successModalOpen, errorModalOpen } = this.state;
+        const { numSkills, deletionModalOpen, successModalOpen, errorModalOpen } = this.state;
         let editingColumns = ['Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
         if (numSkills === 0) {
@@ -152,6 +176,12 @@ class EditExistingSkill extends Component {
         return(
             <div className={ skill }>
                 <h1>Editing Skills</h1>
+                <PopupBoxForDeletion
+                    label="Are you sure about the changes?"
+                    isOpen={deletionModalOpen}
+                    onClose={this.onCloseDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
                 <PopupBox
                     label="Successful!"
                     isOpen={successModalOpen}
