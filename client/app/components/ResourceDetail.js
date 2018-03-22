@@ -11,6 +11,7 @@ class ResourceDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            fullName: '',
             rows: [],
             skillsRows: [],
             userSkillIds: [],
@@ -41,6 +42,7 @@ class ResourceDetail extends React.Component {
                 }
             }
             this.setState({rows: rows});
+            this.setState({fullName: data.firstName + ' ' + data.lastName});
         }).catch( () => {
         });
     }
@@ -110,6 +112,7 @@ class ResourceDetail extends React.Component {
         return (
             <div>
                 <div className={ resource }>
+                    <h1>{this.state.fullName}</h1>
                     <h1>Resource Details</h1>
                     <Table text="Resource Details" columns={columns} rows={this.state.rows}/>
                     <span>
