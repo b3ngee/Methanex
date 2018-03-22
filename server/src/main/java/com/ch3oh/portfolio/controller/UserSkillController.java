@@ -33,11 +33,7 @@ public class UserSkillController {
     @GetMapping
     @ResponseBody
     public Iterable<UserSkill> getUserSkills(@RequestParam(value = "userId", required = false) Integer userId) {
-        if (userId != null) {
-            return userSkillService.getUserSkillsById(userId);
-        }
-
-        return userSkillService.getUserSkills();
+        return userSkillService.getUserSkills(userId);
     }
 
     @PostMapping

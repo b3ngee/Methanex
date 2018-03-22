@@ -35,7 +35,11 @@ public class UserSkillServiceImpl {
     }
 
     @Transactional(readOnly = true)
-    public Iterable<UserSkill> getUserSkills() {
+    public Iterable<UserSkill> getUserSkills(Integer userId) {
+        if (userId != null) {
+            return getUserSkillsById(userId);
+        }
+
         return userSkillDao.findAll();
     }
 
