@@ -10,16 +10,13 @@ class EditPortfolioForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.location.state[0].ID,
-            classifications: [],
-            classificationObjects: [],
-            managers: [],
-            managerObjects: [],
+            id: this.props.location.state.currentPortfolio[0].ID,
+            portfolioName: this.props.location.state.currentPortfolio[0]['Portfolio Name'],
+            classificationName: this.props.location.state.currentPortfolio[0].Classification,
+            managerName: this.props.location.state.currentPortfolio[0].Manager,
+            classificationObjects: this.props.location.state.classifications,
+            managerObjects: this.props.location.state.managerNames,
             errors: {},
-            currentClassificationID: '',
-            currentManagerID: this.props.location.state[0].Manager,
-            currentClassification: this.props.location.state[0].Classification,
-            currentPortfolioName: this.props.location.state[0]['Portfolio Name'],
             newClassification: '',
             newPortfolioManager: '',
             successModalOpen: false,
@@ -32,40 +29,23 @@ class EditPortfolioForm extends React.Component {
         this.onCloseError = this.onCloseError.bind(this);
     }
 
-    componentDidMount() {
-        this.fetchClassifications();
-        this.fetchManagers();
-    }
-
-    fetchClassifications() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications').then(response => {
-            const classificationObjects = response.data.map(c => {
-                return { id: c.id, name: c.name };
-            });
-            this.setState({ classifications: response.data, classificationObjects: classificationObjects });
-        }).then(() => {
-            const currentClassificationID = this.state.classificationObjects.filter(co => {
-                return co.name === this.state.currentClassification;
-            })[0].id;
-
-            this.setState({ currentClassificationID: currentClassificationID });
-        });
-    }
-
-    fetchManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER').then(response => {
-            const managerObjects = response.data.map(m => {
-                return { id: m.id, name: m.firstName + ' ' + m.lastName };
-            });
-
-            this.setState({ managers: response.data, managerObjects: managerObjects });
-        }).then(() => {
-
-        });
-    }
-
     isValid() {
-        return true;
+        let isValid = true;
+
+        if (!this.state.portfolioName) {
+            this.setState({ errors: { portfolio: 'Portoflio is required'}});
+            isValid = false;
+        }
+        if (!this.state.newClassification) {
+            this.setState({ errors: { classification: 'Classification is required'}});
+            isValid = false;
+        }
+        if (!this.state.newPortfolioManager) {
+            this.setState({ errors: { manager: 'Portfolio Manager is required'}});
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     onCloseSuccess() {
@@ -77,14 +57,13 @@ class EditPortfolioForm extends React.Component {
     }
 
     onSubmit(e) {
-        console.log(this.state);
         e.preventDefault();
         if (this.isValid()) {
             axios.put('https://methanex-portfolio-management.herokuapp.com/portfolios/' + this.state.id, {
                 id: this.state.id,
                 managerId: this.state.newPortfolioManager,
                 classificationId: this.state.newClassification,
-                name: this.state.currentPortfolioName,
+                name: this.state.portfolioName,
             }).then(response => {
                 if (response.status === 200) {
                     this.setState({ successModalOpen: true });
@@ -101,7 +80,9 @@ class EditPortfolioForm extends React.Component {
     }
 
     render() {
-        const { classificationObjects, managerObjects, currentPortfolioName, currentClassificationID, currentManagerID, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
+        const { classificationObjects, managerObjects, portfolioName, classificationName, managerName, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
+        const classificationId = classificationObjects.filter(co => co.name === classificationName)[0].id;
+        const managerId = managerObjects.filter(mo => mo.name === managerName)[0].id;
 
         return (
             <div className={ formBox }>
@@ -118,17 +99,17 @@ class EditPortfolioForm extends React.Component {
                         onClose={this.onCloseError}
                     />
                     <TextFieldGroup
-                        field="currentPortfolioName"
+                        field="portfolioName"
                         label="Portfolio Name"
-                        value={currentPortfolioName}
-                        error={errors.name}
+                        value={portfolioName}
+                        error={errors.portfolio}
                         onChange={this.onChange}
                     />
                     <Dropdown
                         label="Portfolio Classification"
                         name="newClassification"
                         data={classificationObjects}
-                        preSelect={currentClassificationID}
+                        preSelect={classificationId}
                         error={errors.classification}
                         onSelect={this.onChange}
                     />
@@ -136,7 +117,7 @@ class EditPortfolioForm extends React.Component {
                         label="Portfolio Manager"
                         name="newPortfolioManager"
                         data={managerObjects}
-                        preSelect={currentManagerID}
+                        preSelect={managerId}
                         error={errors.manager}
                         onSelect={this.onChange}
                     />

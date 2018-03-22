@@ -6,13 +6,16 @@ import Button from './Button.js';
 import PopupBox from './PopupBox.js';
 import axios from 'axios';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
+import { Promise } from 'es6-promise';
 
 class PortfolioDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             portfolioId: this.props.match.params.portfolio_id,
-            currentPortfolio: [this.props.location.state.row],
+            currentPortfolio: [],
+            classifications: [],
+            managerNames: [],
             projects: [],
             rows: [],
             successModalOpen: false,
@@ -24,22 +27,39 @@ class PortfolioDetails extends React.Component {
 
 
     componentDidMount() {
-        this.getProjects();
+        this.fetchPortfolioData();
     }
 
-    getProjects() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/projects?portfolioId=' + this.state.portfolioId, {headers: {Pragma: 'no-cache'}}).then(response => {
-            const tableData = response.data.map(d => {
+    fetchPortfolioData() {
+        const currPortfolio = axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios/' + this.state.portfolioId, {headers: {Pragma: 'no-cache'}});
+        const classifications = axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}});
+        const managers = axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}});
+        const projects = axios.get('https://methanex-portfolio-management.herokuapp.com/projects?portfolioId=' + this.state.portfolioId, {headers: {Pragma: 'no-cache'}});
+
+        Promise.all([currPortfolio, classifications, managers, projects]).then(response => {
+            const classificationObjects = response[1].data.map(c => {
+                return { id: c.id, name: c.name };
+            });
+            const managerObjects = response[2].data.map(m => {
+                return { id: m.id, name: m.firstName + ' ' + m.lastName };
+            });
+            const projectObjects = response[3].data.map(p => {
                 return {
-                    'ID': d.id,
-                    'Project Name': d.name,
-                    'Project Status': sanitizeProjectStatus(d.projectStatus),
-                    'RAG Status': sanitizeRagStatus(d.ragStatus),
-                    'Budget': d.budget
+                    'ID': p.id,
+                    'Project Name': p.name,
+                    'Project Status': sanitizeProjectStatus(p.projectStatus),
+                    'RAG Status': sanitizeRagStatus(p.ragStatus),
+                    'Budget': p.budget
                 };
             });
+            const portfolioObject = [{
+                'ID': response[0].data.id,
+                'Portfolio Name': response[0].data.name,
+                'Classification': classificationObjects.filter(c => c.id === response[0].data.classificationId )[0].name,
+                'Manager': managerObjects.filter(m => m.id === response[0].data.managerId )[0].name
+            }];
 
-            this.setState({ projects: response.data, rows: tableData });
+            this.setState({ currentPortfolio: portfolioObject, classifications: classificationObjects, managerNames: managerObjects, projects: projectObjects });
         });
     }
 
@@ -56,17 +76,18 @@ class PortfolioDetails extends React.Component {
     }
 
     render() {
-        let projectColumns = ['ID', 'Project Name', 'Project Status', 'RAG Status', 'Budget'];
-        let portfolioColumns = ['ID', 'Portfolio Name', 'Classification'];
+        const { currentPortfolio, projects, classifications, managerNames } = this.state;
+        const projectColumns = ['ID', 'Project Name', 'Project Status', 'RAG Status', 'Budget'];
+        const portfolioColumns = ['ID', 'Portfolio Name', 'Classification', 'Manager'];
 
         return(
             <div className={ project }>
-                <h1>{this.state.currentPortfolio[0]['Portfolio Name']}</h1>
+                <h1>{currentPortfolio['Portfolio Name']}</h1>
                 <h2>Portfolio Details</h2>
-                <Table columns={portfolioColumns} rows={this.state.currentPortfolio} />
+                <Table columns={portfolioColumns} rows={currentPortfolio} />
                 <p>Deleting portfolio will delete all instances of that portfolio</p>
                 <span>
-                    <Link to={{pathname: '/portfolio/edit', state: this.state.currentPortfolio}}>
+                    <Link to={{pathname: '/portfolio/edit', state: { currentPortfolio, classifications, managerNames }}}>
                         <Button type="submit" label="Edit"/>
                     </Link>
                 </span>
@@ -78,7 +99,7 @@ class PortfolioDetails extends React.Component {
                 <Button type="submit" label="Delete" onClick={this.deletePortfolio}/>
                 <h2>Projects</h2>
                 <p>Click on project name to see more details</p>
-                <Table columns={projectColumns} rows={this.state.rows}/>
+                <Table columns={projectColumns} rows={projects}/>
             </div>
         );
     }
