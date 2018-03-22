@@ -36,3 +36,15 @@ export const COMPETENCY = [
     {id: 4, name: '4'},
     {id: 5, name: '5'}
 ];
+
+// Statuses for Resources
+export const RESOURCE_STATUS = [
+    {id: 'Available', name: 'Available'},
+    {id: 'Unavailable', name: 'Unavailable'}
+];
+
+// User status
+export const USER_STATUS = [
+    {id: 'true', name: 'Enabled'},
+    {id: 'false', name: 'Disabled'}
+];
