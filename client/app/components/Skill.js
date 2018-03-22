@@ -63,42 +63,29 @@ class Skill extends Component {
     }
 
     render() {
-        const { numSkill } = this.state;
         let columns = ['Skill Category', 'Skill Name', 'Skill Competency'];
         const data = [{'Value': localStorage.user_id}];
         const skillsData = this.state.rows;
         const skillIdsData = this.state.userSkillIds;
-        if (numSkill === 0) {
-            return(
-               <div className={ skill }>
-                    <h4><i>you currently have no skill...</i></h4>
+
+        return(
+            <div className={ skill }>
+                <h1>My Skills</h1>
+                <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
+                <div>
                     <Link to = {{pathname: '/skill/add', state: {data}}}>
                         <Button
                             type="submit"
                             label="Add Skill"
                         />
                     </Link>
+                    <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData, data}}}>
+                        <Button
+                            type="submit"
+                            label="Edit Skills"
+                        />
+                    </Link>
                 </div>
-            );
-        }
-
-        return(
-            <div className={ skill }>
-                <p>My Skills</p>
-                <Table text="List of Skills" columns={columns} rows={this.state.rows}/>
-                <Link to = {{pathname: '/skill/add', state: {data}}}>
-                    <Button
-                        type="submit"
-                        label="Add Skill"
-                    />
-                </Link>
-                <br />
-                <Link to = {{pathname: '/skill/edit', state: {skillsData, skillIdsData, data}}}>
-                    <Button
-                        type="submit"
-                        label="Edit Skills"
-                    />
-                </Link>
             </div>
         );
     }
