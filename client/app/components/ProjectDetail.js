@@ -177,21 +177,22 @@ class ProjectDetail extends React.Component {
                 {this.state.rowResource.length > 0 &&
                     <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>}
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
+                <h2>Add Resources</h2>
                 <div className={ formBox }>
-                <Dropdown
-                    label="Resources"
-                    name="resourceId"
-                    data={resourceObjects}
-                    preSelect={resourceId}
-                    onSelect={this.onChange}
-                />
-                <TextFieldGroup
-                    type="text"
-                    field="assignedHours"
-                    label="Assigned Hours (Only for Add Resource)"
-                    value={assignedHours}
-                    onChange={this.onChange}
-                />
+                    <Dropdown
+                        label="Resources"
+                        name="resourceId"
+                        data={resourceObjects}
+                        preSelect={resourceId}
+                        onSelect={this.onChange}
+                    />
+                    <TextFieldGroup
+                        type="text"
+                        field="assignedHours"
+                        label="Assigned Hours (Only for Add Resource)"
+                        value={assignedHours}
+                        onChange={this.onChange}
+                    />
                 </div>
                 <Button
                     type="submit"
