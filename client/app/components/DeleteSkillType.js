@@ -80,6 +80,7 @@ class DeleteSkillTypeForm extends React.Component {
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
+//        window.history.back();
     }
 
     onCloseDeletion() {
@@ -87,8 +88,12 @@ class DeleteSkillTypeForm extends React.Component {
     }
 
     onCancelDeletion() {
-        this.setState({ deletionModalOpen: false });
-        window.history.back();
+        this.setState({
+            deletionModalOpen: false,
+            errorMessage: 'deletion has been canceled',
+            errorModalOpen: true
+        });
+//        window.history.back();
     }
 
     render() {

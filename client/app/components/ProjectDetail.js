@@ -103,7 +103,11 @@ class ProjectDetail extends React.Component {
                 });
             }
         }).catch((error) => {
-            this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
+            this.setState({
+                errorMessage: 'Error: ' + error.response.data.message,
+                projectDeletionModalOpen: false,
+                errorModalOpen: true
+            });
         });
     }
 
@@ -181,7 +185,11 @@ class ProjectDetail extends React.Component {
                 });
             }
         }).catch((error) => {
-            this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true });
+            this.setState({
+                errorMessage: 'Error: ' + error.response.data.message,
+                resourceDeletionModalOpen: false,
+                errorModalOpen: true
+            });
         });
     }
 

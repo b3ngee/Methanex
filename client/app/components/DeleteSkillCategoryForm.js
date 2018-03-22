@@ -87,8 +87,12 @@ class DeleteSkillCategoryForm extends React.Component {
     }
 
     onCancelDeletion() {
-        this.setState({ deletionModalOpen: false });
-        window.history.back();
+        this.setState({
+            deletionModalOpen: false,
+            errorMessage: 'deletion has been canceled',
+            errorModalOpen: true
+        });
+//        window.history.back();
     }
 
     render() {
