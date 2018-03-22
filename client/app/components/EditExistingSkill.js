@@ -105,7 +105,7 @@ class EditExistingSkill extends Component {
         if ( differenceCount === 0 && this.state.numChecked === 0 ||
             this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
         ) {
-            this.setState({ errorModalOpen: true });
+            this.setState({ errorModalOpen: true, errorMessage: 'no changes were made' });
         } else {
             this.setState({deletionModalOpen: true });
         }
@@ -132,13 +132,11 @@ class EditExistingSkill extends Component {
             }
         }
 
-        this.setState({ successModalOpen: true });
-        this.componentDidMount();
+        this.setState({ deletionModalOpen: false, successModalOpen: true });
     }
 
     onCloseDeletion() {
         this.confirmEditing();
-        window.history.back();
     }
 
     onCloseSuccess() {
@@ -147,15 +145,19 @@ class EditExistingSkill extends Component {
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
-    }
-
-    onCancelDeletion() {
-        this.setState({ deletionModalOpen: false });
         window.history.back();
     }
 
+    onCancelDeletion() {
+        this.setState({
+            deletionModalOpen: false,
+            errorMessage: 'changes has been canceled',
+            errorModalOpen: true
+        });
+    }
+
     render() {
-        const { numSkills, deletionModalOpen, successModalOpen, errorModalOpen } = this.state;
+        const { numSkills, deletionModalOpen, successModalOpen, errorModalOpen, errorMessage } = this.state;
         let editingColumns = ['Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
         const data = [{'Value': localStorage.user_id}];
         if (numSkills === 0) {
@@ -188,7 +190,7 @@ class EditExistingSkill extends Component {
                     onClose={this.onCloseSuccess}
                 />
                 <PopupBox
-                    label="no changes were made"
+                    label={errorMessage}
                     isOpen={errorModalOpen}
                     onClose={this.onCloseError}
                 />
