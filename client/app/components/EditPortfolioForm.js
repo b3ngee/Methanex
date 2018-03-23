@@ -11,17 +11,19 @@ import { enumifyRagStatus } from '../utils/sanitizer';
 class EditPortfolioForm extends React.Component {
     constructor(props) {
         super(props);
+
+        const classificationName =  this.props.location.state.currentPortfolio[0].Classification;
+        const managerName = this.props.location.state.currentPortfolio[0].Manager;
+
         this.state = {
             id: this.props.location.state.currentPortfolio[0].ID,
             portfolioName: this.props.location.state.currentPortfolio[0]['Portfolio Name'],
-            classificationName: this.props.location.state.currentPortfolio[0].Classification,
-            managerName: this.props.location.state.currentPortfolio[0].Manager,
             ragStatus: enumifyRagStatus(this.props.location.state.currentPortfolio[0]['RAG Status']),
             classificationObjects: this.props.location.state.classifications,
             managerObjects: this.props.location.state.managerNames,
             errors: {},
-            newClassification: '',
-            newPortfolioManager: '',
+            newClassification: this.props.location.state.classifications.filter(co => co.name === classificationName)[0].id,
+            newPortfolioManager: this.props.location.state.managerNames.filter(mo => mo.name === managerName)[0].id,
             successModalOpen: false,
             errorModalOpen: false,
         };
@@ -88,9 +90,8 @@ class EditPortfolioForm extends React.Component {
     }
 
     render() {
-        const { classificationObjects, managerObjects, portfolioName, classificationName, ragStatus, managerName, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
-        const classificationId = classificationObjects.filter(co => co.name === classificationName)[0].id;
-        const managerId = managerObjects.filter(mo => mo.name === managerName)[0].id;
+        console.log(this.state);
+        const { classificationObjects, managerObjects, portfolioName, newClassification, newPortfolioManager, ragStatus, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
 
         return (
             <div className={ formBox }>
@@ -117,7 +118,7 @@ class EditPortfolioForm extends React.Component {
                         label="Portfolio Classification"
                         name="newClassification"
                         data={classificationObjects}
-                        preSelect={classificationId}
+                        preSelect={newClassification}
                         error={errors.classification}
                         onSelect={this.onChange}
                     />
@@ -125,7 +126,7 @@ class EditPortfolioForm extends React.Component {
                         label="Portfolio Manager"
                         name="newPortfolioManager"
                         data={managerObjects}
-                        preSelect={managerId}
+                        preSelect={newPortfolioManager}
                         error={errors.manager}
                         onSelect={this.onChange}
                     />
