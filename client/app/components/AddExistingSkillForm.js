@@ -5,6 +5,7 @@ import { COMPETENCY } from '../constants/constants.js';
 import Button from './Button';
 import axios from 'axios';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class AddExistingSkillForm extends React.Component {
     constructor(props) {
@@ -34,13 +35,13 @@ class AddExistingSkillForm extends React.Component {
     }
 
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
+        axios.get(prodAPIEndpoint + '/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({ skillCategoryData: response.data });
         });
     }
 
     getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types?skillCategoryId=' + this.state.skillCategoryId, {headers: {Pragma: 'no-cache'}}).then( (response) => {
+        axios.get(prodAPIEndpoint + '/skill-types?skillCategoryId=' + this.state.skillCategoryId, {headers: {Pragma: 'no-cache'}}).then( (response) => {
             this.setState({ skillTypeData: response.data });
         });
     }
@@ -75,7 +76,7 @@ class AddExistingSkillForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId, {
+            axios.post(prodAPIEndpoint + '/user-skills?userId=' + this.state.userId, {
                 userId: this.state.userId,
                 skillTypeId: this.state.skillTypeId,
                 competency: this.state.skillCompetency

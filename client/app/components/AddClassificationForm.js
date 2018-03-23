@@ -4,6 +4,7 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class AddClassificationForm extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class AddClassificationForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/classifications', {
+            axios.post(prodAPIEndpoint + '/classifications', {
                 name: this.state.classification
             }).then((response) => {
                 if (response.status === 201) {

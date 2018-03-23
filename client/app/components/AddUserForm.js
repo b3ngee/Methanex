@@ -5,6 +5,7 @@ import Button from './Button';
 import isValidEmail from '../utils/validationHelpers';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class AddUserForm extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class AddUserForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/users', {
+            axios.post(prodAPIEndpoint + '/users', {
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,
                 email: this.state.email,

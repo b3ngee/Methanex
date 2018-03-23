@@ -5,6 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import Dropdown from './Dropdown';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class AddSkillTypeForm extends React.Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class AddSkillTypeForm extends React.Component {
 
     // Gets skill categories - with name and ID
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
+        axios.get(prodAPIEndpoint + '/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({skillCategories: response.data});
         });
     }
@@ -54,7 +55,7 @@ class AddSkillTypeForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/skill-types', {
+            axios.post(prodAPIEndpoint + '/skill-types', {
                 name: this.state.skillType,
                 skillCategoryId: this.state.categoryID
             }).then((response) => {

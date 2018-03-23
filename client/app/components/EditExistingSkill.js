@@ -4,7 +4,7 @@ import { skill } from '../styles/skill.scss';
 import Button from './Button';
 import Table from './Table';
 import Dropdown from './Dropdown';
-import { COMPETENCY } from '../constants/constants.js';
+import { prodAPIEndpoint, COMPETENCY } from '../constants/constants.js';
 import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
 
@@ -115,7 +115,7 @@ class EditExistingSkill extends Component {
             if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
                 const id = this.state.userSkillIds[i];
                 const c = this.state.editedCompetencies[i];
-                axios.put('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
+                axios.put(prodAPIEndpoint + '/user-skills/' + id, {
                     competency: c
                 });
             }
@@ -125,7 +125,7 @@ class EditExistingSkill extends Component {
             for (let i = 0; i < this.state.checks.length; i++ ) {
                 if ( this.state.checks[i] === 1) {
                     const id = this.state.userSkillIds[i];
-                    axios.delete('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
+                    axios.delete(prodAPIEndpoint + '/user-skills/' + id, {
                     });
                 }
             }
