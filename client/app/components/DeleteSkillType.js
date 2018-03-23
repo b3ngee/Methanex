@@ -5,6 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class DeleteSkillTypeForm extends React.Component {
     constructor(props) {
@@ -32,7 +33,7 @@ class DeleteSkillTypeForm extends React.Component {
     }
 
     getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then((response) => {
+        axios.get(prodAPIEndpoint + '/skill-types', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({skillTypes: response.data});
         });
     }
@@ -53,7 +54,7 @@ class DeleteSkillTypeForm extends React.Component {
 
     onSubmit() {
         if (this.isValid()) {
-            axios.delete('https://methanex-portfolio-management.herokuapp.com/skill-types/' + this.state.skillTypeID, {
+            axios.delete(prodAPIEndpoint + '/skill-types/' + this.state.skillTypeID, {
                 id: this.state.skillTypeID
             }).then((response) => {
                 if(response.status === 200) {

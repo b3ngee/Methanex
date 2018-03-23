@@ -20,7 +20,7 @@ class Portfolio extends React.Component {
     }
 
     fetchClassifications() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}}).then(response => {
+        axios.get(prodAPIEndpoint + '/classifications', {headers: {Pragma: 'no-cache'}}).then(response => {
             this.setState({ classifications: response.data });
         }).then(() => {
             this.fetchPortfolios();

@@ -4,6 +4,7 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class AddSkillCategoryForm extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class AddSkillCategoryForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/skill-categories', {
+            axios.post(prodAPIEndpoint + '/skill-categories', {
                 name: this.state.skillCategory
             }).then((response) => {
                 if (response.status === 201) {

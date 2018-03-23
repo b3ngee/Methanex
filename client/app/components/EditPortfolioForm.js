@@ -5,6 +5,7 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import Dropdown from './Dropdown';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class EditPortfolioForm extends React.Component {
     constructor(props) {
@@ -59,7 +60,7 @@ class EditPortfolioForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.put('https://methanex-portfolio-management.herokuapp.com/portfolios/' + this.state.id, {
+            axios.put(prodAPIEndpoint + '/portfolios/' + this.state.id, {
                 id: this.state.id,
                 managerId: this.state.newPortfolioManager,
                 classificationId: this.state.newClassification,

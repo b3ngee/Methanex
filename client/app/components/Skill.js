@@ -4,6 +4,7 @@ import Table from './Table';
  import Button from './Button';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class Skill extends Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class Skill extends Component {
     }
 
     getSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.state.userId, {headers: {Pragma: 'no-cache'}}).then(response => {
+        axios.get(prodAPIEndpoint + '/user-skills?userId=' + this.state.userId, {headers: {Pragma: 'no-cache'}}).then(response => {
             this.setState({ numSkill: response.data.length });
             this.setState({ skills: response.data });
             const tableData = [];
@@ -49,14 +50,14 @@ class Skill extends Component {
     }
 
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+        axios.get(prodAPIEndpoint + '/skill-categories', {headers: {Pragma: 'no-cache'}}).then( (response) => {
             this.setState({ skillCategoryData: response.data });
             this.getSkillTypes();
         });
     }
 
     getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+        axios.get(prodAPIEndpoint + '/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
             this.setState({ skillTypeData: response.data });
             this.getSkills();
         });

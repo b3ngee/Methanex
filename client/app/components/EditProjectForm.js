@@ -5,7 +5,7 @@ import Button from './Button';
 import Dropdown from './Dropdown';
 import { formBox } from '../styles/form.scss';
 import { project } from '../styles/project.scss';
-import { STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
+import { prodAPIEndpoint, STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
 import PopupBox from './PopupBox';
 import { enumifyProjectStatus, enumifyRagStatus } from '../utils/sanitizer';
 
@@ -48,20 +48,20 @@ class EditProjectForm extends Component {
     }
 
     fetchPortfolios() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
+        axios.get(prodAPIEndpoint + '/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
             this.setState({ portfolios: portfolioResp.data });
         });
     }
 
     fetchManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles', {headers: {Pragma: 'no-cache'}}).then((roleResp) => {
+        axios.get(prodAPIEndpoint + '/user-roles', {headers: {Pragma: 'no-cache'}}).then((roleResp) => {
             const projectManagerIDs = roleResp.data.filter(r => {
                 return r.role === 'PROJECT_MANAGER';
             }).map(ro => {
                 return ro.userId;
             });
 
-            axios.get('https://methanex-portfolio-management.herokuapp.com/users', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
+            axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
                 const projectManagers = userResp.data.filter(u => {
                     return projectManagerIDs.includes(u.id);
                 });
@@ -124,7 +124,7 @@ class EditProjectForm extends Component {
         e.preventDefault();
         if (this.isValid()) {
             const id = this.state.id;
-            axios.put('https://methanex-portfolio-management.herokuapp.com/projects/' + id, {
+            axios.put(prodAPIEndpoint + '/projects/' + id, {
                 id: this.state.id,
                 portfolioId: this.state.portfolioId,
                 name: this.state.name,

@@ -8,6 +8,7 @@ import axios from 'axios';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import { Promise } from 'es6-promise';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class PortfolioDetails extends React.Component {
     constructor(props) {
@@ -37,10 +38,10 @@ class PortfolioDetails extends React.Component {
     }
 
     fetchPortfolioData() {
-        const currPortfolio = axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios/' + this.state.portfolioId, {headers: {Pragma: 'no-cache'}});
-        const classifications = axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}});
-        const managers = axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}});
-        const projects = axios.get('https://methanex-portfolio-management.herokuapp.com/projects?portfolioId=' + this.state.portfolioId, {headers: {Pragma: 'no-cache'}});
+        const currPortfolio = axios.get(prodAPIEndpoint + '/portfolios/' + this.state.portfolioId, {headers: {Pragma: 'no-cache'}});
+        const classifications = axios.get(prodAPIEndpoint + '/classifications', {headers: {Pragma: 'no-cache'}});
+        const managers = axios.get(prodAPIEndpoint + '/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}});
+        const projects = axios.get(prodAPIEndpoint + '/projects?portfolioId=' + this.state.portfolioId, {headers: {Pragma: 'no-cache'}});
 
         Promise.all([currPortfolio, classifications, managers, projects]).then(response => {
             const classificationObjects = response[1].data.map(c => {
@@ -86,7 +87,7 @@ class PortfolioDetails extends React.Component {
     }
 
     deletePortfolio() {
-        axios.delete('https://methanex-portfolio-management.herokuapp.com/portfolios/' + this.state.currentPortfolio[0].ID).then(response => {
+        axios.delete(prodAPIEndpoint + '/portfolios/' + this.state.currentPortfolio[0].ID).then(response => {
             if (response.status === 200) {
                 this.setState({
                     deletionModalOpen: false,

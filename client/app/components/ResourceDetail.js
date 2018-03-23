@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Button from './Button.js';
 import { skill } from '../styles/skill.scss';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class ResourceDetail extends React.Component {
 
@@ -31,7 +32,7 @@ class ResourceDetail extends React.Component {
 
     // TODO: need to fix up the apiary call
     getDetails() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
+        axios.get(prodAPIEndpoint + '/users/' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const rows = [];
             const data = response.data;
             for (const key in data) {
@@ -48,21 +49,21 @@ class ResourceDetail extends React.Component {
     }
 
     getSkillCategories() {
-         axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+         axios.get(prodAPIEndpoint + '/skill-categories', {headers: {Pragma: 'no-cache'}}).then( (response) => {
              this.setState({ skillCategoryData: response.data });
              this.getSkillTypes();
          });
     }
 
     getSkillTypes() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+        axios.get(prodAPIEndpoint + '/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
             this.setState({ skillTypeData: response.data });
             this.getUserSkills();
         });
     }
 
     getUserSkills() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
+        axios.get(prodAPIEndpoint + '/user-skills?userId=' + this.props.match.params.resource_id, {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = response.data;
             const numSkill = response.data.length;
             const skillsRows = [];

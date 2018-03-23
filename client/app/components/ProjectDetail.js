@@ -10,6 +10,7 @@ import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
+import { prodAPIEndpoint } from '../constants/constants';
 
  // const id = localStorage.getItem('project_id');
  // change 2 to id after routing is set-up
@@ -56,9 +57,9 @@ class ProjectDetail extends React.Component {
     }
 
     getDetails() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/projects/' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}}).then(response => {
-            axios.get('https://methanex-portfolio-management.herokuapp.com/users/' + response.data.managerId, {headers: {Pragma: 'no-cache'}}).then(managerRes => {
-                axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios/' + response.data.portfolioId, {headers: {Pragma: 'no-cache'}}).then(portfolioRes => {
+        axios.get(prodAPIEndpoint + '/projects/' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}}).then(response => {
+            axios.get(prodAPIEndpoint + '/users/' + response.data.managerId, {headers: {Pragma: 'no-cache'}}).then(managerRes => {
+                axios.get(prodAPIEndpoint + '/portfolios/' + response.data.portfolioId, {headers: {Pragma: 'no-cache'}}).then(portfolioRes => {
                     const managerName = managerRes.data.firstName;
                     const portfolioName = portfolioRes.data.name;
                     const data = response.data;
@@ -94,7 +95,7 @@ class ProjectDetail extends React.Component {
 
     deleteProject() {
         const id = this.props.match.params.project_id;
-        axios.delete('https://methanex-portfolio-management.herokuapp.com/projects/' + id)
+        axios.delete(prodAPIEndpoint + '/projects/' + id)
         .then(response => {
             if (response.status === 200) {
                 this.setState({
@@ -112,7 +113,7 @@ class ProjectDetail extends React.Component {
     }
 
     getResourceData() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=RESOURCE', {headers: {Pragma: 'no-cache'}})
+        axios.get(prodAPIEndpoint + '/users?role=RESOURCE', {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
@@ -127,7 +128,7 @@ class ProjectDetail extends React.Component {
     }
 
     getResources() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/project-resources?projectId=' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
+        axios.get(prodAPIEndpoint + '/project-resources?projectId=' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const tableData = [];
             const resourceIDs = [];
@@ -147,7 +148,7 @@ class ProjectDetail extends React.Component {
     }
 
     addResource() {
-        axios.post('https://methanex-portfolio-management.herokuapp.com/project-resources', {
+        axios.post(prodAPIEndpoint + '/project-resources', {
             projectId: this.props.match.params.project_id,
             resourceId: this.state.resourceId,
             assignedHours: this.state.assignedHours,
@@ -175,7 +176,7 @@ class ProjectDetail extends React.Component {
                 id = rowResource[i].ID;
             }
         }
-        axios.delete('https://methanex-portfolio-management.herokuapp.com/project-resources/' + id)
+        axios.delete(prodAPIEndpoint + '/project-resources/' + id)
         .then(response => {
             if (response.status === 200) {
                 this.getResourceData();

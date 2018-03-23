@@ -5,6 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class DeleteClassificationForm extends React.Component {
     constructor(props) {
@@ -32,7 +33,7 @@ class DeleteClassificationForm extends React.Component {
     }
 
     getClassifications() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}}).then((response) => {
+        axios.get(prodAPIEndpoint + '/classifications', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({classifications: response.data});
         });
     }
@@ -53,7 +54,7 @@ class DeleteClassificationForm extends React.Component {
 
     onSubmit() {
         if (this.isValid()) {
-            axios.delete('https://methanex-portfolio-management.herokuapp.com/classifications/' + this.state.classID, {
+            axios.delete(prodAPIEndpoint + '/classifications/' + this.state.classID, {
                 id: this.state.classID
             }).then((response) => {
                 if(response.status === 200) {

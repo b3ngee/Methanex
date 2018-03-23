@@ -5,7 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
 import Dropdown from './Dropdown';
-import { RESOURCE_STATUS, USER_STATUS } from '../constants/constants';
+import { prodAPIEndpoint, RESOURCE_STATUS, USER_STATUS } from '../constants/constants';
 
 class EditResourceForm extends Component {
     constructor(props) {
@@ -37,7 +37,7 @@ class EditResourceForm extends Component {
     }
 
     getResourceManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=RESOURCE_MANAGER', {headers: {Pragma: 'no-cache'}}).then((response) => {
+        axios.get(prodAPIEndpoint + '/users?role=RESOURCE_MANAGER', {headers: {Pragma: 'no-cache'}}).then((response) => {
                 this.setState({resourceManagers: response.data});
         });
     }
@@ -46,7 +46,7 @@ class EditResourceForm extends Component {
         e.preventDefault();
         if (this.isValid()) {
             const id = this.state.id;
-            axios.put('https://methanex-portfolio-management.herokuapp.com/users/' + id, {
+            axios.put(prodAPIEndpoint + '/users/' + id, {
                 id: this.state.id,
                 managerId: this.state.managerId,
                 firstName: this.state.firstName,

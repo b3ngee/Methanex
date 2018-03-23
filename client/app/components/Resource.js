@@ -49,7 +49,7 @@ class Resource extends React.Component {
     }
 
     getManagerNames() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users', {headers: {Pragma: 'no-cache'}}).then(response => {
+        axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
                 data[response.data[i].id] = response.data[i].firstName + ' ' + response.data[i].lastName;

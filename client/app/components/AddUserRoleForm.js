@@ -4,7 +4,7 @@ import Dropdown from './Dropdown';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
-import {RESOURCE_MANAGER, SUPER_ADMIN, PORTFOLIO_MANAGER, RESOURCE, PROJECT_MANAGER } from '../constants/constants';
+import { prodAPIEndpoint, RESOURCE_MANAGER, SUPER_ADMIN, PORTFOLIO_MANAGER, RESOURCE, PROJECT_MANAGER } from '../constants/constants';
 
 class AddUserRoleForm extends React.Component {
     constructor(props) {
@@ -31,7 +31,7 @@ class AddUserRoleForm extends React.Component {
     }
 
     getUsers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users', {headers: {Pragma: 'no-cache'}}).then((response) => {
+        axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({users: response.data});
         });
     }
@@ -59,7 +59,7 @@ class AddUserRoleForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/user-roles', {
+            axios.post(prodAPIEndpoint + '/user-roles', {
                 userId: this.state.userId,
                 role: this.state.role
             }).then((response) => {

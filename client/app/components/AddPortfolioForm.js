@@ -5,6 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import Dropdown from './Dropdown';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class AddPortfolioForm extends Component {
     constructor(props) {
@@ -31,13 +32,13 @@ class AddPortfolioForm extends Component {
     }
 
     listManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
+        axios.get(prodAPIEndpoint + '/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
             this.setState({ managers: userResp.data });
         });
     }
 
     listClassifications() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}}).then((classificationResp) => {
+        axios.get(prodAPIEndpoint + '/classifications', {headers: {Pragma: 'no-cache'}}).then((classificationResp) => {
             this.setState({ classifications: classificationResp.data });
         });
     }
@@ -45,7 +46,7 @@ class AddPortfolioForm extends Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/portfolios', {
+            axios.post(prodAPIEndpoint + '/portfolios', {
                 name: this.state.portfolioName,
                 classificationId: this.state.portfolioClassificationID,
                 managerId: this.state.portfolioManagerID
