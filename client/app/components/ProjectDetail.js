@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import { formBox } from '../styles/form.scss';
 import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
+import PopupBox from './PopupBox';
+import PopupBoxForDeletion from './PopupBoxForDeletion';
 
  // const id = localStorage.getItem('project_id');
  // change 2 to id after routing is set-up
@@ -27,15 +29,25 @@ class ProjectDetail extends React.Component {
             projectName: '',
             portfoliId: '',
             managerId: '',
-
+            successModalOpen: false,
+            errorModalOpen: false,
+            projectDeletionModalOpen: false,
+            resourceDeletionModalOpen: false
         };
 
         this.getDetails = this.getDetails.bind(this);
+        this.handleDeleteProject = this.handleDeleteProject.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
         this.onChange = this.onChange.bind(this);
         this.getResourceData = this.getResourceData.bind(this);
         this.addResource = this.addResource.bind(this);
         this.deleteResource = this.deleteResource.bind(this);
+        this.handleDeleteResource = this.handleDeleteResource.bind(this);
+        this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseProjectDeletion = this.onCloseProjectDeletion.bind(this);
+        this.onCloseResourceDeletion = this.onCloseResourceDeletion.bind(this);
+        this.onCancelDeletion = this.onCancelDeletion.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
@@ -76,13 +88,26 @@ class ProjectDetail extends React.Component {
         });
     }
 
+    handleDeleteProject() {
+        this.setState({projectDeletionModalOpen: true});
+    }
+
     deleteProject() {
         const id = this.props.match.params.project_id;
         axios.delete('https://methanex-portfolio-management.herokuapp.com/projects/' + id)
         .then(response => {
             if (response.status === 200) {
-                this.props.history.push('/project');
+                this.setState({
+                    projectDeletionModalOpen: false,
+                    successModalOpen: true
+                });
             }
+        }).catch((error) => {
+            this.setState({
+                errorMessage: 'Error: ' + error.response.data.message,
+                projectDeletionModalOpen: false,
+                errorModalOpen: true
+            });
         });
     }
 
@@ -134,6 +159,14 @@ class ProjectDetail extends React.Component {
         });
     }
 
+    handleDeleteResource() {
+        this.setState({resourceDeletionModalOpen: true});
+    }
+
+    onCloseResourceDeletion() {
+        this.deleteResource();
+    }
+
     deleteResource() {
         let id;
         const rowResource = this.state.rowResource;
@@ -146,8 +179,42 @@ class ProjectDetail extends React.Component {
         .then(response => {
             if (response.status === 200) {
                 this.getResourceData();
+                this.setState({
+                    resourceDeletionModalOpen: false,
+                    successModalOpen: true
+                });
             }
+        }).catch((error) => {
+            this.setState({
+                errorMessage: 'Error: ' + error.response.data.message,
+                resourceDeletionModalOpen: false,
+                errorModalOpen: true
+            });
         });
+    }
+
+    onCloseSuccess() {
+        this.props.history.push('/project');
+//        window.history.back();
+    }
+
+    onCloseProjectDeletion() {
+        this.deleteProject();
+    }
+
+    onCancelDeletion() {
+        this.setState({
+            projectDeletionModalOpen: false,
+            resourceDeletionModalOpen: false,
+            errorMessage: 'deletion has been canceled',
+            errorModalOpen: true
+        });
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+        this.props.history.push('/project');
+        window.history.back();
     }
 
     render() {
@@ -156,7 +223,7 @@ class ProjectDetail extends React.Component {
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
-        const {resourceId, assignedHours} = this.state;
+        const {resourceId, assignedHours, projectDeletionModalOpen, resourceDeletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
@@ -171,9 +238,31 @@ class ProjectDetail extends React.Component {
                         <Button type="submit" label="Edit"/>
                     </Link>
                 </span>
-                <Button type="submit" label="Delete" onClick={this.deleteProject}/>
+                <PopupBoxForDeletion
+                    label="Are you sure?"
+                    isOpen={projectDeletionModalOpen}
+                    onClose={this.onCloseProjectDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalOpen}
+                    onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
+                <Button type="submit" label="Delete" onClick={this.handleDeleteProject}/>
 
                 <h2>Resources</h2>
+                <PopupBoxForDeletion
+                    label="Are you sure?"
+                    isOpen={resourceDeletionModalOpen}
+                    onClose={this.onCloseResourceDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
                 {this.state.rowResource.length > 0 &&
                     <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>}
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
@@ -202,7 +291,7 @@ class ProjectDetail extends React.Component {
                 <Button
                     type="submit"
                     label="Delete Resource"
-                    onClick={this.deleteResource}
+                    onClick={this.handleDeleteResource}
                 />
             </div>
         );

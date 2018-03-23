@@ -6,11 +6,13 @@ import Table from './Table';
 import Dropdown from './Dropdown';
 import { COMPETENCY } from '../constants/constants.js';
 import PopupBox from './PopupBox';
+import PopupBoxForDeletion from './PopupBoxForDeletion';
 
 class EditExistingSkill extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            deletionModalOpen: false,
             successModalOpen: false,
             errorModalOpen: false,
             userId: this.props.location.state.data[0].Value,
@@ -24,10 +26,13 @@ class EditExistingSkill extends Component {
             errors: {},
             userCompetencies: [],
         };
+        this.onCloseDeletion = this.onCloseDeletion.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
+        this.onCancelDeletion = this.onCancelDeletion.bind(this);
         this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
         this.handleEditing = this.handleEditing.bind(this);
+        this.confirmEditing = this.confirmEditing.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
 
@@ -93,6 +98,21 @@ class EditExistingSkill extends Component {
         for (let i = 0; i < this.state.userCompetencies.length; i++) {
             if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
                 differenceCount++;
+            }
+        }
+
+        if ( differenceCount === 0 && this.state.numChecked === 0 ||
+            this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
+        ) {
+            this.setState({ errorModalOpen: true, errorMessage: 'no changes were made' });
+        } else {
+            this.setState({deletionModalOpen: true });
+        }
+    }
+
+    confirmEditing() {
+        for (let i = 0; i < this.state.userCompetencies.length; i++) {
+            if ( this.state.userCompetencies[i] - this.state.editedCompetencies[i] ) {
                 const id = this.state.userSkillIds[i];
                 const c = this.state.editedCompetencies[i];
                 axios.put('https://methanex-portfolio-management.herokuapp.com/user-skills/' + id, {
@@ -111,14 +131,11 @@ class EditExistingSkill extends Component {
             }
         }
 
-        if ( differenceCount === 0 && this.state.numChecked === 0 ||
-            this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
-        ) {
-            this.setState({ errorModalOpen: true });
-        } else {
-            this.setState({ successModalOpen: true });
-            this.componentDidMount();
-        }
+        this.setState({ deletionModalOpen: false, successModalOpen: true });
+    }
+
+    onCloseDeletion() {
+        this.confirmEditing();
     }
 
     onCloseSuccess() {
@@ -127,22 +144,37 @@ class EditExistingSkill extends Component {
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
+        window.history.back();
+    }
+
+    onCancelDeletion() {
+        this.setState({
+            deletionModalOpen: false,
+            errorMessage: 'changes has been canceled',
+            errorModalOpen: true
+        });
     }
 
     render() {
-        const { successModalOpen, errorModalOpen } = this.state;
+        const { deletionModalOpen, successModalOpen, errorModalOpen, errorMessage } = this.state;
         let editingColumns = ['Skill Category', 'Skill Name', 'Competency', 'New Competency', 'Remove Skill'];
 
         return(
             <div className={ skill }>
-                <h1>Edit Skills</h1>
+                <h1>Editing Skills</h1>
+                <PopupBoxForDeletion
+                    label="Are you sure about the changes?"
+                    isOpen={deletionModalOpen}
+                    onClose={this.onCloseDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
                 <PopupBox
                     label="Successful!"
                     isOpen={successModalOpen}
                     onClose={this.onCloseSuccess}
                 />
                 <PopupBox
-                    label="no changes were made"
+                    label={errorMessage}
                     isOpen={errorModalOpen}
                     onClose={this.onCloseError}
                 />

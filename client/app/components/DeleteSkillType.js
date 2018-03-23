@@ -4,6 +4,7 @@ import Dropdown from './Dropdown';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
+import PopupBoxForDeletion from './PopupBoxForDeletion';
 
 class DeleteSkillTypeForm extends React.Component {
     constructor(props) {
@@ -14,12 +15,16 @@ class DeleteSkillTypeForm extends React.Component {
             errors: {},
             successModalOpen: false,
             errorModalOpen: false,
+            deletionModalOpen: false
         };
 
-        this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.handleDeletion = this.handleDeletion.bind(this);
+        this.onCloseDeletion = this.onCloseDeletion.bind(this);
+        this.onCancelDeletion = this.onCancelDeletion.bind(this);
     }
 
     componentDidMount() {
@@ -42,8 +47,11 @@ class DeleteSkillTypeForm extends React.Component {
         return isValid;
     }
 
-    onSubmit(e) {
-        e.preventDefault();
+    handleDeletion() {
+        this.setState({deletionModalOpen: true});
+    }
+
+    onSubmit() {
         if (this.isValid()) {
             axios.delete('https://methanex-portfolio-management.herokuapp.com/skill-types/' + this.state.skillTypeID, {
                 id: this.state.skillTypeID
@@ -51,7 +59,9 @@ class DeleteSkillTypeForm extends React.Component {
                 if(response.status === 200) {
                     this.setState({
                         skillTypeID: '',
-                        errors: {}, successModalOpen: true
+                        errors: {},
+                        deletionModalOpen: false,
+                        successModalOpen: true
                     });
                 }
             }).catch((error) => {
@@ -70,37 +80,55 @@ class DeleteSkillTypeForm extends React.Component {
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
+//        window.history.back();
+    }
+
+    onCloseDeletion() {
+        this.onSubmit();
+    }
+
+    onCancelDeletion() {
+        this.setState({
+            deletionModalOpen: false,
+            errorMessage: 'deletion has been canceled',
+            errorModalOpen: true
+        });
     }
 
     render() {
-        const { skillTypes, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
+        const { skillTypes, deletionModalOpen, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
 
         return (
         <div className={ formBox }>
-            <form onSubmit={this.onSubmit}>
-                <h2>Delete Skill Type</h2>
-                <PopupBox
-                    label="Successful!"
-                    isOpen={successModalOpen}
-                    onClose={this.onCloseSuccess}
-                />
-                <PopupBox
-                    label={errorMessage}
-                    isOpen={errorModalOpen}
-                    onClose={this.onCloseError}
-                />
-                <Dropdown
-                    label="Select a Skill Type to Delete"
-                    name="skillTypeID"
-                    data={skillTypes}
-                    onSelect={this.onChange}
-                    error={errors.skillTypeID}
-                />
-                <Button
-                    type="submit"
-                    label="Delete"
-                />
-            </form>
+            <h2>Delete Skill Type</h2>
+            <PopupBoxForDeletion
+                label="Are you sure?"
+                isOpen={deletionModalOpen}
+                onClose={this.onCloseDeletion}
+                onCancel={this.onCancelDeletion}
+            />
+            <PopupBox
+                label="Successful!"
+                isOpen={successModalOpen}
+                onClose={this.onCloseSuccess}
+            />
+            <PopupBox
+                label={errorMessage}
+                isOpen={errorModalOpen}
+                onClose={this.onCloseError}
+            />
+            <Dropdown
+                label="Select a Skill Type to Delete"
+                name="skillTypeID"
+                data={skillTypes}
+                onSelect={this.onChange}
+                error={errors.skillTypeID}
+            />
+            <Button
+                type="submit"
+                label="Delete"
+                onClick={this.handleDeletion}
+            />
         </div>
         );
     }
