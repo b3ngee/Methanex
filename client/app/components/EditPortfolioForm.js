@@ -5,7 +5,8 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import Dropdown from './Dropdown';
 import PopupBox from './PopupBox';
-import { prodAPIEndpoint } from '../constants/constants';
+import { prodAPIEndpoint, RAG_STATUS } from '../constants/constants';
+import { enumifyRagStatus } from '../utils/sanitizer';
 
 class EditPortfolioForm extends React.Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class EditPortfolioForm extends React.Component {
             portfolioName: this.props.location.state.currentPortfolio[0]['Portfolio Name'],
             classificationName: this.props.location.state.currentPortfolio[0].Classification,
             managerName: this.props.location.state.currentPortfolio[0].Manager,
+            ragStatus: enumifyRagStatus(this.props.location.state.currentPortfolio[0]['RAG Status']),
             classificationObjects: this.props.location.state.classifications,
             managerObjects: this.props.location.state.managerNames,
             errors: {},
@@ -45,6 +47,10 @@ class EditPortfolioForm extends React.Component {
             this.setState({ errors: { manager: 'Portfolio Manager is required'}});
             isValid = false;
         }
+        if (!this.state.ragStatus) {
+            this.setState({ errors: { rag: 'RAG status is required' }});
+            isValid = false;
+        }
 
         return isValid;
     }
@@ -65,6 +71,7 @@ class EditPortfolioForm extends React.Component {
                 managerId: this.state.newPortfolioManager,
                 classificationId: this.state.newClassification,
                 name: this.state.portfolioName,
+                ragStatus: this.state.ragStatus
             }).then(response => {
                 if (response.status === 200) {
                     this.setState({ successModalOpen: true });
@@ -81,7 +88,7 @@ class EditPortfolioForm extends React.Component {
     }
 
     render() {
-        const { classificationObjects, managerObjects, portfolioName, classificationName, managerName, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
+        const { classificationObjects, managerObjects, portfolioName, classificationName, ragStatus, managerName, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
         const classificationId = classificationObjects.filter(co => co.name === classificationName)[0].id;
         const managerId = managerObjects.filter(mo => mo.name === managerName)[0].id;
 
@@ -121,6 +128,14 @@ class EditPortfolioForm extends React.Component {
                         preSelect={managerId}
                         error={errors.manager}
                         onSelect={this.onChange}
+                    />
+                    <Dropdown
+                        label="RAG Status"
+                        name="ragStatus"
+                        data={RAG_STATUS}
+                        preSelect={ragStatus}
+                        onSelect={this.onChange}
+                        error={errors.rag}
                     />
                     <Button
                         type="submit"
