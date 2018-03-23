@@ -4,11 +4,14 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
+import Dropdown from './Dropdown';
+import { RESOURCE_STATUS, USER_STATUS } from '../constants/constants';
 
 class EditResourceForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            resourceManagers: [],
             id: this.props.location.state.data[0].Value,
             managerId: this.props.location.state.data[1].Value,
             firstName: this.props.location.state.data[2].Value,
@@ -27,6 +30,16 @@ class EditResourceForm extends Component {
         this.onChange = this.onChange.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
+    }
+
+    componentDidMount() {
+        this.getResourceManagers();
+    }
+
+    getResourceManagers() {
+        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=RESOURCE_MANAGER', {headers: {Pragma: 'no-cache'}}).then((response) => {
+                this.setState({resourceManagers: response.data});
+        });
     }
 
     onSubmit(e) {
@@ -105,10 +118,16 @@ class EditResourceForm extends Component {
 
     render() {
         const {id, managerId, firstName, lastName, address, email, status, enabled, errors, successModalOpen, errorModalOpen, errorMessage} = this.state;
+
+        const managerObjects = this.state.resourceManagers.map((mo) => {
+            return {id: mo.id, name: mo.firstName + ' ' + mo.lastName};
+        });
+
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
                     <h2>Edit Resource</h2>
+                    <h3>Resource ID:{id}</h3>
                     <PopupBox
                         label="Successful!"
                         isOpen={successModalOpen}
@@ -119,19 +138,13 @@ class EditResourceForm extends Component {
                         isOpen={errorModalOpen}
                         onClose={this.onCloseError}
                     />
-                    <TextFieldGroup
-                        field="id"
-                        label="Resource ID"
-                        value={id}
-                        error={errors.id}
-                        onChange={this.onChange}
-                    />
-                    <TextFieldGroup
-                        field="managerId"
-                        label="Manager ID"
-                        value={managerId}
-                        error={errors.managerId}
-                        onChange={this.onChange}
+                     <Dropdown
+                         label="Manager"
+                         name="managerId"
+                         preSelect={managerId}
+                         data={managerObjects}
+                         onSelect={this.onChange}
+                         error={errors.managerId}
                     />
                     <TextFieldGroup
                         field="firstName"
@@ -161,21 +174,22 @@ class EditResourceForm extends Component {
                         error={errors.email}
                         onChange={this.onChange}
                     />
-                    <TextFieldGroup
-                        field="status"
-                        label="Status"
-                        value={status}
-                        error={errors.status}
-                        onChange={this.onChange}
+                     <Dropdown
+                         label="Status"
+                         name="status"
+                         preSelect={status}
+                         data={RESOURCE_STATUS}
+                         onSelect={this.onChange}
+                         error={errors.status}
                     />
-                    <TextFieldGroup
-                        field="enabled"
-                        label="Enabled"
-                        value={enabled}
-                        error={errors.enabled}
-                        onChange={this.onChange}
+                     <Dropdown
+                         label="User Status"
+                         name="enabled"
+                         preSelect={enabled}
+                         data={USER_STATUS}
+                         onSelect={this.onChange}
+                         error={errors.enabled}
                     />
-
                     <Button
                         type="submit"
                         label="Save"
