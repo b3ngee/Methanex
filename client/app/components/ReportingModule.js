@@ -37,7 +37,7 @@ export default class ReportingModule extends Component {
             minHeight: '297mm',
             marginLeft: 'auto',
             marginRight: 'auto',
-            marginTop: '10px'
+            marginTop: '20px'
         };
 
         let data = rows;
@@ -51,13 +51,14 @@ export default class ReportingModule extends Component {
         });
 
         const csvStyle  = {
-            backgroundColor: '#8dc63f',
+            backgroundColor: '#1AA7CC',
             fontSize: 14,
             fontWeight: 500,
             height: 52,
-            padding: '0 48px',
+            padding: '10px',
             borderRadius: 5,
-            color: '#fff'
+            color: '#fff',
+            textDecoration: 'none'
         };
 
         return (
