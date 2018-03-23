@@ -23,6 +23,9 @@ public class Portfolio {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "RAG_STATUS", nullable = false)
+    private String ragStatus;
+
     public Integer getId() {
         return id;
     }
@@ -65,5 +68,17 @@ public class Portfolio {
 
     public boolean hasName() {
         return this.name != null;
+    }
+
+    public String getRagStatus() {
+        return ragStatus;
+    }
+
+    public void setRagStatus(String ragStatus) {
+        this.ragStatus = ragStatus;
+    }
+
+    public Boolean hasRagStatus() {
+        return this.ragStatus != null;
     }
 }

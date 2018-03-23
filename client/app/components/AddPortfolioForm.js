@@ -5,7 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import Dropdown from './Dropdown';
 import PopupBox from './PopupBox';
-import { prodAPIEndpoint } from '../constants/constants';
+import { prodAPIEndpoint, RAG_STATUS } from '../constants/constants';
 
 class AddPortfolioForm extends Component {
     constructor(props) {
@@ -18,6 +18,7 @@ class AddPortfolioForm extends Component {
             portfolioManagerID: '',
             managers: [],
             classifications: [],
+            rag: '',
             errors: {}
         };
         this.onSubmit = this.onSubmit.bind(this);
@@ -49,7 +50,8 @@ class AddPortfolioForm extends Component {
             axios.post(prodAPIEndpoint + '/portfolios', {
                 name: this.state.portfolioName,
                 classificationId: this.state.portfolioClassificationID,
-                managerId: this.state.portfolioManagerID
+                managerId: this.state.portfolioManagerID,
+                ragStatus: this.state.rag
             }).then((response) => {
                 if (response.status === 201) {
                     this.setState({ successModalOpen: true });
@@ -81,6 +83,10 @@ class AddPortfolioForm extends Component {
         }
         if (!this.state.portfolioClassificationID) {
             this.setState({ errors: { portfolioClassificationID: 'Portfolio Classification ID is required'}});
+            isValid = false;
+        }
+        if (!this.state.rag) {
+            this.setState({ errors: { rag: 'RAG status is required' }});
             isValid = false;
         }
         return isValid;
@@ -128,6 +134,13 @@ class AddPortfolioForm extends Component {
                         name="portfolioManagerID"
                         data={managerObjects}
                         onSelect={this.onChange}
+                    />
+                    <Dropdown
+                        label="RAG Status"
+                        name="rag"
+                        data={RAG_STATUS}
+                        onSelect={this.onChange}
+                        error={errors.rag}
                     />
                     <Button
                         type="submit"

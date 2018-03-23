@@ -63,7 +63,8 @@ class PortfolioDetails extends React.Component {
                 'ID': response[0].data.id,
                 'Portfolio Name': response[0].data.name,
                 'Classification': classificationObjects.filter(c => c.id === response[0].data.classificationId )[0].name,
-                'Manager': managerObjects.filter(m => m.id === response[0].data.managerId )[0].name
+                'Manager': managerObjects.filter(m => m.id === response[0].data.managerId )[0].name,
+                'RAG Status': sanitizeRagStatus(response[0].data.ragStatus)
             }];
 
             this.setState({ currentPortfolio: portfolioObject, classifications: classificationObjects, managerNames: managerObjects, projects: projectObjects });
@@ -114,7 +115,7 @@ class PortfolioDetails extends React.Component {
     render() {
         const { currentPortfolio, projects, classifications, managerNames, deletionModalOpen, errorModalOpen, errorMessage } = this.state;
         const projectColumns = ['ID', 'Project Name', 'Project Status', 'RAG Status', 'Budget'];
-        const portfolioColumns = ['ID', 'Portfolio Name', 'Classification', 'Manager'];
+        const portfolioColumns = ['ID', 'Portfolio Name', 'Classification', 'Manager', 'RAG Status'];
 
         return(
             <div className={ project }>
