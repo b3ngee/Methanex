@@ -24,7 +24,7 @@ export default class Table extends Component {
                 <tr key={ri}>
                 {cols.map((column, ci) => {
                     let endPoint = '';
-                    if (column === 'ID') {
+                    if (column === 'ID' || column === 'Project ID') {
                         id = row[column];
                     }
                     if (column === 'Project Name') {

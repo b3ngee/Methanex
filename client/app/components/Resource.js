@@ -36,8 +36,9 @@ class Resource extends React.Component {
                 for (let j = 0; j < response.data.length; j++) {
                     axios.get(prodAPIEndpoint + '/projects/' + response.data[j].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
                         tableData.push({
+                            'Project ID': projResponse.data.id,
                             'Resources': this.state.resourceNames[i],
-                            'Projects Assigned To': projResponse.data.name,
+                            'Project Name': projResponse.data.name,
                             'Hours': response.data[j].assignedHours
                         });
                         this.setState({ assignedResourcesRows: tableData });
@@ -89,7 +90,7 @@ class Resource extends React.Component {
 
     render() {
         let columns = ['ID', 'Resource Name', 'Manager ID', 'Status'];
-        let assignedResourcesColumns = ['Resources', 'Projects Assigned To', 'Hours'];
+        let assignedResourcesColumns = ['Project ID', 'Resources', 'Project Name', 'Hours'];
         const {rows, errorModalOpen, errorMessage} = this.state;
         return(
             <div className={ resource }>
