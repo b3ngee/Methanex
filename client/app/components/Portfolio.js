@@ -4,6 +4,7 @@ import Table from './Table.js';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
+import { sanitizeRagStatus } from '../utils/sanitizer';
 
 class Portfolio extends React.Component {
     constructor(props) {
@@ -46,6 +47,7 @@ class Portfolio extends React.Component {
                         return c.id === d.classificationId;
                     })[0].name,
                     'Manager': d.managerId,
+                    'Status': sanitizeRagStatus(d.ragStatus)
                 };
             });
             this.setState({ portfolios: response.data, rows: dataRows });
@@ -53,7 +55,7 @@ class Portfolio extends React.Component {
     }
 
     render() {
-        let columns = ['ID', 'Portfolio Name', 'Classification'];
+        let columns = ['ID', 'Portfolio Name', 'Classification', 'Status'];
         const rows = this.state.rows;
 
         return (

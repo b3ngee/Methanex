@@ -28,4 +28,14 @@ public interface ProjectResourceDao extends CrudRepository<ProjectResource, Inte
      */
     @Query("SELECT p FROM ProjectResource p WHERE p.projectId = ?1")
     Iterable<ProjectResource> findAllByProjectId(@Param("projectId") Integer projectId);
+
+    /**
+     * Finds ProjectResources associated with resourceId
+     *
+     * @param resourceId
+     * @return A list of ProjectResource
+     * If no ProjectResources are found, return empty list.
+     */
+    @Query("SELECT p FROM ProjectResource p WHERE p.resourceId = ?1")
+    Iterable<ProjectResource> findAllByResourceId(@Param("resourceId") Integer resourceId);
 }

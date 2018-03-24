@@ -1,5 +1,6 @@
 // API endpoints
 export const prodAPIEndpoint = 'https://methanex-portfolio-management.herokuapp.com';
+// export const prodAPIEndpoint = 'http://localhost:8080';
 export const apiaryAPIEndpoint = 'https://private-2a709-methanex.apiary-mock.com';
 
 // User roles
