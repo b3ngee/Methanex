@@ -40,7 +40,8 @@ class Project extends React.Component {
                 axios.get(prodAPIEndpoint + '/projects/' + response.data[i].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
                     axios.get(prodAPIEndpoint + '/users/' + projResponse.data.managerId, {headers: {Pragma: 'no-cache'}}).then(userResponse => {
                         tableData.push({
-                            'Projects': projResponse.data.name,
+                            'ID': projResponse.data.id,
+                            'Project Name': projResponse.data.name,
                             'Project Manager Names': userResponse.data.firstName + ' ' + userResponse.data.lastName,
                             'Hours': response.data[i].assignedHours
                         });
@@ -81,7 +82,7 @@ class Project extends React.Component {
 
     render() {
         let columns = ['ID', 'Project Name', 'Project Status', 'Status', 'Budget'];
-        let assignedProjectsColumns = ['Projects', 'Project Manager Names', 'Hours'];
+        let assignedProjectsColumns = ['ID', 'Project Name', 'Project Manager Names', 'Hours'];
         const {rows, errorModalOpen, errorMessage} = this.state;
         if (this.state.roles.includes(RESOURCE)) {
             return (
