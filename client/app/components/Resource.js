@@ -1,6 +1,7 @@
 import React from 'react';
 import { resource } from '../styles/resource.scss';
-import Table from './Table.js';
+import Table from './Table';
+import Button from './Button';
 import axios from 'axios/index';
 import {Link} from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
@@ -70,7 +71,10 @@ class Resource extends React.Component {
                 <Table text="List of Resources" columns={columns} rows={this.state.rows} ids={this.state.resourceIDs}/>
                 <span>
                     <Link to={{pathname: '/resource/report', state: {c: {columns}, r: {rows}}}}>
-                        <button>Create report</button>
+                        <Button
+                            type="submit"
+                            label="Create report"
+                        />
                     </Link>
                 </span>
             </div>

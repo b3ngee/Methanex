@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { project } from '../styles/project.scss';
 import Table from './Table';
-import Button from './Button.js';
-import PopupBox from './PopupBox.js';
+import Button from './Button';
+import PopupBox from './PopupBox';
 import axios from 'axios';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import { Promise } from 'es6-promise';
@@ -122,7 +122,6 @@ class PortfolioDetails extends React.Component {
                 <h1>{currentPortfolio['Portfolio Name']}</h1>
                 <h2>Portfolio Details</h2>
                 <Table columns={portfolioColumns} rows={currentPortfolio} />
-                <p>Deleting portfolio will delete all instances of that portfolio</p>
                 <span>
                     <Link to={{pathname: '/portfolio/edit', state: { currentPortfolio, classifications, managerNames }}}>
                         <Button type="submit" label="Edit"/>

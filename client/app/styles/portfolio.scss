@@ -5,17 +5,11 @@
     span {
         text-decoration: none;
         display: inline-block;
-        &:hover {
-            background-color: $hover-color;
-        }
     }
     a {
         color: black;
         text-decoration: none;
         display: block;
-        &:hover {
-            background-color: $hover-color;
-        }
     }
 }
 
