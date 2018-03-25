@@ -34,7 +34,7 @@ class Navbar extends Component {
             isPortfolioManager = roles.includes(PORTFOLIO_MANAGER);
             isResourceManager = roles.includes(RESOURCE_MANAGER);
             isProjectManager = roles.includes(PROJECT_MANAGER);
-            isResource = roles.includes(RESOURCE);
+            isResource = roles.split(',').includes(RESOURCE);
         }
         return (
             <div className={ navbar }>
