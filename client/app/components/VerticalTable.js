@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { vtable } from '../styles/vtable.scss';
+import { table } from '../styles/table.scss';
 
 export default class VerticalTable extends Component {
     constructor(props) {
@@ -14,13 +14,13 @@ export default class VerticalTable extends Component {
             return (
                 <tr key={i}>
                     <th>{heading}:</th>
-                    <th>{data[i]}</th>
+                    <td>{data[i]}</td>
                 </tr>
             );
         });
 
         return (
-            <table className={vtable}>
+            <table className={table}>
                 <tbody>
                     {body}
                 </tbody>

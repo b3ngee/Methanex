@@ -3,7 +3,7 @@ import Table from './Table.js';
 import { resource } from '../styles/resource.scss';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Button from './Button.js';
+import Button from './Button';
 import { skill } from '../styles/skill.scss';
 import { prodAPIEndpoint } from '../constants/constants';
 

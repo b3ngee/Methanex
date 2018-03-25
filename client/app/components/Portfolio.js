@@ -2,6 +2,7 @@ import React from 'react';
 import { portfolio } from '../styles/portfolio.scss';
 import Table from './Table.js';
 import axios from 'axios';
+import Button from './Button';
 import { Link } from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
 import { sanitizeRagStatus } from '../utils/sanitizer';
@@ -61,17 +62,24 @@ class Portfolio extends React.Component {
         return (
             <div className={ portfolio }>
                 <h1>My Portfolios</h1>
+                <h3>Number of portfolios: {this.state.rows.length}</h3>
                 <p>Click on portfolio name to see more details</p>
                 <Table columns={columns} rows={this.state.rows}/>
 
                 <span>
                     <Link to={{pathname: '/portfolio/report', state: {c: {columns}, r: {rows}}}}>
-                        <button>Create report</button>
+                        <Button
+                            type="submit"
+                            label="Create report"
+                        />
                     </Link>
                 </span>
                 <span>
                     <Link to={{pathname: 'portfolio/add'}}>
-                        <button>Add New Portfolio</button>
+                        <Button
+                            type="submit"
+                            label="Add New Portfolio"
+                        />
                     </Link>
                 </span>
             </div>

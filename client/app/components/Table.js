@@ -58,7 +58,7 @@ export default class Table extends Component {
         );
 
         return (
-            <table className={table} width="100%">
+            <table className={table}>
                 {headers}
                 <tbody>
                     {body}

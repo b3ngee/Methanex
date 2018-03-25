@@ -210,6 +210,7 @@ class AddProjectForm extends Component {
                         type="date"
                         field="startDate"
                         label="Start Date"
+                        placeholder="yyyy-mm-dd"
                         value={startDate}
                         onChange={this.onChange}
                         error={errors.startDate}
@@ -218,6 +219,7 @@ class AddProjectForm extends Component {
                         type="date"
                         field="endDate"
                         label="End Date"
+                        placeholder="yyyy-mm-dd"
                         value={endDate}
                         onChange={this.onChange}
                         error={errors.endDate}
