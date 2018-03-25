@@ -90,7 +90,6 @@ class EditPortfolioForm extends React.Component {
     }
 
     render() {
-        console.log(this.state);
         const { classificationObjects, managerObjects, portfolioName, newClassification, newPortfolioManager, ragStatus, successModalOpen, errorModalOpen, errorMessage, errors } = this.state;
 
         return (
