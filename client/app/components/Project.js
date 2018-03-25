@@ -106,6 +106,7 @@ class Project extends React.Component {
                     onClose={this.onCloseError}
                 />
                 <h3>Number of projects: {this.state.rows.length}</h3>
+                <p>Click on portfolio name to see more details</p>
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>

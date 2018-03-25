@@ -13,12 +13,12 @@ const PopupBox = ({ label, isOpen, onClose, onCancel}) => {
         <div>
             <Button
                 type="submit"
-                label="confirm"
+                label="Confirm"
                 onClick={onClose}
             />
             <Button
                 type="submit"
-                label="cancel"
+                label="Cancel"
                 onClick={onCancel}
             />
         </div>

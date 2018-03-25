@@ -42,7 +42,7 @@ class Navbar extends Component {
                 {
                     localStorage.getItem('user_id') &&
                     <div>
-                        <Link to="/">My Profile</Link>
+                        <Link to="/">Profile</Link>
                         { (isAdmin || isPortfolioManager) && <Link to="/portfolio">Portfolios</Link> }
                         { (isAdmin || isProjectManager || isPortfolioManager || isResource) && <Link to="/project">Projects</Link> }
                         { (isAdmin || isResourceManager) && <Link to="/resource">Resources</Link> }

@@ -39,9 +39,13 @@ public class ProjectResourceServiceImpl {
     }
 
     @Transactional(readOnly = true)
-    public Iterable<ProjectResource> getProjectResources(Integer projectId) {
+    public Iterable<ProjectResource> getProjectResources(Integer projectId, Integer resourceId) {
         if (projectId != null) {
             return projectResourceDao.findAllByProjectId(projectId);
+        }
+
+        if (resourceId != null) {
+            return projectResourceDao.findAllByResourceId(resourceId);
         }
 
         return projectResourceDao.findAll();

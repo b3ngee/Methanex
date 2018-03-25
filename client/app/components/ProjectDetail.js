@@ -10,7 +10,7 @@ import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
-import {RESOURCE, prodAPIEndpoint } from '../constants/constants';
+import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
 
  // const id = localStorage.getItem('project_id');
  // change 2 to id after routing is set-up
@@ -229,7 +229,7 @@ class ProjectDetail extends React.Component {
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
-        if (this.state.roles.includes(RESOURCE)) {
+        if (this.state.roles.includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER)) {
             return (
                 <div className={ project }>
                     <h1>{this.state.projectName}</h1>

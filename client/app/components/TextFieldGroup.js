@@ -1,12 +1,13 @@
 import React from 'react';
 import { formGroup } from '../styles/textFieldGroup.scss';
 
-const TextFieldGroup = ({ field, value, label, error, type, onChange }) => {
+const TextFieldGroup = ({ field, value, label, error, type, placeholder, onChange }) => {
     return (
         <div className={ formGroup } >
             <label>{label}</label>
             {error && <span>{error}</span>}
             <input
+                placeholder={placeholder}
                 onChange={onChange}
                 value={value}
                 type={type}
@@ -21,6 +22,7 @@ TextFieldGroup.propTypes = {
     label: React.PropTypes.string.isRequired,
     error: React.PropTypes.string,
     type: React.PropTypes.string.isRequired,
+    placeholder: React.PropTypes.string,
     onChange: React.PropTypes.func.isRequired,
 };
 
