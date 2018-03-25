@@ -4,6 +4,7 @@ import Table from './Table.js';
 import axios from 'axios/index';
 import {Link} from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
+import PopupBox from './PopupBox';
 
 class Resource extends React.Component {
     constructor(props) {
@@ -12,15 +13,39 @@ class Resource extends React.Component {
             numResources: 0,
             rows: [],
             resourceIDs: [],
-            managerNames: {}
+            managerNames: {},
+            assignedResourcesRows: [],
+            resourceNames: [],
+            errorModalOpen: false
         };
 
         this.getResources = this.getResources.bind(this);
         this.getManagerNames = this.getManagerNames.bind(this);
+        this.getRowsForAssignedResourcesTable = this.getRowsForAssignedResourcesTable.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
         this.getManagerNames();
+    }
+
+    getRowsForAssignedResourcesTable() {
+        const tableData = [];
+        for (let i = 0; i < this.state.resourceIDs.length; i++) {
+            axios.get(prodAPIEndpoint + '/project-resources?resourceId=' + this.state.resourceIDs[i], {headers: {Pragma: 'no-cache'}}).then(response => {
+                for (let j = 0; j < response.data.length; j++) {
+                    axios.get(prodAPIEndpoint + '/projects/' + response.data[j].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
+                        tableData.push({
+                            'ID': projResponse.data.id,
+                            'Resources': this.state.resourceNames[i],
+                            'Project Name': projResponse.data.name,
+                            'Hours': response.data[j].assignedHours
+                        });
+                        this.setState({ assignedResourcesRows: tableData });
+                    }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+                }
+            }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+        }
     }
 
     getResources() {
@@ -39,13 +64,13 @@ class Resource extends React.Component {
             const resourceIDs = [];
             for (let i = 0; i < this.state.numResources; i++) {
                 tableData.push({ 'ID': this.state.resources[i].id, 'Resource Name': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName, 'Manager ID': this.state.managerNames[response.data[i].managerId], 'Status': this.state.resources[i].status });
-                resourceIDs.push(this.state.resources[i].resource_id);
+                this.state.resourceNames.push(this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName);
+                resourceIDs.push(this.state.resources[i].id);
             }
             this.setState({ rows: tableData});
             this.setState({ resourceIDs: resourceIDs});
-        }).catch( () => {
-
-        });
+            this.getRowsForAssignedResourcesTable();
+         }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     getManagerNames() {
@@ -56,27 +81,37 @@ class Resource extends React.Component {
             }
             this.setState({ managerNames: data });
             this.getResources();
-        }).catch( () => {
-        });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
     }
 
     render() {
         let columns = ['ID', 'Resource Name', 'Manager ID', 'Status'];
-        const rows = this.state.rows;
+        let assignedResourcesColumns = ['ID', 'Resources', 'Project Name', 'Hours'];
+        const {rows, errorModalOpen, errorMessage} = this.state;
         return(
             <div className={ resource }>
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
                 <h1>My Resources</h1>
                 <h3>Number of resources: {this.state.rows.length} </h3>
-                <Table text="List of Resources" columns={columns} rows={this.state.rows} ids={this.state.resourceIDs}/>
+                <Table text="List of Resources" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/resource/report', state: {c: {columns}, r: {rows}}}}>
                         <button>Create report</button>
                     </Link>
                 </span>
+                <h3>Assigned Resources</h3>
+                <Table text="List of Assigned Resources" columns={assignedResourcesColumns} rows={this.state.assignedResourcesRows}/>
             </div>
         );
     }
-
 }
 
 export default Resource;

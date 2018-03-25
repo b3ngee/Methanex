@@ -13,6 +13,9 @@ export default class Table extends Component {
         let headers = (<thead>
             <tr>
               {cols.map((column, ci) => {
+                  if (column === 'ID' && ci === 0) {
+                    return '';
+                  }
                   return <th key={ci}>{column}</th>;
               })}
             </tr>
@@ -24,8 +27,10 @@ export default class Table extends Component {
                 <tr key={ri}>
                 {cols.map((column, ci) => {
                     let endPoint = '';
+                    let hidden = '';
                     if (column === 'ID') {
                         id = row[column];
+                        hidden = 1;
                     }
                     if (column === 'Project Name') {
                         endPoint = 'project';
@@ -33,11 +38,18 @@ export default class Table extends Component {
                         endPoint = 'resource';
                     } else if (column === 'Portfolio Name') {
                         endPoint = 'portfolio';
-                    } if (endPoint !== '') {
+                    }
+
+                    if (endPoint !== '') {
                         return (
                             <td key={ci}><Link to={{pathname: `/${endPoint}/${id}`}} >{row[column]}</Link></td>
                         );
                     }
+
+                    if (hidden === 1) {
+                        return '';
+                    }
+
                     return (<td key={ci}>{row[column]}</td>);
                 })}
                 </tr>
