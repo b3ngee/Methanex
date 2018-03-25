@@ -100,6 +100,10 @@ public class ProjectResourceServiceImpl {
             projectResource.setAssignedHours(toUpdate.getAssignedHours());
         }
 
+        if (toUpdate.hasApproved()) {
+            projectResource.setApproved((toUpdate.getApproved()));
+        }
+
         validateProjectResource(projectResource);
 
         return projectResourceDao.save(projectResource);
