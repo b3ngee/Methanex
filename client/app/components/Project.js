@@ -26,7 +26,7 @@ class Project extends React.Component {
     }
 
     componentDidMount() {
-        if(this.state.roles.includes(RESOURCE)) {
+        if(this.state.roles.split(',').includes(RESOURCE)) {
             this.getRowsForAssignedProjectsTable();
         } else {
             this.getProjects();
