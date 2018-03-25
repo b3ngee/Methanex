@@ -84,7 +84,7 @@ class Project extends React.Component {
         let columns = ['ID', 'Project Name', 'Project Status', 'Status', 'Budget'];
         let assignedProjectsColumns = ['ID', 'Project Name', 'Project Manager Names', 'Hours'];
         const {rows, errorModalOpen, errorMessage} = this.state;
-        if (this.state.roles.includes(RESOURCE)) {
+        if (this.state.roles.split(',').includes(RESOURCE)) {
             return (
                 <div className={ project }>
                     <h3>Assigned Projects</h3>
