@@ -229,7 +229,7 @@ class ProjectDetail extends React.Component {
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
-        if (this.state.roles.includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER)) {
+        if (this.state.roles.split(',').includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER)) {
             return (
                 <div className={ project }>
                     <h1>{this.state.projectName}</h1>
