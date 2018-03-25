@@ -107,10 +107,10 @@ VALUES
 	(3, 2, 'Increase Sales by 10%', 'UNDERWAY', 'RED', 50000.00, 20000.00, 30000.00, 5, 0, '2018-01-01', '2018-12-31', NULL),
 	(4, 2, 'Increase Brand Awareness by 15%', 'SEEKING_FUNDING', 'AMBER', 0.00, 0.00, 0.00, 5, 0, '2018-06-01', '2018-12-31', NULL);
 
-INSERT INTO `PROJECT_RESOURCE` (`ID`, `PROJECT_ID`, `RESOURCE_ID`, `ASSIGNED_HOURS`)
+INSERT INTO `PROJECT_RESOURCE` (`ID`, `PROJECT_ID`, `RESOURCE_ID`, `ASSIGNED_HOURS`, `APPROVED`)
 VALUES
-	(1, 1, 8, 100),
-	(2, 1, 9, 150),
-	(3, 2, 8, 200),
-	(4, 3, 10, 300),
-	(5, 3, 11, 400);
+	(1, 1, 8, 100, 0),
+	(2, 1, 9, 150, 1),
+	(3, 2, 8, 200, 1),
+	(4, 3, 10, 300, 1),
+	(5, 3, 11, 400, 0);
