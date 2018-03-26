@@ -22,7 +22,7 @@ class ProjectDetail extends React.Component {
         this.state = {
             rows: [],
             resourceIDs: [],
-            rowResource: [],
+            rowResource: [], // todo: plural?
             resourceData: {},
             resources: [],
             resourceId: '',
@@ -35,7 +35,8 @@ class ProjectDetail extends React.Component {
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
             roles: localStorage.getItem('roles'),
-            projectResourceIdToBeDeleted: '' // todo: give a shorter name
+            projectResourceId: '', //
+            rowRequests: [], //
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -46,9 +47,11 @@ class ProjectDetail extends React.Component {
         this.addResource = this.addResource.bind(this);
         this.deleteResource = this.deleteResource.bind(this);
         this.handleDeleteResource = this.handleDeleteResource.bind(this);
+        this.handleDeleteRequest = this.handleDeleteRequest.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseProjectDeletion = this.onCloseProjectDeletion.bind(this);
         this.onCloseResourceDeletion = this.onCloseResourceDeletion.bind(this);
+        this.onCloseRequestDeletion = this.onCloseRequestDeletion.bind(this);
         this.onCancelDeletion = this.onCancelDeletion.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
     }
@@ -134,10 +137,11 @@ class ProjectDetail extends React.Component {
         .then(response => {
             const tableData = [];
             const resourceIDs = [];
+            const rowRequests = [];
             const userMap = this.state.resourceData;
             for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i].approved === true) {
-                    const uid = response.data[i].resourceId;
+                const uid = response.data[i].resourceId;
+                if (response.data[i].status === 'APPROVED') {
                     tableData.push({
                         'ID': response.data[i].id,
                         'Resource ID': response.data[i].resourceId,
@@ -152,11 +156,29 @@ class ProjectDetail extends React.Component {
                                     onClick={this.handleDeleteResource}
                                 />
                     });
+                } else {
+                    const status = response.data[i].status;
+                    rowRequests.push({
+                        'ID': response.data[i].id,
+                        'Resource ID': response.data[i].resourceId,
+                        'Assigned Hours': response.data[i].assignedHours,
+                        'First Name': userMap[uid].FirstName,
+                        'Last Name': userMap[uid].LastName,
+                        'Availability': userMap[uid].Availability,
+                        'Status': status,
+                        'Remove': <Button
+                                    id={response.data[i].id}
+                                    type="submit"
+                                    label="Remove"
+                                    onClick={this.handleDeleteRequest}
+                                />
+                    });
                 }
                     resourceIDs.push(response.data[i].resourceId); // todo ?
             }
             this.setState({rowResource: tableData});
             this.setState({resourceIDs: resourceIDs});
+            this.setState({rowRequests: rowRequests});
         });
     }
 
@@ -169,25 +191,36 @@ class ProjectDetail extends React.Component {
             projectId: this.props.match.params.project_id,
             resourceId: this.state.resourceId,
             assignedHours: this.state.assignedHours,
+            status: 'PENDING'
         })
         .then(response => {
             if (response.status === 201) {
-              this.getResourceData();
+              this.getResourceData(); // todo ?
+              successModalOpen: true;
             }
-        });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+    }
+
+    handleDeleteRequest(e) {
+        this.setState({requestDeletionModalOpen: true});
+        this.setState({ projectResourceId: e.target.name });
+    }
+
+    onCloseRequestDeletion() {
+        this.deleteRequest();
     }
 
     handleDeleteResource(e) {
         this.setState({resourceDeletionModalOpen: true});
-        this.setState({ projectResourceIdToBeDeleted: e.target.name });
+        this.setState({ projectResourceId: e.target.name });
     }
 
     onCloseResourceDeletion() {
         this.deleteResource();
     }
 
-    deleteResource() {
-        const id = this.state.projectResourceIdToBeDeleted;
+    deleteRequest() {
+        const id = this.state.projectResourceId;
 //        const rowResource = this.state.rowResource;
 //        for (let i = 0; i < rowResource.length; i++) {
 //            if (rowResource[i]['Resource ID'] + '' === this.state.resourceId) {
@@ -196,6 +229,33 @@ class ProjectDetail extends React.Component {
 //        }
         axios.delete(prodAPIEndpoint + '/project-resources/' + id)
         .then(response => {
+            if (response.status === 200) {
+//                this.getResourceData();
+                this.setState({
+                    requestDeletionModalOpen: false,
+                    successModalOpen: true
+                });
+            }
+        }).catch((error) => {
+            this.setState({
+                errorMessage: 'Error: ' + error.response.data.message,
+                requestDeletionModalOpen: false,
+                errorModalOpen: true
+            });
+        });
+    }
+
+    deleteResource() {
+        const id = this.state.projectResourceId;
+//        const rowResource = this.state.rowResource;
+//        for (let i = 0; i < rowResource.length; i++) {
+//            if (rowResource[i]['Resource ID'] + '' === this.state.resourceId) {
+//                id = rowResource[i].ID;
+//            }
+//        }
+        axios.put(prodAPIEndpoint + '/project-resources/' + id, {
+            status: 'REJECTED'
+        }).then(response => {
             if (response.status === 200) {
 //                this.getResourceData();
                 this.setState({
@@ -213,8 +273,8 @@ class ProjectDetail extends React.Component {
     }
 
     onCloseSuccess() {
-        this.props.history.push('/project');
-//        window.history.back();
+        this.props.history.push('/project/');
+        window.history.back();
     }
 
     onCloseProjectDeletion() {
@@ -225,6 +285,7 @@ class ProjectDetail extends React.Component {
         this.setState({
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
+            requestDeletionModalOpen: false,
             errorMessage: 'deletion has been canceled',
             errorModalOpen: true
         });
@@ -232,17 +293,16 @@ class ProjectDetail extends React.Component {
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
-        this.props.history.push('/project');
-        window.history.back();
     }
 
     render() {
         let columns = ['Header', 'Value'];
         let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Remove'];
+        let requestColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Status', 'Remove'];
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
-        const {resourceId, assignedHours, projectDeletionModalOpen, resourceDeletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
+        const {resourceId, assignedHours, projectDeletionModalOpen, resourceDeletionModalOpen, requestDeletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
@@ -298,6 +358,18 @@ class ProjectDetail extends React.Component {
                 {this.state.rowResource.length > 0 &&
                     <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>}
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
+
+                <h2>Resource Requests</h2>
+                <PopupBoxForDeletion
+                    label="Are you sure? request will also be deleted from database."
+                    isOpen={requestDeletionModalOpen}
+                    onClose={this.onCloseRequestDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
+                {this.state.rowRequests.length > 0 &&
+                    <Table text="Project Details Resource Request" columns={requestColumns} rows={this.state.rowRequests}/>}
+                {this.state.rowRequests.length === 0 && <p>No requests or none are kept in history.</p>}
+
                 <h2>Request Resources</h2>
                 <h6><i>NOTE: Before requesting a resource who is already in your Resources table,<br/>
                 remove them from that table first, then request them.</i></h6>
