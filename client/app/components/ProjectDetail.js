@@ -21,8 +21,7 @@ class ProjectDetail extends React.Component {
         super(props);
         this.state = {
             rows: [],
-            resourceIDs: [],
-            rowResource: [], // todo: plural?
+            rowResource: [],
             resourceData: {},
             resources: [],
             resourceId: '',
@@ -35,8 +34,8 @@ class ProjectDetail extends React.Component {
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
             roles: localStorage.getItem('roles'),
-            projectResourceId: '', //
-            rowRequests: [], //
+            projectResourceId: '',
+            rowRequests: [],
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -136,7 +135,6 @@ class ProjectDetail extends React.Component {
         axios.get(prodAPIEndpoint + '/project-resources?projectId=' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const tableData = [];
-            const resourceIDs = [];
             const rowRequests = [];
             const userMap = this.state.resourceData;
             for (let i = 0; i < response.data.length; i++) {
@@ -174,10 +172,8 @@ class ProjectDetail extends React.Component {
                                 />
                     });
                 }
-                    resourceIDs.push(response.data[i].resourceId); // todo ?
             }
             this.setState({rowResource: tableData});
-            this.setState({resourceIDs: resourceIDs});
             this.setState({rowRequests: rowRequests});
         });
     }
@@ -221,12 +217,6 @@ class ProjectDetail extends React.Component {
 
     deleteRequest() {
         const id = this.state.projectResourceId;
-//        const rowResource = this.state.rowResource;
-//        for (let i = 0; i < rowResource.length; i++) {
-//            if (rowResource[i]['Resource ID'] + '' === this.state.resourceId) {
-//                id = rowResource[i].ID;
-//            }
-//        }
         axios.delete(prodAPIEndpoint + '/project-resources/' + id)
         .then(response => {
             if (response.status === 200) {
@@ -247,12 +237,6 @@ class ProjectDetail extends React.Component {
 
     deleteResource() {
         const id = this.state.projectResourceId;
-//        const rowResource = this.state.rowResource;
-//        for (let i = 0; i < rowResource.length; i++) {
-//            if (rowResource[i]['Resource ID'] + '' === this.state.resourceId) {
-//                id = rowResource[i].ID;
-//            }
-//        }
         axios.put(prodAPIEndpoint + '/project-resources/' + id, {
             status: 'REJECTED'
         }).then(response => {
