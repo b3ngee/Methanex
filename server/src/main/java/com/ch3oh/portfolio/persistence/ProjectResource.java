@@ -24,7 +24,7 @@ public class ProjectResource {
     private Integer assignedHours;
 
     @Column(nullable = false)
-    private Boolean approved;
+    private String status;
 
     public Integer getId() {
         return id;
@@ -70,15 +70,15 @@ public class ProjectResource {
         return this.assignedHours != null;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public String getStatus() {
+        return status;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setStatus(String approved) {
+        this.status = approved;
     }
 
-    public boolean hasApproved() {
-        return this.approved != null;
+    public boolean hasStatus() {
+        return this.status != null;
     }
 }
