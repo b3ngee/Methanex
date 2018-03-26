@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { table } from '../styles/table.scss';
+import { hidden, table } from '../styles/table.scss';
 import {Link} from 'react-router-dom';
 
 export default class Table extends Component {
@@ -14,7 +14,7 @@ export default class Table extends Component {
             <tr>
               {cols.map((column, ci) => {
                   if (column === 'ID' && ci === 0) {
-                    return '';
+                    return <th className={hidden} key={ci}>{column}</th>;
                   }
                   return <th key={ci}>{column}</th>;
               })}
@@ -27,10 +27,10 @@ export default class Table extends Component {
                 <tr key={ri}>
                 {cols.map((column, ci) => {
                     let endPoint = '';
-                    let hidden = '';
+                    let ishidden = '';
                     if (column === 'ID') {
                         id = row[column];
-                        hidden = 1;
+                        ishidden = 1;
                     }
                     if (column === 'Project Name') {
                         endPoint = 'project';
@@ -46,8 +46,8 @@ export default class Table extends Component {
                         );
                     }
 
-                    if (hidden === 1) {
-                        return '';
+                    if (ishidden === 1) {
+                        return (<td className={hidden} key={ci}>{row[column]}</td>);
                     }
 
                     return (<td key={ci}>{row[column]}</td>);
