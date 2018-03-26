@@ -12,9 +12,6 @@ import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
 import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
 
- // const id = localStorage.getItem('project_id');
- // change 2 to id after routing is set-up
-
 class ProjectDetail extends React.Component {
 
     constructor(props) {
@@ -33,6 +30,7 @@ class ProjectDetail extends React.Component {
             errorModalOpen: false,
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
+            requestDeletionModalOpen: false,
             roles: localStorage.getItem('roles'),
             projectResourceId: '',
             rowRequests: [],
@@ -44,7 +42,7 @@ class ProjectDetail extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.getResourceData = this.getResourceData.bind(this);
         this.addResource = this.addResource.bind(this);
-        this.deleteResource = this.deleteResource.bind(this);
+        this.deleteResourceOrRequest = this.deleteResourceOrRequest.bind(this);
         this.handleDeleteResource = this.handleDeleteResource.bind(this);
         this.handleDeleteRequest = this.handleDeleteRequest.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
@@ -191,37 +189,41 @@ class ProjectDetail extends React.Component {
         })
         .then(response => {
             if (response.status === 201) {
-              this.getResourceData(); // todo ?
-              successModalOpen: true;
+              this.getResourceData();
+              this.setState({ successModalOpen: true });
             }
         }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     handleDeleteRequest(e) {
-        this.setState({requestDeletionModalOpen: true});
-        this.setState({ projectResourceId: e.target.name });
+        this.setState({
+            requestDeletionModalOpen: true,
+            projectResourceId: e.target.name
+        });
     }
 
     onCloseRequestDeletion() {
-        this.deleteRequest();
+        this.deleteResourceOrRequest();
     }
 
     handleDeleteResource(e) {
-        this.setState({resourceDeletionModalOpen: true});
-        this.setState({ projectResourceId: e.target.name });
+        this.setState({
+            resourceDeletionModalOpen: true,
+            projectResourceId: e.target.name
+        });
     }
 
     onCloseResourceDeletion() {
-        this.deleteResource();
+        this.deleteResourceOrRequest();
     }
 
-    deleteRequest() {
+    deleteResourceOrRequest() {
         const id = this.state.projectResourceId;
         axios.delete(prodAPIEndpoint + '/project-resources/' + id)
         .then(response => {
             if (response.status === 200) {
-//                this.getResourceData();
                 this.setState({
+                    resourceDeletionModalOpen: false,
                     requestDeletionModalOpen: false,
                     successModalOpen: true
                 });
@@ -229,28 +231,8 @@ class ProjectDetail extends React.Component {
         }).catch((error) => {
             this.setState({
                 errorMessage: 'Error: ' + error.response.data.message,
-                requestDeletionModalOpen: false,
-                errorModalOpen: true
-            });
-        });
-    }
-
-    deleteResource() {
-        const id = this.state.projectResourceId;
-        axios.put(prodAPIEndpoint + '/project-resources/' + id, {
-            status: 'REJECTED'
-        }).then(response => {
-            if (response.status === 200) {
-//                this.getResourceData();
-                this.setState({
-                    resourceDeletionModalOpen: false,
-                    successModalOpen: true
-                });
-            }
-        }).catch((error) => {
-            this.setState({
-                errorMessage: 'Error: ' + error.response.data.message,
                 resourceDeletionModalOpen: false,
+                requestDeletionModalOpen: false,
                 errorModalOpen: true
             });
         });
