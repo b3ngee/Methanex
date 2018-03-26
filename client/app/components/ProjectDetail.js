@@ -12,16 +12,12 @@ import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
 import { RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
 
- // const id = localStorage.getItem('project_id');
- // change 2 to id after routing is set-up
-
 class ProjectDetail extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             rows: [],
-            resourceIDs: [],
             rowResource: [],
             resourceData: {},
             resources: [],
@@ -31,10 +27,14 @@ class ProjectDetail extends React.Component {
             portfoliId: '',
             managerId: '',
             successModalOpen: false,
+//            errorMessage: '',
             errorModalOpen: false,
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
+            requestDeletionModalOpen: false,
             roles: localStorage.getItem('roles'),
+            projectResourceId: '',
+            rowRequests: [],
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -43,11 +43,13 @@ class ProjectDetail extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.getResourceData = this.getResourceData.bind(this);
         this.addResource = this.addResource.bind(this);
-        this.deleteResource = this.deleteResource.bind(this);
+        this.deleteResourceOrRequest = this.deleteResourceOrRequest.bind(this);
         this.handleDeleteResource = this.handleDeleteResource.bind(this);
+        this.handleDeleteRequest = this.handleDeleteRequest.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseProjectDeletion = this.onCloseProjectDeletion.bind(this);
         this.onCloseResourceDeletion = this.onCloseResourceDeletion.bind(this);
+        this.onCloseRequestDeletion = this.onCloseRequestDeletion.bind(this);
         this.onCancelDeletion = this.onCancelDeletion.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
     }
@@ -132,15 +134,46 @@ class ProjectDetail extends React.Component {
         axios.get(prodAPIEndpoint + '/project-resources?projectId=' + this.props.match.params.project_id, {headers: {Pragma: 'no-cache'}})
         .then(response => {
             const tableData = [];
-            const resourceIDs = [];
+            const rowRequests = [];
             const userMap = this.state.resourceData;
             for (let i = 0; i < response.data.length; i++) {
                 const uid = response.data[i].resourceId;
-                tableData.push({ 'ID': response.data[i].id, 'Resource ID': response.data[i].resourceId, 'Assigned Hours': response.data[i].assignedHours, 'First Name': userMap[uid].FirstName, 'Last Name': userMap[uid].LastName, 'Availability': userMap[uid].Availability});
-                resourceIDs.push(response.data[i].resourceId);
+                if (response.data[i].status === 'APPROVED') {
+                    tableData.push({
+                        'ID': response.data[i].id,
+                        'Resource ID': response.data[i].resourceId,
+                        'Assigned Hours': response.data[i].assignedHours,
+                        'First Name': userMap[uid].FirstName,
+                        'Last Name': userMap[uid].LastName,
+                        'Availability': userMap[uid].Availability,
+                        'Remove': <Button
+                                    id={response.data[i].id}
+                                    type="submit"
+                                    label="Remove"
+                                    onClick={this.handleDeleteResource}
+                                />
+                    });
+                } else {
+                    const status = response.data[i].status;
+                    rowRequests.push({
+                        'ID': response.data[i].id,
+                        'Resource ID': response.data[i].resourceId,
+                        'Assigned Hours': response.data[i].assignedHours,
+                        'First Name': userMap[uid].FirstName,
+                        'Last Name': userMap[uid].LastName,
+                        'Availability': userMap[uid].Availability,
+                        'Status': status,
+                        'Remove': <Button
+                                    id={response.data[i].id}
+                                    type="submit"
+                                    label="Remove"
+                                    onClick={this.handleDeleteRequest}
+                                />
+                    });
+                }
             }
             this.setState({rowResource: tableData});
-            this.setState({resourceIDs: resourceIDs});
+            this.setState({rowRequests: rowRequests});
         });
     }
 
@@ -153,36 +186,46 @@ class ProjectDetail extends React.Component {
             projectId: this.props.match.params.project_id,
             resourceId: this.state.resourceId,
             assignedHours: this.state.assignedHours,
+            status: 'PENDING'
         })
         .then(response => {
             if (response.status === 201) {
               this.getResourceData();
+              this.setState({ successModalOpen: true });
             }
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+    }
+
+    handleDeleteRequest(e) {
+        this.setState({
+            requestDeletionModalOpen: true,
+            projectResourceId: e.target.name
         });
     }
 
-    handleDeleteResource() {
-        this.setState({resourceDeletionModalOpen: true});
+    onCloseRequestDeletion() {
+        this.deleteResourceOrRequest();
+    }
+
+    handleDeleteResource(e) {
+        this.setState({
+            resourceDeletionModalOpen: true,
+            projectResourceId: e.target.name
+        });
     }
 
     onCloseResourceDeletion() {
-        this.deleteResource();
+        this.deleteResourceOrRequest();
     }
 
-    deleteResource() {
-        let id;
-        const rowResource = this.state.rowResource;
-        for (let i = 0; i < rowResource.length; i++) {
-            if (rowResource[i]['Resource ID'] + '' === this.state.resourceId) {
-                id = rowResource[i].ID;
-            }
-        }
+    deleteResourceOrRequest() {
+        const id = this.state.projectResourceId;
         axios.delete(prodAPIEndpoint + '/project-resources/' + id)
         .then(response => {
             if (response.status === 200) {
-                this.getResourceData();
                 this.setState({
                     resourceDeletionModalOpen: false,
+                    requestDeletionModalOpen: false,
                     successModalOpen: true
                 });
             }
@@ -190,14 +233,14 @@ class ProjectDetail extends React.Component {
             this.setState({
                 errorMessage: 'Error: ' + error.response.data.message,
                 resourceDeletionModalOpen: false,
+                requestDeletionModalOpen: false,
                 errorModalOpen: true
             });
         });
     }
 
     onCloseSuccess() {
-        this.props.history.push('/project');
-//        window.history.back();
+        window.history.back();
     }
 
     onCloseProjectDeletion() {
@@ -208,6 +251,7 @@ class ProjectDetail extends React.Component {
         this.setState({
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
+            requestDeletionModalOpen: false,
             errorMessage: 'deletion has been canceled',
             errorModalOpen: true
         });
@@ -215,17 +259,16 @@ class ProjectDetail extends React.Component {
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
-        this.props.history.push('/project');
-        window.history.back();
     }
 
     render() {
         let columns = ['Header', 'Value'];
-        let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability'];
+        let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Remove'];
+        let requestColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Status', 'Remove'];
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
-        const {resourceId, assignedHours, projectDeletionModalOpen, resourceDeletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
+        const {resourceId, assignedHours, projectDeletionModalOpen, resourceDeletionModalOpen, requestDeletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
@@ -281,7 +324,21 @@ class ProjectDetail extends React.Component {
                 {this.state.rowResource.length > 0 &&
                     <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>}
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
-                <h2>Add Resources</h2>
+
+                <h2>Resource Requests</h2>
+                <PopupBoxForDeletion
+                    label="Are you sure? request will also be deleted from database."
+                    isOpen={requestDeletionModalOpen}
+                    onClose={this.onCloseRequestDeletion}
+                    onCancel={this.onCancelDeletion}
+                />
+                {this.state.rowRequests.length > 0 &&
+                    <Table text="Project Details Resource Request" columns={requestColumns} rows={this.state.rowRequests}/>}
+                {this.state.rowRequests.length === 0 && <p>No requests or none are kept in history.</p>}
+
+                <h2>Request Resources</h2>
+                <h6><i>NOTE: Before requesting a resource who is already in your Resources table,<br/>
+                remove them from that table first, then request them.</i></h6>
                 <div className={ formBox }>
                     <Dropdown
                         label="Resources"
@@ -302,11 +359,6 @@ class ProjectDetail extends React.Component {
                     type="submit"
                     label="Add Resource"
                     onClick={this.addResource}
-                />
-                <Button
-                    type="submit"
-                    label="Delete Resource"
-                    onClick={this.handleDeleteResource}
                 />
             </div>
         );
