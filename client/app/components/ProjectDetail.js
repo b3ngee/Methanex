@@ -35,6 +35,7 @@ class ProjectDetail extends React.Component {
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
             roles: localStorage.getItem('roles'),
+            projectResourceIdToBeDeleted: '' // todo: give a shorter name
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -135,9 +136,24 @@ class ProjectDetail extends React.Component {
             const resourceIDs = [];
             const userMap = this.state.resourceData;
             for (let i = 0; i < response.data.length; i++) {
-                const uid = response.data[i].resourceId;
-                tableData.push({ 'ID': response.data[i].id, 'Resource ID': response.data[i].resourceId, 'Assigned Hours': response.data[i].assignedHours, 'First Name': userMap[uid].FirstName, 'Last Name': userMap[uid].LastName, 'Availability': userMap[uid].Availability});
-                resourceIDs.push(response.data[i].resourceId);
+                if (response.data[i].approved === true) {
+                    const uid = response.data[i].resourceId;
+                    tableData.push({
+                        'ID': response.data[i].id,
+                        'Resource ID': response.data[i].resourceId,
+                        'Assigned Hours': response.data[i].assignedHours,
+                        'First Name': userMap[uid].FirstName,
+                        'Last Name': userMap[uid].LastName,
+                        'Availability': userMap[uid].Availability,
+                        'Remove': <Button
+                                    id={response.data[i].id}
+                                    type="submit"
+                                    label="Remove"
+                                    onClick={this.handleDeleteResource}
+                                />
+                    });
+                }
+                    resourceIDs.push(response.data[i].resourceId); // todo ?
             }
             this.setState({rowResource: tableData});
             this.setState({resourceIDs: resourceIDs});
@@ -161,8 +177,9 @@ class ProjectDetail extends React.Component {
         });
     }
 
-    handleDeleteResource() {
+    handleDeleteResource(e) {
         this.setState({resourceDeletionModalOpen: true});
+        this.setState({ projectResourceIdToBeDeleted: e.target.name });
     }
 
     onCloseResourceDeletion() {
@@ -170,17 +187,17 @@ class ProjectDetail extends React.Component {
     }
 
     deleteResource() {
-        let id;
-        const rowResource = this.state.rowResource;
-        for (let i = 0; i < rowResource.length; i++) {
-            if (rowResource[i]['Resource ID'] + '' === this.state.resourceId) {
-                id = rowResource[i].ID;
-            }
-        }
+        const id = this.state.projectResourceIdToBeDeleted;
+//        const rowResource = this.state.rowResource;
+//        for (let i = 0; i < rowResource.length; i++) {
+//            if (rowResource[i]['Resource ID'] + '' === this.state.resourceId) {
+//                id = rowResource[i].ID;
+//            }
+//        }
         axios.delete(prodAPIEndpoint + '/project-resources/' + id)
         .then(response => {
             if (response.status === 200) {
-                this.getResourceData();
+//                this.getResourceData();
                 this.setState({
                     resourceDeletionModalOpen: false,
                     successModalOpen: true
@@ -221,7 +238,7 @@ class ProjectDetail extends React.Component {
 
     render() {
         let columns = ['Header', 'Value'];
-        let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability'];
+        let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Remove'];
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
@@ -281,7 +298,9 @@ class ProjectDetail extends React.Component {
                 {this.state.rowResource.length > 0 &&
                     <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>}
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
-                <h2>Add Resources</h2>
+                <h2>Request Resources</h2>
+                <h6><i>NOTE: Before requesting a resource who is already in your Resources table,<br/>
+                remove them from that table first, then request them.</i></h6>
                 <div className={ formBox }>
                     <Dropdown
                         label="Resources"
@@ -302,11 +321,6 @@ class ProjectDetail extends React.Component {
                     type="submit"
                     label="Add Resource"
                     onClick={this.addResource}
-                />
-                <Button
-                    type="submit"
-                    label="Delete Resource"
-                    onClick={this.handleDeleteResource}
                 />
             </div>
         );
