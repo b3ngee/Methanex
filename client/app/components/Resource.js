@@ -88,8 +88,10 @@ class Resource extends React.Component {
                                 'Hours': response.data[j].assignedHours
                             });
                             this.setState({ assignedResourcesRows: tableData });
-                        } else {
+                        }
+                        if (response.data[j].status === 'PENDING') {
                             rowRequests.push({
+                                 'ID': projResponse.data.id,
                                  'Request ID': response.data[j].id,
                                  'Resource ID': this.state.resourceIDs[i],
                                  'Resource': this.state.resourceNames[i],
@@ -168,7 +170,7 @@ class Resource extends React.Component {
 
     render() {
         let columns = ['ID', 'Resource Name', 'Manager Name', 'Status'];
-        let requestColumns = ['Request ID', 'Resource ID', 'Resource', 'Project Name', 'Hours Requested', 'Approve', 'Reject'];
+        let requestColumns = ['ID', 'Request ID', 'Resource ID', 'Resource', 'Project Name', 'Hours Requested', 'Approve', 'Reject'];
         let assignedResourcesColumns = ['ID', 'Resources', 'Project Name', 'Hours'];
 //        const {rows, errorModalOpen, errorMessage, requestApprovedModalOpen, requestRejectedModalOpen} = this.state;
         const {rows, successModalOpen, errorModalOpen, errorMessage, requestModalOpen} = this.state;
