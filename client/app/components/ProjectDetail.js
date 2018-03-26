@@ -27,6 +27,7 @@ class ProjectDetail extends React.Component {
             portfoliId: '',
             managerId: '',
             successModalOpen: false,
+//            errorMessage: '',
             errorModalOpen: false,
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
@@ -239,7 +240,6 @@ class ProjectDetail extends React.Component {
     }
 
     onCloseSuccess() {
-        this.props.history.push('/project/');
         window.history.back();
     }
 

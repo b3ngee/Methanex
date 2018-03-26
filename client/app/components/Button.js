@@ -7,10 +7,11 @@ class Button extends React.Component {
     }
 
     render() {
-        const { id, type, onClick, label, disabled } = this.props;
+        const { id, value, type, onClick, label, disabled } = this.props;
         return (
             <button
                 name={id}
+                value={value}
                 type={type}
                 onClick={onClick}
                 disabled={disabled}
@@ -23,6 +24,7 @@ class Button extends React.Component {
 
 Button.propTypes = {
     id: React.PropTypes.number,
+    value: React.PropTypes.string,
     type: React.PropTypes.string.isRequired,
     label: React.PropTypes.string.isRequired,
     disabled: React.PropTypes.bool,
