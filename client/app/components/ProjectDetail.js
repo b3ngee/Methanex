@@ -12,6 +12,7 @@ import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
 import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
 
+
 class ProjectDetail extends React.Component {
 
     constructor(props) {
