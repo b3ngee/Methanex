@@ -49,6 +49,7 @@ class Resource extends React.Component {
             console.log(response.status);
             if (response.status === 200) {
               this.getResources();
+              this.getManagerNames();
               this.setState({
                 requestModalOpen: false,
                 successModalOpen: true
