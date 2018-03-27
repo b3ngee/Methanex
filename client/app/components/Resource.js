@@ -77,46 +77,55 @@ class Resource extends React.Component {
     getRowsForAssignedResourcesTable() {
         const tableData = [];
         const rowRequests = [];
-        for (let i = 0; i < this.state.resourceIDs.length; i++) {
-            axios.get(prodAPIEndpoint + '/project-resources?resourceId=' + this.state.resourceIDs[i], {headers: {Pragma: 'no-cache'}}).then(response => {
-                for (let j = 0; j < response.data.length; j++) {
-                    axios.get(prodAPIEndpoint + '/projects/' + response.data[j].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
-                        if (response.data[j].status === 'APPROVED') {
-                            tableData.push({
-                                'ID': projResponse.data.id,
-                                'Resources': this.state.resourceNames[i],
-                                'Project Name': projResponse.data.name,
-                                'Hours': response.data[j].assignedHours
-                            });
-                            this.setState({ assignedResourcesRows: tableData });
+        axios.get(prodAPIEndpoint + '/project-resources', {headers: {Pragma: 'no-cache'}}).then(prResponse => {
+            this.setState({ prData: prResponse.data });
+            axios.get(prodAPIEndpoint + '/projects/', {headers: {Pragma: 'no-cache'}}).then(projectsResponse => {
+            this.setState({ projects: projectsResponse.data });
+            for (let i = 0; i < this.state.resources.length; i++) {
+                for (let j = 0; j < this.state.prData.length; j++) {
+                    if (this.state.prData[j].resourceId === this.state.resources[i].id) {
+                        for (let k = 0; k < this.state.projects.length; k++) {
+                            if (this.state.prData[j].projectId === this.state.projects[k].id) {
+                                if (this.state.prData[j].status === 'APPROVED') {
+                                    tableData.push({
+                                        'ID': this.state.projects[k].id,
+                                        '(request) ID': this.state.prData[j].id, // todo: for debugging; remove later
+                                        'Resources': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
+                                        'Project Name': this.state.projects[k].name,
+                                        'Hours': this.state.prData[j].assignedHours
+                                    });
+                                }
+                                if (this.state.prData[j].status === 'PENDING') {
+                                    rowRequests.push({
+                                         'ID': this.state.projects[k].id,
+                                         'Request ID': this.state.prData[j].id,
+                                         'Resource ID': this.state.resources[i].id,
+                                         'Resource': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
+                                         'Project Name': this.state.projects[k].name,
+                                         'Hours Requested': this.state.prData[j].assignedHours,
+                                         'Availability': this.state.resources[i].status,
+                                         'Approve': <Button
+                                                        id={this.state.prData[j].id}
+                                                        type="submit"
+                                                        value="APPROVED"
+                                                        label="Approve"
+                                                        onClick={this.handleRequest} />,
+                                        'Reject': <Button
+                                                    id={this.state.prData[j].id}
+                                                    type="submit"
+                                                    value="REJECTED"
+                                                    label="Reject"
+                                                    onClick={this.handleRequest} />
+                                    });
+                                }
+                                this.setState({ assignedResourcesRows: tableData });
+                                this.setState({ rowRequests: rowRequests });
+                            }
                         }
-                        if (response.data[j].status === 'PENDING') {
-                            rowRequests.push({
-                                 'ID': projResponse.data.id,
-                                 'Request ID': response.data[j].id,
-                                 'Resource ID': this.state.resourceIDs[i],
-                                 'Resource': this.state.resourceNames[i],
-                                 'Project Name': projResponse.data.name,
-                                 'Hours Requested': response.data[j].assignedHours,
-                                 'Approve': <Button
-                                                id={response.data[j].id}
-                                                type="submit"
-                                                value="APPROVED"
-                                                label="Approve"
-                                                onClick={this.handleRequest} />,
-                                'Reject': <Button
-                                            id={response.data[j].id}
-                                            type="submit"
-                                            value="REJECTED"
-                                            label="Reject"
-                                            onClick={this.handleRequest} />
-                            });
-                            this.setState({ rowRequests: rowRequests });
-                        }
-                    }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, requestApprovedModalOpen: false, errorModalOpen: true }); });
+                    }
                 }
-            }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
-        }
+            } }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, requestApprovedModalOpen: false, errorModalOpen: true }); });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     getResources() {
