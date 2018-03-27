@@ -203,7 +203,7 @@ class ProjectDetail extends React.Component {
         });
     }
 
-    onCloseRequestDeletion() {
+    onCloseRequestDeletion() { // TODO ?? repeat?
         this.deleteResourceOrRequest();
     }
 
@@ -214,7 +214,7 @@ class ProjectDetail extends React.Component {
         });
     }
 
-    onCloseResourceDeletion() {
+    onCloseResourceDeletion() { // TODO ?? repeat?
         this.deleteResourceOrRequest();
     }
 
@@ -240,7 +240,8 @@ class ProjectDetail extends React.Component {
     }
 
     onCloseSuccess() {
-        window.history.back();
+        this.getResources();
+        this.setState({ successModalOpen: false });
     }
 
     onCloseProjectDeletion() {

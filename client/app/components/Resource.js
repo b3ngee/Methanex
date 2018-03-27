@@ -48,8 +48,6 @@ class Resource extends React.Component {
         }).then(response => {
             console.log(response.status);
             if (response.status === 200) {
-              this.getResources();
-              this.getManagerNames();
               this.setState({
                 requestModalOpen: false,
                 successModalOpen: true
@@ -173,9 +171,8 @@ class Resource extends React.Component {
     }
 
     onCloseSuccess() {
+        this.getRowsForAssignedResourcesTable();
         this.setState({ successModalOpen: false });
-//        this.props.history.push('/resource');
-//        window.history.back();
     }
 
     render() {
