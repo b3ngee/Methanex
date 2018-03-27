@@ -144,8 +144,7 @@ class ProjectDetail extends React.Component {
                         'ID': response.data[i].id,
                         'Resource ID': response.data[i].resourceId,
                         'Assigned Hours': response.data[i].assignedHours,
-                        'First Name': userMap[uid].FirstName,
-                        'Last Name': userMap[uid].LastName,
+                        'Name': userMap[uid].FirstName + ' ' + userMap[uid].LastName,
                         'Availability': userMap[uid].Availability,
                         'Remove': <Button
                                     id={response.data[i].id}
@@ -159,9 +158,8 @@ class ProjectDetail extends React.Component {
                     rowRequests.push({
                         'ID': response.data[i].id,
                         'Resource ID': response.data[i].resourceId,
-                        'Assigned Hours': response.data[i].assignedHours,
-                        'First Name': userMap[uid].FirstName,
-                        'Last Name': userMap[uid].LastName,
+                        'Name': userMap[uid].FirstName + ' ' + userMap[uid].LastName,
+                        'Hours': response.data[i].assignedHours,
                         'Availability': userMap[uid].Availability,
                         'Status': status,
                         'Remove': <Button
@@ -265,8 +263,8 @@ class ProjectDetail extends React.Component {
 
     render() {
         let columns = ['Header', 'Value'];
-        let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Remove'];
-        let requestColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Status', 'Remove'];
+        let resourceColumns = ['ID', 'Resource ID', 'Name', 'Assigned Hours', 'Availability', 'Remove'];
+        let requestColumns = ['ID', 'Resource ID', 'Name', 'Hours', 'Availability', 'Status', 'Remove'];
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};

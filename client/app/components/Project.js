@@ -37,17 +37,20 @@ class Project extends React.Component {
         const tableData = [];
         axios.get(prodAPIEndpoint + '/project-resources?resourceId=' + this.state.userId, {headers: {Pragma: 'no-cache'}}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
-                axios.get(prodAPIEndpoint + '/projects/' + response.data[i].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
-                    axios.get(prodAPIEndpoint + '/users/' + projResponse.data.managerId, {headers: {Pragma: 'no-cache'}}).then(userResponse => {
-                        tableData.push({
-                            'ID': projResponse.data.id,
-                            'Project Name': projResponse.data.name,
-                            'Project Manager Names': userResponse.data.firstName + ' ' + userResponse.data.lastName,
-                            'Hours': response.data[i].assignedHours
-                        });
-                        this.setState({ assignedProjectsRows: tableData });
+                if (response.data[i].status === 'APPROVED') {
+                    axios.get(prodAPIEndpoint + '/projects/' + response.data[i].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
+                        axios.get(prodAPIEndpoint + '/users/' + projResponse.data.managerId, {headers: {Pragma: 'no-cache'}}).then(userResponse => {
+                            tableData.push({
+                                'ID': projResponse.data.id, // hidden
+                                'Project ID': projResponse.data.id, // for debugging; can be removed later
+                                'Project Name': projResponse.data.name,
+                                'Project Manager Name': userResponse.data.firstName + ' ' + userResponse.data.lastName,
+                                'Assigned Hours': response.data[i].assignedHours
+                            });
+                            this.setState({ assignedProjectsRows: tableData });
+                        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
                     }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
-                }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+                }
             }
         }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
@@ -66,7 +69,8 @@ class Project extends React.Component {
 
             const tableData = [];
             for (let i = 0; i < this.state.numProject; i++) {
-                tableData.push({ 'ID': this.state.projects[i].id,
+                tableData.push({ 'ID': this.state.projects[i].id, // hidden
+                    'Project ID': this.state.projects[i].id, // for debugging; can be removed later
                     'Project Name': this.state.projects[i].name,
                     'Project Status': sanitizeProjectStatus(this.state.projects[i].projectStatus),
                     'Status': sanitizeRagStatus(this.state.projects[i].ragStatus),
@@ -81,8 +85,8 @@ class Project extends React.Component {
     }
 
     render() {
-        let columns = ['ID', 'Project Name', 'Project Status', 'Status', 'Budget'];
-        let assignedProjectsColumns = ['ID', 'Project Name', 'Project Manager Names', 'Hours'];
+        let columns = ['ID', 'Project ID', 'Project Name', 'Project Status', 'Status', 'Budget'];
+        let assignedProjectsColumns = ['ID', 'Project ID', 'Project Name', 'Project Manager Name', 'Assigned Hours'];
         const {rows, errorModalOpen, errorMessage} = this.state;
         if (this.state.roles.split(',').includes(RESOURCE)) {
             return (
