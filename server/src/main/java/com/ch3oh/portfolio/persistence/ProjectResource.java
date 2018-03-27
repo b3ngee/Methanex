@@ -23,6 +23,9 @@ public class ProjectResource {
     @Column(name = "ASSIGNED_HOURS", nullable = false)
     private Integer assignedHours;
 
+    @Column(nullable = false)
+    private String status;
+
     public Integer getId() {
         return id;
     }
@@ -65,5 +68,17 @@ public class ProjectResource {
 
     public boolean hasAssignedHours() {
         return this.assignedHours != null;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String approved) {
+        this.status = approved;
+    }
+
+    public boolean hasStatus() {
+        return this.status != null;
     }
 }

@@ -1,5 +1,7 @@
 package com.ch3oh.portfolio.service;
 
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +11,7 @@ import com.ch3oh.portfolio.exception.GeneralRestNotFoundException;
 import com.ch3oh.portfolio.exception.RestBadRequestException;
 import com.ch3oh.portfolio.exception.user.UserNotFoundException;
 import com.ch3oh.portfolio.persistence.ProjectResource;
+import com.ch3oh.portfolio.persistence.ProjectResourceStatusEnum;
 import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.repository.ProjectDao;
 import com.ch3oh.portfolio.repository.ProjectResourceDao;
@@ -65,9 +68,14 @@ public class ProjectResourceServiceImpl {
             throw new RestBadRequestException("Assigned hours is missing");
         }
 
+        if (!projectResource.hasStatus()) {
+            throw new RestBadRequestException("Status is missing");
+        }
+
         validateProjectId(projectResource.getProjectId());
         validateResourceId(projectResource.getResourceId());
         validateAssignedHours(projectResource.getAssignedHours());
+        validateStatus(projectResource.getStatus());
         validateProjectResource(projectResource);
 
         return projectResourceDao.save(projectResource);
@@ -98,6 +106,11 @@ public class ProjectResourceServiceImpl {
         if (toUpdate.hasAssignedHours()) {
             validateAssignedHours(toUpdate.getAssignedHours());
             projectResource.setAssignedHours(toUpdate.getAssignedHours());
+        }
+
+        if (toUpdate.hasStatus()) {
+            validateStatus(toUpdate.getStatus());
+            projectResource.setStatus((toUpdate.getStatus()));
         }
 
         validateProjectResource(projectResource);
@@ -141,6 +154,16 @@ public class ProjectResourceServiceImpl {
     private void validateAssignedHours(Integer assignedHours) {
         if (assignedHours <= 0) {
             throw new RestBadRequestException("Assigned hours must be greater than 0");
+        }
+    }
+
+    private void validateStatus(String status) {
+        if (StringUtils.isBlank(status)) {
+            throw new RestBadRequestException("Status is blank");
+        }
+
+        if (!EnumUtils.isValidEnum(ProjectResourceStatusEnum.class, status)) {
+            throw new RestBadRequestException("Status does not exist (must be one of: APPROVED, PENDING, or REJECTED)");
         }
     }
 }
