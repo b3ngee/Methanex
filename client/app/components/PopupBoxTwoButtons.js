@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import Modal from 'react-modal';
 import Button from './Button';
-import { popupBoxForDeletion } from '../styles/popupBoxForDeletion.scss';
+import { popupBoxTwoButtons } from '../styles/popupBoxTwoButtons.scss';
 
-const PopupBox = ({ label, isOpen, onClose, onCancel}) => {
+const PopupBoxTwoButtons = ({ label, isOpen, onClose, onCancel}) => {
     Modal.setAppElement('body');
     return (
         <Modal
-            className={popupBoxForDeletion}
+            className={popupBoxTwoButtons}
             isOpen={isOpen}
         >{label}
         <div>
@@ -26,11 +26,11 @@ const PopupBox = ({ label, isOpen, onClose, onCancel}) => {
     );
 };
 
-PopupBox.propTypes = {
+PopupBoxTwoButtons.propTypes = {
     label: PropTypes.string.isRequired,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired
 };
 
-export default PopupBox;
+export default PopupBoxTwoButtons;
