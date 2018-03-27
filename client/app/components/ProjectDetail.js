@@ -9,7 +9,7 @@ import { formBox } from '../styles/form.scss';
 import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
-import PopupBoxForDeletion from './PopupBoxForDeletion';
+import PopupBoxTwoButtons from './PopupBoxTwoButtons';
 import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
 
 class ProjectDetail extends React.Component {
@@ -296,7 +296,7 @@ class ProjectDetail extends React.Component {
                         <Button type="submit" label="Edit"/>
                     </Link>
                 </span>
-                <PopupBoxForDeletion
+                <PopupBoxTwoButtons
                     label="Are you sure?"
                     isOpen={projectDeletionModalOpen}
                     onClose={this.onCloseProjectDeletion}
@@ -315,7 +315,7 @@ class ProjectDetail extends React.Component {
                 <Button type="submit" label="Delete" onClick={this.handleDeleteProject}/>
 
                 <h2>Resources</h2>
-                <PopupBoxForDeletion
+                <PopupBoxTwoButtons
                     label="Are you sure?"
                     isOpen={resourceDeletionModalOpen}
                     onClose={this.onCloseResourceDeletion}
@@ -326,7 +326,7 @@ class ProjectDetail extends React.Component {
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
 
                 <h2>Resource Requests</h2>
-                <PopupBoxForDeletion
+                <PopupBoxTwoButtons
                     label="Are you sure? request will also be deleted from database."
                     isOpen={requestDeletionModalOpen}
                     onClose={this.onCloseRequestDeletion}

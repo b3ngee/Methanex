@@ -4,7 +4,7 @@ import Dropdown from './Dropdown';
 import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
-import PopupBoxForDeletion from './PopupBoxForDeletion';
+import PopupBoxTwoButtons from './PopupBoxTwoButtons';
 import { prodAPIEndpoint } from '../constants/constants';
 
 class DeleteSkillCategoryForm extends React.Component {
@@ -102,7 +102,7 @@ class DeleteSkillCategoryForm extends React.Component {
         return (
         <div className={ formBox }>
             <h2>Delete Skill Category</h2>
-            <PopupBoxForDeletion
+            <PopupBoxTwoButtons
                 label="Are you sure?"
                 isOpen={deletionModalOpen}
                 onClose={this.onCloseDeletion}

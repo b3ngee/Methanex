@@ -6,7 +6,7 @@ import axios from 'axios/index';
 import {Link} from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
 import PopupBox from './PopupBox';
-import PopupBoxForDeletion from './PopupBoxForDeletion';
+import PopupBoxTwoButtons from './PopupBoxTwoButtons';
 
 class Resource extends React.Component {
     constructor(props) {
@@ -204,13 +204,7 @@ class Resource extends React.Component {
                     isOpen={successModalOpen}
                     onClose={this.onCloseSuccess}
                 />
-                <PopupBoxForDeletion
-                    label="Are you sure?"
-                    isOpen={requestModalOpen}
-                    onClose={this.onConfirmRequest}
-                    onCancel={this.onCancelDecision}
-                />
-                <PopupBoxForDeletion
+                <PopupBoxTwoButtons
                     label="Are you sure?"
                     isOpen={requestModalOpen}
                     onClose={this.onConfirmRequest}
