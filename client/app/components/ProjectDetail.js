@@ -24,15 +24,10 @@ class ProjectDetail extends React.Component {
             resources: [],
             resourceId: '',
             assignedHours: '',
-            projectName: '',
-            portfoliId: '',
-            managerId: '',
             successModalOpen: false,
-//            errorMessage: '',
             errorModalOpen: false,
             projectDeletionModalOpen: false,
-            resourceDeletionModalOpen: false,
-            requestDeletionModalOpen: false,
+            deletionModalOpen: false,
             roles: localStorage.getItem('roles'),
             projectResourceId: '',
             rowRequests: [],
@@ -45,12 +40,10 @@ class ProjectDetail extends React.Component {
         this.getResourceData = this.getResourceData.bind(this);
         this.addResource = this.addResource.bind(this);
         this.deleteResourceOrRequest = this.deleteResourceOrRequest.bind(this);
-        this.handleDeleteResource = this.handleDeleteResource.bind(this);
-        this.handleDeleteRequest = this.handleDeleteRequest.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseProjectDeletion = this.onCloseProjectDeletion.bind(this);
-        this.onCloseResourceDeletion = this.onCloseResourceDeletion.bind(this);
-        this.onCloseRequestDeletion = this.onCloseRequestDeletion.bind(this);
+        this.onCloseDeletion = this.onCloseDeletion.bind(this);
         this.onCancelDeletion = this.onCancelDeletion.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
     }
@@ -150,7 +143,7 @@ class ProjectDetail extends React.Component {
                                     id={response.data[i].id}
                                     type="submit"
                                     label="Remove"
-                                    onClick={this.handleDeleteResource}
+                                    onClick={this.handleDelete}
                                 />
                     });
                 } else {
@@ -166,7 +159,7 @@ class ProjectDetail extends React.Component {
                                     id={response.data[i].id}
                                     type="submit"
                                     label="Remove"
-                                    onClick={this.handleDeleteRequest}
+                                    onClick={this.handleDelete}
                                 />
                     });
                 }
@@ -195,26 +188,22 @@ class ProjectDetail extends React.Component {
         }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
-    handleDeleteRequest(e) {
+    handleDelete(e) {
         this.setState({
-            requestDeletionModalOpen: true,
+            deletionModalOpen: true,
             projectResourceId: e.target.name
         });
     }
 
-    onCloseRequestDeletion() { // TODO ?? repeat?
+    onCloseDeletion() {
         this.deleteResourceOrRequest();
     }
 
-    handleDeleteResource(e) {
+    handleDelete(e) {
         this.setState({
-            resourceDeletionModalOpen: true,
+            deletionModalOpen: true,
             projectResourceId: e.target.name
         });
-    }
-
-    onCloseResourceDeletion() { // TODO ?? repeat?
-        this.deleteResourceOrRequest();
     }
 
     deleteResourceOrRequest() {
@@ -223,16 +212,14 @@ class ProjectDetail extends React.Component {
         .then(response => {
             if (response.status === 200) {
                 this.setState({
-                    resourceDeletionModalOpen: false,
-                    requestDeletionModalOpen: false,
+                    deletionModalOpen: false,
                     successModalOpen: true
                 });
             }
         }).catch((error) => {
             this.setState({
                 errorMessage: 'Error: ' + error.response.data.message,
-                resourceDeletionModalOpen: false,
-                requestDeletionModalOpen: false,
+                deletionModalOpen: false,
                 errorModalOpen: true
             });
         });
@@ -250,8 +237,7 @@ class ProjectDetail extends React.Component {
     onCancelDeletion() {
         this.setState({
             projectDeletionModalOpen: false,
-            resourceDeletionModalOpen: false,
-            requestDeletionModalOpen: false,
+            deletionModalOpen: false,
             errorMessage: 'deletion has been canceled',
             errorModalOpen: true
         });
@@ -268,7 +254,7 @@ class ProjectDetail extends React.Component {
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
-        const {resourceId, assignedHours, projectDeletionModalOpen, resourceDeletionModalOpen, requestDeletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
+        const {resourceId, assignedHours, projectDeletionModalOpen, deletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
@@ -317,8 +303,8 @@ class ProjectDetail extends React.Component {
                 <h2>Resources</h2>
                 <PopupBoxTwoButtons
                     label="Are you sure?"
-                    isOpen={resourceDeletionModalOpen}
-                    onClose={this.onCloseResourceDeletion}
+                    isOpen={deletionModalOpen}
+                    onClose={this.onCloseDeletion}
                     onCancel={this.onCancelDeletion}
                 />
                 {this.state.rowResource.length > 0 &&
@@ -326,12 +312,6 @@ class ProjectDetail extends React.Component {
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
 
                 <h2>Resource Requests</h2>
-                <PopupBoxTwoButtons
-                    label="Are you sure? request will also be deleted from database."
-                    isOpen={requestDeletionModalOpen}
-                    onClose={this.onCloseRequestDeletion}
-                    onCancel={this.onCancelDeletion}
-                />
                 {this.state.rowRequests.length > 0 &&
                     <Table text="Project Details Resource Request" columns={requestColumns} rows={this.state.rowRequests}/>}
                 {this.state.rowRequests.length === 0 && <p>No requests or none are kept in history.</p>}

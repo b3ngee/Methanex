@@ -12,12 +12,9 @@ class Resource extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            numResources: 0,
             rows: [],
-            resourceIDs: [],
-            managerNames: {},
+//            managerNames: {}, // todo: all the todo in this file is about whether or not to show the manager name on the My Resources table.
             assignedResourcesRows: [],
-            resourceNames: [],
             successModalOpen: false,
             errorMessage: '',
             errorModalOpen: false,
@@ -28,7 +25,7 @@ class Resource extends React.Component {
         };
 
         this.getResources = this.getResources.bind(this);
-        this.getManagerNames = this.getManagerNames.bind(this);
+//        this.getManagerNames = this.getManagerNames.bind(this); // todo
         this.getRowsForAssignedResourcesTable = this.getRowsForAssignedResourcesTable.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
@@ -38,7 +35,8 @@ class Resource extends React.Component {
     }
 
     componentDidMount() {
-        this.getManagerNames();
+//        this.getManagerNames(); // todo
+        this.getResources();
     }
 
     onConfirmRequest() {
@@ -137,36 +135,32 @@ class Resource extends React.Component {
             query = '/users?managerId=' + localStorage.user_id;
         }
         axios.get(prodAPIEndpoint + query, {headers: {Pragma: 'no-cache'}}).then(response => {
-            this.setState({ numResources: response.data.length });
             this.setState({ resources: response.data });
             const tableData = [];
-            const resourceIDs = [];
-            for (let i = 0; i < this.state.numResources; i++) {
+            for (let i = 0; i < response.data.length; i++) {
                 tableData.push({
                     'ID': this.state.resources[i].id, // hidden
                     'Resource Name': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
                     'Resource ID': this.state.resources[i].id, // for debugging; can be removed later
 //                    'Manager Name': this.state.managerNames[response.data[i].managerId], // todo: manager name is always the user's name so maybe not necessary
                     'Availability': this.state.resources[i].status });
-                this.state.resourceNames.push(this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName);
-                resourceIDs.push(this.state.resources[i].id);
             }
             this.setState({ rows: tableData});
-            this.setState({ resourceIDs: resourceIDs});
             this.getRowsForAssignedResourcesTable();
          }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
-    getManagerNames() {
-        axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then(response => {
-            const data = {};
-            for (let i = 0; i < response.data.length; i++) {
-                data[response.data[i].id] = response.data[i].firstName + ' ' + response.data[i].lastName;
-            }
-            this.setState({ managerNames: data });
-            this.getResources();
-        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
-    }
+// todo
+//    getManagerNames() {
+//        axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then(response => {
+//            const data = {};
+//            for (let i = 0; i < response.data.length; i++) {
+//                data[response.data[i].id] = response.data[i].firstName + ' ' + response.data[i].lastName;
+//            }
+//            this.setState({ managerNames: data });
+//            this.getResources();
+//        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+//    }
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
@@ -182,7 +176,6 @@ class Resource extends React.Component {
 //        let columns = ['ID', 'Resource Name', 'Resource ID', 'Manager Name', 'Availability']; // todo: can be put back if manager name is preferred to be shown
         let requestColumns = ['ID', 'Request ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Requested', 'Availability', 'Approve', 'Reject'];
         let assignedResourcesColumns = ['ID', '(request) ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Assigned'];
-//        const {rows, errorModalOpen, errorMessage, requestApprovedModalOpen, requestRejectedModalOpen} = this.state;
         const {rows, successModalOpen, errorModalOpen, errorMessage, requestModalOpen} = this.state;
         return(
             <div className={ resource }>

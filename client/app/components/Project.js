@@ -97,7 +97,9 @@ class Project extends React.Component {
                         isOpen={errorModalOpen}
                         onClose={this.onCloseError}
                     />
-                    <Table text="List of Assigned Projects" columns={assignedProjectsColumns} rows={this.state.assignedProjectsRows}/>
+                    {this.state.assignedProjectsRows.length > 0 &&
+                        <Table text="List of Assigned Projects" columns={assignedProjectsColumns} rows={this.state.assignedProjectsRows}/>}
+                    {this.state.assignedProjectsRows.length === 0 && <p>You are not assigned to any project.</p>}
                 </div>
             );
         }
@@ -110,7 +112,7 @@ class Project extends React.Component {
                     onClose={this.onCloseError}
                 />
                 <h3>Number of projects: {this.state.rows.length}</h3>
-                <p>Click on portfolio name to see more details</p>
+                <p>Click on project name to see more details</p>
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>
