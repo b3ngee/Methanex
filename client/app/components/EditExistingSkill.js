@@ -6,7 +6,7 @@ import Table from './Table';
 import Dropdown from './Dropdown';
 import { prodAPIEndpoint, COMPETENCY } from '../constants/constants.js';
 import PopupBox from './PopupBox';
-import PopupBoxForDeletion from './PopupBoxForDeletion';
+import PopupBoxTwoButtons from './PopupBoxTwoButtons';
 
 class EditExistingSkill extends Component {
     constructor(props) {
@@ -162,7 +162,7 @@ class EditExistingSkill extends Component {
         return(
             <div className={ skill }>
                 <h1>Editing Skills</h1>
-                <PopupBoxForDeletion
+                <PopupBoxTwoButtons
                     label="Are you sure about the changes?"
                     isOpen={deletionModalOpen}
                     onClose={this.onCloseDeletion}

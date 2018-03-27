@@ -7,7 +7,7 @@ import PopupBox from './PopupBox';
 import axios from 'axios';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import { Promise } from 'es6-promise';
-import PopupBoxForDeletion from './PopupBoxForDeletion';
+import PopupBoxTwoButtons from './PopupBoxTwoButtons';
 import { prodAPIEndpoint } from '../constants/constants';
 
 class PortfolioDetails extends React.Component {
@@ -127,7 +127,7 @@ class PortfolioDetails extends React.Component {
                         <Button type="submit" label="Edit"/>
                     </Link>
                 </span>
-                <PopupBoxForDeletion
+                <PopupBoxTwoButtons
                     label="Deleting this portfolio will delete all associated projects. Are you sure you want to continue?"
                     isOpen={deletionModalOpen}
                     onClose={this.onCloseDeletion}

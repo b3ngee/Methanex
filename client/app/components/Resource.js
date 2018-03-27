@@ -6,18 +6,15 @@ import axios from 'axios/index';
 import {Link} from 'react-router-dom';
 import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
 import PopupBox from './PopupBox';
-import PopupBoxForDeletion from './PopupBoxForDeletion';
+import PopupBoxTwoButtons from './PopupBoxTwoButtons';
 
 class Resource extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            numResources: 0,
             rows: [],
-            resourceIDs: [],
-            managerNames: {},
+//            managerNames: {}, // todo: all the todo in this file is about whether or not to show the manager name on the My Resources table.
             assignedResourcesRows: [],
-            resourceNames: [],
             successModalOpen: false,
             errorMessage: '',
             errorModalOpen: false,
@@ -28,7 +25,7 @@ class Resource extends React.Component {
         };
 
         this.getResources = this.getResources.bind(this);
-        this.getManagerNames = this.getManagerNames.bind(this);
+//        this.getManagerNames = this.getManagerNames.bind(this); // todo
         this.getRowsForAssignedResourcesTable = this.getRowsForAssignedResourcesTable.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
@@ -38,7 +35,8 @@ class Resource extends React.Component {
     }
 
     componentDidMount() {
-        this.getManagerNames();
+//        this.getManagerNames(); // todo
+        this.getResources();
     }
 
     onConfirmRequest() {
@@ -48,8 +46,6 @@ class Resource extends React.Component {
         }).then(response => {
             console.log(response.status);
             if (response.status === 200) {
-              this.getResources();
-              this.getManagerNames();
               this.setState({
                 requestModalOpen: false,
                 successModalOpen: true
@@ -77,46 +73,56 @@ class Resource extends React.Component {
     getRowsForAssignedResourcesTable() {
         const tableData = [];
         const rowRequests = [];
-        for (let i = 0; i < this.state.resourceIDs.length; i++) {
-            axios.get(prodAPIEndpoint + '/project-resources?resourceId=' + this.state.resourceIDs[i], {headers: {Pragma: 'no-cache'}}).then(response => {
-                for (let j = 0; j < response.data.length; j++) {
-                    axios.get(prodAPIEndpoint + '/projects/' + response.data[j].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
-                        if (response.data[j].status === 'APPROVED') {
-                            tableData.push({
-                                'ID': projResponse.data.id,
-                                'Resources': this.state.resourceNames[i],
-                                'Project Name': projResponse.data.name,
-                                'Hours': response.data[j].assignedHours
-                            });
-                            this.setState({ assignedResourcesRows: tableData });
+        axios.get(prodAPIEndpoint + '/project-resources', {headers: {Pragma: 'no-cache'}}).then(prResponse => {
+            this.setState({ prData: prResponse.data });
+            axios.get(prodAPIEndpoint + '/projects/', {headers: {Pragma: 'no-cache'}}).then(projectsResponse => {
+            this.setState({ projects: projectsResponse.data });
+            for (let i = 0; i < this.state.resources.length; i++) {
+                for (let j = 0; j < this.state.prData.length; j++) {
+                    if (this.state.prData[j].resourceId === this.state.resources[i].id) {
+                        for (let k = 0; k < this.state.projects.length; k++) {
+                            if (this.state.prData[j].projectId === this.state.projects[k].id) {
+                                if (this.state.prData[j].status === 'APPROVED') {
+                                    tableData.push({
+                                        'ID': this.state.projects[k].id, // hidden
+                                        '(request) ID': this.state.prData[j].id, // for debugging; remove later
+                                        'Resource': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
+                                        'Resource ID': this.state.resources[i].id, // for debugging; can be removed later
+                                        'Project Name': this.state.projects[k].name,
+                                        'Hours Assigned': this.state.prData[j].assignedHours
+                                    });
+                                }
+                                if (this.state.prData[j].status === 'PENDING') {
+                                    rowRequests.push({
+                                         'ID': this.state.projects[k].id, // hidden
+                                         'Request ID': this.state.prData[j].id,
+                                         'Resource': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
+                                         'Resource ID': this.state.resources[i].id,
+                                         'Project Name': this.state.projects[k].name,
+                                         'Hours Requested': this.state.prData[j].assignedHours,
+                                         'Availability': this.state.resources[i].status,
+                                         'Approve': <Button
+                                                        id={this.state.prData[j].id}
+                                                        type="submit"
+                                                        value="APPROVED"
+                                                        label="Approve"
+                                                        onClick={this.handleRequest} />,
+                                        'Reject': <Button
+                                                    id={this.state.prData[j].id}
+                                                    type="submit"
+                                                    value="REJECTED"
+                                                    label="Reject"
+                                                    onClick={this.handleRequest} />
+                                    });
+                                }
+                                this.setState({ assignedResourcesRows: tableData });
+                                this.setState({ rowRequests: rowRequests });
+                            }
                         }
-                        if (response.data[j].status === 'PENDING') {
-                            rowRequests.push({
-                                 'ID': projResponse.data.id,
-                                 'Request ID': response.data[j].id,
-                                 'Resource ID': this.state.resourceIDs[i],
-                                 'Resource': this.state.resourceNames[i],
-                                 'Project Name': projResponse.data.name,
-                                 'Hours Requested': response.data[j].assignedHours,
-                                 'Approve': <Button
-                                                id={response.data[j].id}
-                                                type="submit"
-                                                value="APPROVED"
-                                                label="Approve"
-                                                onClick={this.handleRequest} />,
-                                'Reject': <Button
-                                            id={response.data[j].id}
-                                            type="submit"
-                                            value="REJECTED"
-                                            label="Reject"
-                                            onClick={this.handleRequest} />
-                            });
-                            this.setState({ rowRequests: rowRequests });
-                        }
-                    }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, requestApprovedModalOpen: false, errorModalOpen: true }); });
+                    }
                 }
-            }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
-        }
+            } }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, requestApprovedModalOpen: false, errorModalOpen: true }); });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     getResources() {
@@ -129,51 +135,47 @@ class Resource extends React.Component {
             query = '/users?managerId=' + localStorage.user_id;
         }
         axios.get(prodAPIEndpoint + query, {headers: {Pragma: 'no-cache'}}).then(response => {
-            this.setState({ numResources: response.data.length });
             this.setState({ resources: response.data });
             const tableData = [];
-            const resourceIDs = [];
-            for (let i = 0; i < this.state.numResources; i++) {
+            for (let i = 0; i < response.data.length; i++) {
                 tableData.push({
-                    'ID': this.state.resources[i].id,
+                    'ID': this.state.resources[i].id, // hidden
                     'Resource Name': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
-                    'Manager Name': this.state.managerNames[response.data[i].managerId],
-                    'Status': this.state.resources[i].status });
-                this.state.resourceNames.push(this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName);
-                resourceIDs.push(this.state.resources[i].id);
+                    'Resource ID': this.state.resources[i].id, // for debugging; can be removed later
+//                    'Manager Name': this.state.managerNames[response.data[i].managerId], // todo: manager name is always the user's name so maybe not necessary
+                    'Availability': this.state.resources[i].status });
             }
             this.setState({ rows: tableData});
-            this.setState({ resourceIDs: resourceIDs});
             this.getRowsForAssignedResourcesTable();
          }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
-    getManagerNames() {
-        axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then(response => {
-            const data = {};
-            for (let i = 0; i < response.data.length; i++) {
-                data[response.data[i].id] = response.data[i].firstName + ' ' + response.data[i].lastName;
-            }
-            this.setState({ managerNames: data });
-            this.getResources();
-        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
-    }
+// todo
+//    getManagerNames() {
+//        axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then(response => {
+//            const data = {};
+//            for (let i = 0; i < response.data.length; i++) {
+//                data[response.data[i].id] = response.data[i].firstName + ' ' + response.data[i].lastName;
+//            }
+//            this.setState({ managerNames: data });
+//            this.getResources();
+//        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+//    }
 
     onCloseError() {
         this.setState({ errorModalOpen: false });
     }
 
     onCloseSuccess() {
+        this.getRowsForAssignedResourcesTable();
         this.setState({ successModalOpen: false });
-//        this.props.history.push('/resource');
-//        window.history.back();
     }
 
     render() {
-        let columns = ['ID', 'Resource Name', 'Manager Name', 'Status'];
-        let requestColumns = ['ID', 'Request ID', 'Resource ID', 'Resource', 'Project Name', 'Hours Requested', 'Approve', 'Reject'];
-        let assignedResourcesColumns = ['ID', 'Resources', 'Project Name', 'Hours'];
-//        const {rows, errorModalOpen, errorMessage, requestApprovedModalOpen, requestRejectedModalOpen} = this.state;
+        let columns = ['ID', 'Resource Name', 'Resource ID', 'Availability'];
+//        let columns = ['ID', 'Resource Name', 'Resource ID', 'Manager Name', 'Availability']; // todo: can be put back if manager name is preferred to be shown
+        let requestColumns = ['ID', 'Request ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Requested', 'Availability', 'Approve', 'Reject'];
+        let assignedResourcesColumns = ['ID', '(request) ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Assigned'];
         const {rows, successModalOpen, errorModalOpen, errorMessage, requestModalOpen} = this.state;
         return(
             <div className={ resource }>
@@ -204,13 +206,7 @@ class Resource extends React.Component {
                     isOpen={successModalOpen}
                     onClose={this.onCloseSuccess}
                 />
-                <PopupBoxForDeletion
-                    label="Are you sure?"
-                    isOpen={requestModalOpen}
-                    onClose={this.onConfirmRequest}
-                    onCancel={this.onCancelDecision}
-                />
-                <PopupBoxForDeletion
+                <PopupBoxTwoButtons
                     label="Are you sure?"
                     isOpen={requestModalOpen}
                     onClose={this.onConfirmRequest}
