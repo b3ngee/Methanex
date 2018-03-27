@@ -11,6 +11,7 @@ import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
 import PopupBoxTwoButtons from './PopupBoxTwoButtons';
 import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
+import { requestSection, title } from '../styles/requestSection.scss';
 
 class ProjectDetail extends React.Component {
 
@@ -337,30 +338,32 @@ class ProjectDetail extends React.Component {
                     <Table text="Project Details Resource Request" columns={requestColumns} rows={this.state.rowRequests}/>}
                 {this.state.rowRequests.length === 0 && <p>No requests or none are kept in history.</p>}
 
-                <h2>Request Resources</h2>
-                <h6><i>NOTE: Before requesting a resource who is already in your Resources table,<br/>
-                remove them from that table first, then request them.</i></h6>
-                <div className={ formBox }>
-                    <Dropdown
-                        label="Resources"
-                        name="resourceId"
-                        data={resourceObjects}
-                        preSelect={resourceId}
-                        onSelect={this.onChange}
-                    />
-                    <TextFieldGroup
-                        type="text"
-                        field="assignedHours"
-                        label="Assigned Hours (Only for Add Resource)"
-                        value={assignedHours}
-                        onChange={this.onChange}
+                <div className={requestSection} >
+                    <div className={title}><h2>Request Resources</h2></div>
+                    <h6>NOTE: Before requesting a resource who is already in your <i>Resources</i> table,<br/>
+                    <i>remove</i> them from that table first, then request them here.</h6>
+                    <div className={ formBox }>
+                        <Dropdown
+                            label="Available Resources"
+                            name="resourceId"
+                            data={resourceObjects}
+                            preSelect={resourceId}
+                            onSelect={this.onChange}
+                        />
+                        <TextFieldGroup
+                            type="text"
+                            field="assignedHours"
+                            label="Number of Hours"
+                            value={assignedHours}
+                            onChange={this.onChange}
+                        />
+                    </div>
+                    <Button
+                        type="submit"
+                        label="Add Resource"
+                        onClick={this.addResource}
                     />
                 </div>
-                <Button
-                    type="submit"
-                    label="Add Resource"
-                    onClick={this.addResource}
-                />
             </div>
         );
     }
