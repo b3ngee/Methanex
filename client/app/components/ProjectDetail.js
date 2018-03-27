@@ -11,6 +11,7 @@ import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
 import PopupBoxForDeletion from './PopupBoxForDeletion';
 import { RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
+import { requestSection, title } from '../styles/requestSection.scss';
 
 class ProjectDetail extends React.Component {
 
@@ -27,7 +28,6 @@ class ProjectDetail extends React.Component {
             portfoliId: '',
             managerId: '',
             successModalOpen: false,
-//            errorMessage: '',
             errorModalOpen: false,
             projectDeletionModalOpen: false,
             resourceDeletionModalOpen: false,
@@ -143,9 +143,7 @@ class ProjectDetail extends React.Component {
                         'ID': response.data[i].id,
                         'Resource ID': response.data[i].resourceId,
                         'Assigned Hours': response.data[i].assignedHours,
-                        'First Name': userMap[uid].FirstName,
-                        'Last Name': userMap[uid].LastName,
-                        'Availability': userMap[uid].Availability,
+                        'Name': userMap[uid].FirstName + ' ' + userMap[uid].LastName,
                         'Remove': <Button
                                     id={response.data[i].id}
                                     type="submit"
@@ -158,9 +156,8 @@ class ProjectDetail extends React.Component {
                     rowRequests.push({
                         'ID': response.data[i].id,
                         'Resource ID': response.data[i].resourceId,
-                        'Assigned Hours': response.data[i].assignedHours,
-                        'First Name': userMap[uid].FirstName,
-                        'Last Name': userMap[uid].LastName,
+                        'Hours': response.data[i].assignedHours,
+                        'Name': userMap[uid].FirstName + ' ' + userMap[uid].LastName,
                         'Availability': userMap[uid].Availability,
                         'Status': status,
                         'Remove': <Button
@@ -240,7 +237,8 @@ class ProjectDetail extends React.Component {
     }
 
     onCloseSuccess() {
-        window.history.back();
+        this.getResources();
+        this.setState({ successModalOpen: false });
     }
 
     onCloseProjectDeletion() {
@@ -263,8 +261,8 @@ class ProjectDetail extends React.Component {
 
     render() {
         let columns = ['Header', 'Value'];
-        let resourceColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Remove'];
-        let requestColumns = ['ID', 'Resource ID', 'First Name', 'Last Name', 'Assigned Hours', 'Availability', 'Status', 'Remove'];
+        let resourceColumns = ['ID', 'Resource ID', 'Name', 'Assigned Hours', 'Remove'];
+        let requestColumns = ['ID', 'Resource ID', 'Name', 'Hours', 'Availability', 'Status', 'Remove'];
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
@@ -314,7 +312,7 @@ class ProjectDetail extends React.Component {
                 />
                 <Button type="submit" label="Delete" onClick={this.handleDeleteProject}/>
 
-                <h2>Resources</h2>
+                <h2><u>Resources</u></h2>
                 <PopupBoxForDeletion
                     label="Are you sure?"
                     isOpen={resourceDeletionModalOpen}
@@ -325,7 +323,7 @@ class ProjectDetail extends React.Component {
                     <Table text="Project Details Resources" columns={resourceColumns} rows={this.state.rowResource}/>}
                 {this.state.rowResource.length === 0 && <p>No resources are assigned under this project.</p>}
 
-                <h2>Resource Requests</h2>
+                <h2><u>Resource Requests</u></h2>
                 <PopupBoxForDeletion
                     label="Are you sure? request will also be deleted from database."
                     isOpen={requestDeletionModalOpen}
@@ -335,31 +333,32 @@ class ProjectDetail extends React.Component {
                 {this.state.rowRequests.length > 0 &&
                     <Table text="Project Details Resource Request" columns={requestColumns} rows={this.state.rowRequests}/>}
                 {this.state.rowRequests.length === 0 && <p>No requests or none are kept in history.</p>}
-
-                <h2>Request Resources</h2>
-                <h6><i>NOTE: Before requesting a resource who is already in your Resources table,<br/>
-                remove them from that table first, then request them.</i></h6>
-                <div className={ formBox }>
-                    <Dropdown
-                        label="Resources"
-                        name="resourceId"
-                        data={resourceObjects}
-                        preSelect={resourceId}
-                        onSelect={this.onChange}
-                    />
-                    <TextFieldGroup
-                        type="text"
-                        field="assignedHours"
-                        label="Assigned Hours (Only for Add Resource)"
-                        value={assignedHours}
-                        onChange={this.onChange}
+                <div className={requestSection} >
+                    <div className={title}><h2>Request Resources</h2></div>
+                    <h6>NOTE: Before requesting a resource who is already in your <i>Resources</i> table,<br/>
+                    <i>remove</i> them from that table first, then request them here.</h6>
+                    <div className={ formBox }>
+                        <Dropdown
+                            label="Available Resources"
+                            name="resourceId"
+                            data={resourceObjects}
+                            preSelect={resourceId}
+                            onSelect={this.onChange}
+                        />
+                        <TextFieldGroup
+                            type="text"
+                            field="assignedHours"
+                            label="Number of Hours"
+                            value={assignedHours}
+                            onChange={this.onChange}
+                        />
+                    </div>
+                    <Button
+                        type="submit"
+                        label="Add Resource"
+                        onClick={this.addResource}
                     />
                 </div>
-                <Button
-                    type="submit"
-                    label="Add Resource"
-                    onClick={this.addResource}
-                />
             </div>
         );
     }
