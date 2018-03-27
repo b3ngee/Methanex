@@ -13,7 +13,7 @@ class Resource extends React.Component {
         super(props);
         this.state = {
             rows: [],
-            managerNames: {}, // required
+            managerNames: {},
             assignedResourcesRows: [],
             successModalOpen: false,
             errorMessage: '',
@@ -166,8 +166,6 @@ class Resource extends React.Component {
     onCloseSuccess() {
         this.getRowsForAssignedResourcesTable();
         this.setState({ successModalOpen: false });
-//        this.props.history.push('/resource');
-//        window.history.back();
     }
 
     render() {
@@ -197,7 +195,6 @@ class Resource extends React.Component {
                 {this.state.assignedResourcesRows.length > 0 &&
                     <Table text="List of Assigned Resources" columns={assignedResourcesColumns} rows={this.state.assignedResourcesRows}/>}
                 {this.state.assignedResourcesRows.length === 0 && <p>None of your resources are assigned.</p>}
-
                 <h2><u>Resource Requests</u></h2>
                 <PopupBox
                     label="Successful!"

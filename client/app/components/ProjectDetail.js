@@ -10,7 +10,7 @@ import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
 import PopupBoxTwoButtons from './PopupBoxTwoButtons';
-import { RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
+import { RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
 import { requestSection, title } from '../styles/requestSection.scss';
 
 class ProjectDetail extends React.Component {
@@ -263,14 +263,13 @@ class ProjectDetail extends React.Component {
         let columns = ['Header', 'Value'];
         let resourceColumns = ['ID', 'Resource ID', 'Name', 'Assigned Hours', 'Remove'];
         let requestColumns = ['ID', 'Resource ID', 'Name', 'Hours', 'Availability', 'Status', 'Remove'];
-
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
         const {resourceId, assignedHours, projectDeletionModalOpen, resourceDeletionModalOpen, requestDeletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
-        if (this.state.roles.includes(RESOURCE_MANAGER)) {
+        if (this.state.roles.split(',').includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER)) {
             return (
                 <div className={ project }>
                     <h1>{this.state.projectName}</h1>

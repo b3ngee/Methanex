@@ -5,6 +5,7 @@ import axios from 'axios';
 import isValidEmail from '../utils/validationHelpers';
 import { formBox } from '../styles/form.scss';
 import { prodAPIEndpoint } from '../constants/constants';
+import PopupBox from './PopupBox';
 
 class Login extends React.Component {
     constructor(props) {
@@ -13,11 +14,13 @@ class Login extends React.Component {
             email: '',
             password: '',
             errors: {},
-            isLoading: false
+            isLoading: false,
+            errorModalOpen: false
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     isValid() {
@@ -53,7 +56,11 @@ class Login extends React.Component {
                 if (err.response.status === 400) {
                     this.setState({errors: {password: 'Incorrect password or email'}});
                 } else if (err.response.status === 500) {
-                    window.alert('Backend Server Down, contact an admin');
+                    this.setState({
+                        errorMessage: 'Backend Server Down, contact an admin',
+                        projectDeletionModalOpen: false,
+                        errorModalOpen: true
+                    });
                 }
              }
             );
@@ -64,14 +71,22 @@ class Login extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
+    }
+
     render() {
-        const { errors, email, password, isLoading } = this.state;
+        const { errors, email, password, isLoading, errorModalOpen, errorMessage } = this.state;
 
         return (
             <div className={ formBox }>
                 <form onSubmit={this.onSubmit}>
                     <h1>Login to Your Account</h1>
-
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
                     <TextFieldGroup
                         field="email"
                         label="Email"
