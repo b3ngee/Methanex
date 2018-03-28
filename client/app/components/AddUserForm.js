@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import axios from 'axios';
 import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
@@ -170,7 +170,3 @@ class AddUserForm extends React.Component {
 }
 
 export default AddUserForm;
-
-AddUserForm.propTypes = {
-    history: PropTypes.any,
-};
