@@ -10,7 +10,7 @@ import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
 import PopupBoxTwoButtons from './PopupBoxTwoButtons';
-import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
+import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint, PORTFOLIO_MANAGER} from '../constants/constants';
 import { requestSection, title } from '../styles/requestSection.scss';
 
 class ProjectDetail extends React.Component {
@@ -260,7 +260,7 @@ class ProjectDetail extends React.Component {
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.id, name: ro.firstName };
         });
-        if (this.state.roles.split(',').includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER)) {
+        if (this.state.roles.split(',').includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER) || this.state.roles.includes(PORTFOLIO_MANAGER)) {
             return (
                 <div className={ project }>
                     <h1>{this.state.projectName}</h1>
