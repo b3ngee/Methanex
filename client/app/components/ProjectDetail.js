@@ -114,7 +114,9 @@ class ProjectDetail extends React.Component {
         .then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
-                data[response.data[i].id] = {'FirstName': response.data[i].firstName, 'LastName': response.data[i].lastName, 'Availability': response.data[i].status};
+                // if (response.data[i].status === 'Available' && response.data[i].enabled === true) {
+                    data[response.data[i].id] = {'FirstName': response.data[i].firstName, 'LastName': response.data[i].lastName, 'Availability': response.data[i].status};
+                // }
             }
             this.setState({resourceData: data});
             this.setState({resources: response.data});
