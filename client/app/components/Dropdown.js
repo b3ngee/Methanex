@@ -16,6 +16,9 @@ export default class Dropdown extends Component {
             if (val.id === preSelect) {
                 return <option selected key={val.id} value={val.id}>{val.name}</option>;
             }
+            if (label === 'Available Resources') {
+                return <option key={val.id} value={val.id}>{val.name} [skill(competency):{val.skillsInfo}]</option>;
+            }
             return <option key={val.id} value={val.id}>{val.name}</option>;
         });
 
@@ -40,5 +43,5 @@ Dropdown.propTypes = {
     error: React.PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
     preSelect: PropTypes.any,
-    onSelect: PropTypes.func.isRequired
+    onSelect: PropTypes.func.isRequired,
 };
