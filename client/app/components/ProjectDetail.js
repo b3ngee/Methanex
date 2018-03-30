@@ -10,7 +10,7 @@ import { project } from '../styles/project.scss';
 import { sanitizeProjectStatus, sanitizeRagStatus } from '../utils/sanitizer';
 import PopupBox from './PopupBox';
 import PopupBoxTwoButtons from './PopupBoxTwoButtons';
-import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint } from '../constants/constants';
+import {RESOURCE, RESOURCE_MANAGER, prodAPIEndpoint, PORTFOLIO_MANAGER} from '../constants/constants';
 import { requestSection, title } from '../styles/requestSection.scss';
 
 class ProjectDetail extends React.Component {
@@ -145,7 +145,9 @@ class ProjectDetail extends React.Component {
         .then(response => {
             const data = {};
             for (let i = 0; i < response.data.length; i++) {
-                data[response.data[i].id] = {'FirstName': response.data[i].firstName, 'LastName': response.data[i].lastName, 'Availability': response.data[i].status};
+                // if (response.data[i].status === 'Available' && response.data[i].enabled === true) {
+                    data[response.data[i].id] = {'FirstName': response.data[i].firstName, 'LastName': response.data[i].lastName, 'Availability': response.data[i].status};
+                // }
             }
             this.setState({resourceData: data});
             this.setState({allResources: response.data});
@@ -425,7 +427,7 @@ class ProjectDetail extends React.Component {
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.basic.id, name: ro.basic.firstName, skillsInfo: ro.skillsInfo };
         });
-        if (this.state.roles.split(',').includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER)) {
+        if (this.state.roles.split(',').includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER) || this.state.roles.includes(PORTFOLIO_MANAGER)) {
             return (
                 <div className={ project }>
                     <h1>{this.state.projectName}</h1>

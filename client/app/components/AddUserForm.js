@@ -53,7 +53,7 @@ class AddUserForm extends React.Component {
                         address: '',
                         location: '',
                         status: '',
-                        userId: 'Successful! The new user\'s userID is ' + response.data.id,
+                        userId: 'Successful! The new user\'s userID is ' + response.data.id + '. Please add a role for this new user in the following page.',
                         errors: {}, successModalOpen: true
                     });
                 }
@@ -68,7 +68,7 @@ class AddUserForm extends React.Component {
     }
 
     onCloseSuccess() {
-        window.history.back();
+       window.history.go('/setting/user');
     }
 
     onCloseError() {

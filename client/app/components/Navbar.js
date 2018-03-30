@@ -45,7 +45,8 @@ class Navbar extends Component {
                         <Link to="/">Profile</Link>
                         { (isAdmin || isPortfolioManager) && <Link to="/portfolio">Portfolios</Link> }
                         { (isAdmin || isProjectManager || isResource) && <Link to="/project">Projects</Link> }
-                        { (isAdmin || isResourceManager) && <Link to="/resource">Resources</Link> }
+                        { (isResourceManager) && <Link to="/resource">Resources</Link> }
+                        { (isAdmin) && <Link to="/resource">Users</Link>}
                         { isAdmin && <Link to="/setting">Administration</Link> }
                         <div className={ logout } onClick={this.logout.bind(this)}> Log Out </div>
                     </div>
