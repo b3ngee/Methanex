@@ -21,6 +21,7 @@ class ProjectDetail extends React.Component {
             rows: [],
             rowResource: [],
             resourceData: {},
+            allResources: [],
             resources: [],
             resourceId: '',
             assignedHours: '',
@@ -31,6 +32,14 @@ class ProjectDetail extends React.Component {
             roles: localStorage.getItem('roles'),
             projectResourceId: '',
             rowRequests: [],
+            skillCategoryData: [],
+            skillTypeData: [],
+            skillTypeIds: {},
+            userSkills: [],
+            userSkillsData: [],
+            allAvailableResources: [],
+            filteredSkillTypeData: [],
+            availableResourcesFilteredByCategory: [],
         };
 
         this.getDetails = this.getDetails.bind(this);
@@ -46,11 +55,35 @@ class ProjectDetail extends React.Component {
         this.onCloseDeletion = this.onCloseDeletion.bind(this);
         this.onCancelDeletion = this.onCancelDeletion.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
+        this.getSkillTypes = this.getSkillTypes.bind(this);
+        this.getUserSkills = this.getUserSkills.bind(this);
+        this.getFilteredSkillTypes = this.getFilteredSkillTypes.bind(this);
     }
 
     componentDidMount() {
         this.getDetails();
-        this.getResourceData();
+        this.getSkillCategories();
+    }
+
+    getSkillCategories() {
+        axios.get(prodAPIEndpoint + '/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
+            this.setState({ skillCategoryData: response.data });
+            this.getSkillTypes();
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+    }
+
+    getSkillTypes() {
+        axios.get(prodAPIEndpoint + '/skill-types', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+            this.setState({ skillTypeData: response.data });
+            this.getUserSkills();
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+    }
+
+    getUserSkills() {
+        axios.get(prodAPIEndpoint + '/user-skills', {headers: {Pragma: 'no-cache'}}).then( (response) => {
+            this.setState({ userSkills: response.data });
+            this.getResourceData();
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     getDetails() {
@@ -79,11 +112,9 @@ class ProjectDetail extends React.Component {
                     this.setState({portfolioId: response.data.portfolioId});
                     this.setState({managerId: response.data.managerId});
                     this.setState({rows: rows});
-                });
-            });
-        })
-        .catch( () => {
-        });
+                }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+            }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     handleDeleteProject() {
@@ -117,11 +148,43 @@ class ProjectDetail extends React.Component {
                 data[response.data[i].id] = {'FirstName': response.data[i].firstName, 'LastName': response.data[i].lastName, 'Availability': response.data[i].status};
             }
             this.setState({resourceData: data});
-            this.setState({resources: response.data});
+            this.setState({allResources: response.data});
+
+            const temp = [];
+            const anotherTemp = [];
+            for (let i = 0; i < this.state.skillTypeData.length; i++) {
+                    for (let j = 0; j < this.state.userSkills.length; j++) {
+                        if (this.state.userSkills[j].skillTypeId === this.state.skillTypeData[i].id) {
+                            anotherTemp.push({userId: this.state.userSkills[j].userId, skillType: this.state.skillTypeData[i].name, competency: this.state.userSkills[j].competency });
+                        }
+                    }
+                    this.state.userSkillsData = anotherTemp;
+            }
+            this.state.skillTypeIds = temp;
+            this.state.userSkillsData = anotherTemp;
+
+            let testingLarger = [];
+            let testingSmaller = [];
+            const finalTesting = [];
+            for (let j = 0; j < this.state.allResources.length; j++) {
+                const testing = [];
+                for (let i = 0; i < this.state.userSkillsData.length; i++) {
+                    if (this.state.userSkillsData[i].userId === this.state.allResources[j].id) {
+                        const skillName = this.state.userSkillsData[i].skillType;
+                        const skillCompetency = this.state.userSkillsData[i].competency;
+                        testing.push( ' ' + skillName + '(' + skillCompetency + ')');
+                    }
+                }
+                testingSmaller = this.state.allResources[j];
+                testingLarger = {basic: testingSmaller, skillsInfo: testing};
+                finalTesting.push(testingLarger);
+            }
+            this.state.resources = finalTesting;
+            this.state.allAvailableResources = finalTesting;
         })
         .then(() => {
             this.getResources();
-        });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     getResources() {
@@ -166,11 +229,115 @@ class ProjectDetail extends React.Component {
             }
             this.setState({rowResource: tableData});
             this.setState({rowRequests: rowRequests});
-        });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+    }
+
+    getFilteredSkillTypes() {
+            axios.get(prodAPIEndpoint + '/skill-types?skillCategoryId=' + this.state.skillCategoryId, {headers: {Pragma: 'no-cache'}}).then( (response) => {
+                this.setState({ filteredSkillTypeData: response.data });
+            }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     onChange(e) {
         this.setState({ [e.target.name]: e.target.value });
+        if (e.target.name === 'skillCategoryId') {
+            this.state.skillCategoryId = e.target.value;
+            this.getFilteredSkillTypes();
+            if (e.target.value === '') {
+                this.state.resources = this.state.allAvailableResources;
+            } else {
+                const temp = [];
+                const anotherTemp = [];
+                for (let i = 0; i < this.state.skillTypeData.length; i++) {
+                    if (this.state.skillTypeData[i].skillCategoryId === Number(e.target.value)) {
+                        temp.push(this.state.skillTypeData[i].id);
+                        for (let j = 0; j < this.state.userSkills.length; j++) {
+                            if (this.state.userSkills[j].skillTypeId === this.state.skillTypeData[i].id) {
+                                anotherTemp.push({userId: this.state.userSkills[j].userId, skillType: this.state.skillTypeData[i].name, competency: this.state.userSkills[j].competency });
+                            }
+                        }
+                        this.state.userSkillsData = anotherTemp; // get all user skills in this skill category
+                    }
+                }
+                this.state.skillTypeIds = temp;
+                this.state.userSkillsData = anotherTemp;
+                const tempResources = [];
+                for (let j = 0; j < this.state.allResources.length; j++) {
+                    for (let k = 0; k < this.state.userSkillsData.length; k++) {
+                        if (this.state.userSkillsData[k].userId === this.state.allResources[j].id) {
+                            tempResources.push(this.state.allResources[j]);
+                            break;
+                        }
+                    }
+                }
+                this.state.resources = tempResources;
+                let testingLarger = [];
+                let testingSmaller = [];
+                const finalTesting = [];
+                for (let j = 0; j < this.state.resources.length; j++) {
+                    const testing = [];
+                    for (let i = 0; i < this.state.userSkillsData.length; i++) {
+                        if (this.state.userSkillsData[i].userId === this.state.resources[j].id) {
+                            const skillName = this.state.userSkillsData[i].skillType;
+                            const skillCompetency = this.state.userSkillsData[i].competency;
+                            testing.push( ' ' + skillName + '(' + skillCompetency + ')');
+                        }
+                    }
+                    testingSmaller = this.state.resources[j];
+                    testingLarger = {basic: testingSmaller, skillsInfo: testing};
+                    finalTesting.push(testingLarger);
+                }
+                this.state.resources = finalTesting;
+                this.state.availableResourcesFilteredByCategory = finalTesting;
+            }
+        }
+
+        if (e.target.name === 'skillTypeId') {
+            if (e.target.value === '') {
+                this.state.resources = this.state.availableResourcesFilteredByCategory;
+            } else {
+                const anotherTemp = [];
+                for (let i = 0; i < this.state.filteredSkillTypeData.length; i++) {
+                    if (this.state.filteredSkillTypeData[i].id === Number(e.target.value)) {
+                        for (let j = 0; j < this.state.userSkills.length; j++) {
+                            if (this.state.userSkills[j].skillTypeId === this.state.filteredSkillTypeData[i].id) {
+                                anotherTemp.push({userId: this.state.userSkills[j].userId, skillType: this.state.filteredSkillTypeData[i].name, competency: this.state.userSkills[j].competency });
+                            }
+                        }
+                        this.state.userSkillsData = anotherTemp;
+                        break;
+                    }
+                }
+                this.state.userSkillsData = anotherTemp;
+                const tempResources = [];
+                for (let j = 0; j < this.state.allResources.length; j++) {
+                    for (let k = 0; k < this.state.userSkillsData.length; k++) {
+                        if (this.state.userSkillsData[k].userId === this.state.allResources[j].id) {
+                            tempResources.push(this.state.allResources[j]);
+                            break;
+                        }
+                    }
+                }
+                this.state.resources = tempResources;
+                let testingLarger = [];
+                let testingSmaller = [];
+                const finalTesting = [];
+                for (let j = 0; j < this.state.resources.length; j++) {
+                    const testing = [];
+                    for (let i = 0; i < this.state.userSkillsData.length; i++) {
+                        if (this.state.userSkillsData[i].userId === this.state.resources[j].id) {
+                            const skillName = this.state.userSkillsData[i].skillType;
+                            const skillCompetency = this.state.userSkillsData[i].competency;
+                            testing.push( ' ' + skillName + '(' + skillCompetency + ')');
+                        }
+                    }
+                    testingSmaller = this.state.resources[j];
+                    testingLarger = {basic: testingSmaller, skillsInfo: testing};
+                    finalTesting.push(testingLarger);
+                }
+                this.state.resources = finalTesting;
+            }
+        }
     }
 
     addResource() {
@@ -254,9 +421,9 @@ class ProjectDetail extends React.Component {
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
-        const {resourceId, assignedHours, projectDeletionModalOpen, deletionModalOpen, successModalOpen, errorModalOpen, errorMessage} = this.state;
+        const { assignedHours, projectDeletionModalOpen, deletionModalOpen, successModalOpen, errorModalOpen, errorMessage, skillCategoryData, filteredSkillTypeData} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
-            return { id: ro.id, name: ro.firstName };
+            return { id: ro.basic.id, name: ro.basic.firstName, skillsInfo: ro.skillsInfo };
         });
         if (this.state.roles.split(',').includes(RESOURCE) || this.state.roles.includes(RESOURCE_MANAGER)) {
             return (
@@ -322,10 +489,21 @@ class ProjectDetail extends React.Component {
                     <i>remove</i> them from that table first, then request them here.</h6>
                     <div className={ formBox }>
                         <Dropdown
+                             label="Filter by Skill Category"
+                             name="skillCategoryId"
+                             data={skillCategoryData}
+                             onSelect={this.onChange}
+                        />
+                        <Dropdown
+                             label="Filter by Skill Type"
+                             name="skillTypeId"
+                             data={filteredSkillTypeData}
+                             onSelect={this.onChange}
+                        />
+                        <Dropdown
                             label="Available Resources"
                             name="resourceId"
                             data={resourceObjects}
-                            preSelect={resourceId}
                             onSelect={this.onChange}
                         />
                         <TextFieldGroup
