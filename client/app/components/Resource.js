@@ -44,7 +44,6 @@ class Resource extends React.Component {
         axios.put(prodAPIEndpoint + '/project-resources/' + id, {
             status: this.state.requestDecision
         }).then(response => {
-            console.log(response.status);
             if (response.status === 200) {
               this.setState({
                 requestModalOpen: false,
