@@ -23,14 +23,13 @@ class EditExistingSkill extends Component {
             editedCompetencies: [],
             checks: [], // array of checks status for every user skill
             numChecked: 0, // number of checks for deleting skills
-            errors: {},
             userCompetencies: [],
         };
         this.onCloseDeletion = this.onCloseDeletion.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
         this.onCloseError = this.onCloseError.bind(this);
         this.onCancelDeletion = this.onCancelDeletion.bind(this);
-        this.handleMultipleSelects = this.handleMultipleSelects.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
         this.handleEditing = this.handleEditing.bind(this);
         this.confirmEditing = this.confirmEditing.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -50,47 +49,24 @@ class EditExistingSkill extends Component {
                 'Competency': Object.values(this.state.skills[i])[2],
                 'New Competency': <Dropdown
                                       label=""
-                                      name="sC"
+                                      name={i}
                                       data={COMPETENCY}
-                                      onSelect={this.handleMultipleSelects}
-                                      error={this.state.errors.sC}
+                                      onSelect={this.handleSelect}
                                    />,
-                'Remove Skill': <input type="checkbox" onClick={this.handleDelete} />
+                'Remove Skill': <input type="checkbox" value={i} onClick={this.handleDelete} />
             });
         }
         this.setState({ editingRows: tableDataForEdit});
     }
 
-    handleMultipleSelects() {
-        const competencies = [];
-        const updatedCompetencies = [];
-        for (let i = 0; i < this.state.numSkills; i++) {
-            const skillCompetency = document.getElementsByTagName('select')[i].value;
-            competencies.push(skillCompetency);
-        }
-        for (let i = 0; i < competencies.length; i++) {
-            if (competencies[i] === 'Select ... ') {
-                updatedCompetencies.push(this.state.userCompetencies[i]);
-            } else {
-                updatedCompetencies.push(competencies[i]);
-            }
-        }
-        this.state.editedCompetencies = updatedCompetencies;
+    handleSelect(e) {
+        const competencies = this.state.editedCompetencies;
+        competencies[e.target.name] = e.target.value;
     }
 
-    handleDelete() {
-        let tempNumChecked = 0;
-        const tempChecks = [];
-        for (let i = 0; i < this.state.numSkills; i++) {
-            if (document.getElementsByTagName('input')[i].checked) {
-                tempNumChecked++;
-                tempChecks.push(1);
-            } else {
-                tempChecks.push(0);
-            }
-        }
-        this.state.checks = tempChecks;
-        this.state.numChecked = tempNumChecked;
+    handleDelete(e) {
+        const tempChecks = this.state.checks;
+        tempChecks[e.target.value] = e.target.checked;
     }
 
     handleEditing() {
@@ -100,7 +76,11 @@ class EditExistingSkill extends Component {
                 differenceCount++;
             }
         }
-
+        for (let i = 0; i < this.state.checks.length; i++) {
+            if (this.state.checks[i] === true) {
+                this.state.numChecked++;
+            }
+        }
         if ( differenceCount === 0 && this.state.numChecked === 0 ||
             this.state.editedCompetencies.length === 0 && this.state.numChecked === 0
         ) {
@@ -117,16 +97,16 @@ class EditExistingSkill extends Component {
                 const c = this.state.editedCompetencies[i];
                 axios.put(prodAPIEndpoint + '/user-skills/' + id, {
                     competency: c
-                });
+                }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, requestModalOpen: false, errorModalOpen: true }); });
             }
         }
 
         if (this.state.numChecked !== 0) {
             for (let i = 0; i < this.state.checks.length; i++ ) {
-                if ( this.state.checks[i] === 1) {
+                if ( this.state.checks[i] === true) {
                     const id = this.state.userSkillIds[i];
                     axios.delete(prodAPIEndpoint + '/user-skills/' + id, {
-                    });
+                    }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, requestModalOpen: false, errorModalOpen: true }); });
                 }
             }
         }
