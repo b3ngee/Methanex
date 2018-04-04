@@ -68,7 +68,7 @@ class AddUserForm extends React.Component {
     }
 
     onCloseSuccess() {
-       window.history.go('/setting/user');
+        this.setState({ successModalOpen: false });
     }
 
     onCloseError() {
