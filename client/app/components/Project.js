@@ -4,8 +4,9 @@ import Table from './Table';
 import Button from './Button';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import { SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
+import { RESOURCE, SUPER_ADMIN, prodAPIEndpoint } from '../constants/constants';
 import { sanitizeProjectStatus, sanitizeRagStatus, sanitizeBudget } from '../utils/sanitizer';
+import PopupBox from './PopupBox';
 
 class Project extends React.Component {
     constructor(props) {
@@ -13,18 +14,49 @@ class Project extends React.Component {
         this.state = {
             numProject: 0,
             selectedProjectID: 0,
-            rows: []
+            rows: [],
+            userId: localStorage.getItem('user_id'),
+            roles: localStorage.getItem('roles'),
+            assignedProjectsRows: [],
+            errorModalOpen: false
         };
         this.getProjects = this.getProjects.bind(this);
+        this.getRowsForAssignedProjectsTable = this.getRowsForAssignedProjectsTable.bind(this);
+        this.onCloseError = this.onCloseError.bind(this);
     }
 
     componentDidMount() {
-        this.getProjects();
+        if(this.state.roles.split(',').includes(RESOURCE)) {
+            this.getRowsForAssignedProjectsTable();
+        } else {
+            this.getProjects();
+        }
+    }
+
+    getRowsForAssignedProjectsTable() {
+        const tableData = [];
+        axios.get(prodAPIEndpoint + '/project-resources?resourceId=' + this.state.userId, {headers: {Pragma: 'no-cache'}}).then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+                if (response.data[i].status === 'APPROVED') {
+                    axios.get(prodAPIEndpoint + '/projects/' + response.data[i].projectId, {headers: {Pragma: 'no-cache'}}).then(projResponse => {
+                        axios.get(prodAPIEndpoint + '/users/' + projResponse.data.managerId, {headers: {Pragma: 'no-cache'}}).then(userResponse => {
+                            tableData.push({
+                                'ID': projResponse.data.id, // hidden
+                                'Project ID': projResponse.data.id, // for debugging; can be removed later
+                                'Project Name': projResponse.data.name,
+                                'Project Manager Name': userResponse.data.firstName + ' ' + userResponse.data.lastName,
+                                'Assigned Hours': response.data[i].assignedHours
+                            });
+                            this.setState({ assignedProjectsRows: tableData });
+                        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+                    }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+                }
+            }
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
     }
 
     getProjects() {
-        const roles = localStorage.getItem('roles');
-        const isAdmin = roles.includes(SUPER_ADMIN);
+        const isAdmin = this.state.roles.includes(SUPER_ADMIN);
         let query;
         if (isAdmin) {
             query = '/projects';
@@ -37,24 +69,50 @@ class Project extends React.Component {
 
             const tableData = [];
             for (let i = 0; i < this.state.numProject; i++) {
-                tableData.push({ 'ID': this.state.projects[i].id,
+                tableData.push({ 'ID': this.state.projects[i].id, // hidden
+                    'Project ID': this.state.projects[i].id, // for debugging; can be removed later
                     'Project Name': this.state.projects[i].name,
                     'Project Status': sanitizeProjectStatus(this.state.projects[i].projectStatus),
                     'Status': sanitizeRagStatus(this.state.projects[i].ragStatus),
                     'Budget': sanitizeBudget(this.state.projects[i].budget) });
             }
             this.setState({ rows: tableData});
-        }).catch( () => {
-        });
+        }).catch( (error) => { this.setState({ errorMessage: 'Error: ' + error.response.data.message, errorModalOpen: true }); });
+    }
+
+    onCloseError() {
+        this.setState({ errorModalOpen: false });
     }
 
     render() {
-        let columns = ['ID', 'Project Name', 'Project Status', 'Status', 'Budget'];
-        const rows = this.state.rows;
+        let columns = ['ID', 'Project ID', 'Project Name', 'Project Status', 'Status', 'Budget'];
+        let assignedProjectsColumns = ['ID', 'Project ID', 'Project Name', 'Project Manager Name', 'Assigned Hours'];
+        const {rows, errorModalOpen, errorMessage} = this.state;
+        if (this.state.roles.split(',').includes(RESOURCE)) {
+            return (
+                <div className={ project }>
+                    <h3>Assigned Projects</h3>
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
+                    {this.state.assignedProjectsRows.length > 0 &&
+                        <Table text="List of Assigned Projects" columns={assignedProjectsColumns} rows={this.state.assignedProjectsRows}/>}
+                    {this.state.assignedProjectsRows.length === 0 && <p>You are not assigned to any project.</p>}
+                </div>
+            );
+        }
         return(
             <div className={ project }>
                 <h1>My Projects</h1>
+                <PopupBox
+                    label={errorMessage}
+                    isOpen={errorModalOpen}
+                    onClose={this.onCloseError}
+                />
                 <h3>Number of projects: {this.state.rows.length}</h3>
+                <p>Click on project name to see more details</p>
                 <Table text="List of Projects" columns={columns} rows={this.state.rows}/>
                 <span>
                     <Link to={{pathname: '/project/report', state: {c: {columns}, r: {rows}}}}>

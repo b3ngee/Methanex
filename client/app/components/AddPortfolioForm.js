@@ -5,6 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import Dropdown from './Dropdown';
 import PopupBox from './PopupBox';
+import { prodAPIEndpoint, RAG_STATUS } from '../constants/constants';
 
 class AddPortfolioForm extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class AddPortfolioForm extends Component {
             portfolioManagerID: '',
             managers: [],
             classifications: [],
+            rag: '',
             errors: {}
         };
         this.onSubmit = this.onSubmit.bind(this);
@@ -31,13 +33,13 @@ class AddPortfolioForm extends Component {
     }
 
     listManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
+        axios.get(prodAPIEndpoint + '/users?role=PORTFOLIO_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
             this.setState({ managers: userResp.data });
         });
     }
 
     listClassifications() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/classifications', {headers: {Pragma: 'no-cache'}}).then((classificationResp) => {
+        axios.get(prodAPIEndpoint + '/classifications', {headers: {Pragma: 'no-cache'}}).then((classificationResp) => {
             this.setState({ classifications: classificationResp.data });
         });
     }
@@ -45,10 +47,11 @@ class AddPortfolioForm extends Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/portfolios', {
+            axios.post(prodAPIEndpoint + '/portfolios', {
                 name: this.state.portfolioName,
                 classificationId: this.state.portfolioClassificationID,
-                managerId: this.state.portfolioManagerID
+                managerId: this.state.portfolioManagerID,
+                ragStatus: this.state.rag
             }).then((response) => {
                 if (response.status === 201) {
                     this.setState({ successModalOpen: true });
@@ -80,6 +83,10 @@ class AddPortfolioForm extends Component {
         }
         if (!this.state.portfolioClassificationID) {
             this.setState({ errors: { portfolioClassificationID: 'Portfolio Classification ID is required'}});
+            isValid = false;
+        }
+        if (!this.state.rag) {
+            this.setState({ errors: { rag: 'RAG status is required' }});
             isValid = false;
         }
         return isValid;
@@ -127,6 +134,13 @@ class AddPortfolioForm extends Component {
                         name="portfolioManagerID"
                         data={managerObjects}
                         onSelect={this.onChange}
+                    />
+                    <Dropdown
+                        label="RAG Status"
+                        name="rag"
+                        data={RAG_STATUS}
+                        onSelect={this.onChange}
+                        error={errors.rag}
                     />
                     <Button
                         type="submit"

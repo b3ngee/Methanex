@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { table } from '../styles/table.scss';
+import { hidden, table } from '../styles/table.scss';
 import {Link} from 'react-router-dom';
 
 export default class Table extends Component {
@@ -13,6 +13,9 @@ export default class Table extends Component {
         let headers = (<thead>
             <tr>
               {cols.map((column, ci) => {
+                  if (column === 'ID' && ci === 0) {
+                    return <th className={hidden} key={ci}>{column}</th>;
+                  }
                   return <th key={ci}>{column}</th>;
               })}
             </tr>
@@ -24,8 +27,10 @@ export default class Table extends Component {
                 <tr key={ri}>
                 {cols.map((column, ci) => {
                     let endPoint = '';
+                    let ishidden = '';
                     if (column === 'ID') {
                         id = row[column];
+                        ishidden = 1;
                     }
                     if (column === 'Project Name') {
                         endPoint = 'project';
@@ -33,11 +38,18 @@ export default class Table extends Component {
                         endPoint = 'resource';
                     } else if (column === 'Portfolio Name') {
                         endPoint = 'portfolio';
-                    } if (endPoint !== '') {
+                    }
+
+                    if (endPoint !== '') {
                         return (
-                            <td key={ci}><Link to={`/${endPoint}/${id}`} >{row[column]}</Link></td>
+                            <td key={ci}><Link to={{pathname: `/${endPoint}/${id}`}} >{row[column]}</Link></td>
                         );
                     }
+
+                    if (ishidden === 1) {
+                        return (<td className={hidden} key={ci}>{row[column]}</td>);
+                    }
+
                     return (<td key={ci}>{row[column]}</td>);
                 })}
                 </tr>
@@ -46,7 +58,7 @@ export default class Table extends Component {
         );
 
         return (
-            <table className={table} width="100%">
+            <table className={table}>
                 {headers}
                 <tbody>
                     {body}

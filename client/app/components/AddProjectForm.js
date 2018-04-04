@@ -5,7 +5,7 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import PopupBox from './PopupBox';
 import { formBox } from '../styles/form.scss';
-import { STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
+import { prodAPIEndpoint, STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
 
 class AddProjectForm extends Component {
     constructor(props) {
@@ -42,13 +42,13 @@ class AddProjectForm extends Component {
     }
 
     fetchPortfolios() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
+        axios.get(prodAPIEndpoint + '/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
             this.setState({ portfolios: portfolioResp.data });
         });
     }
 
     fetchManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/users?role=PROJECT_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
+        axios.get(prodAPIEndpoint + '/users?role=PROJECT_MANAGER', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
             this.setState({ managers: userResp.data });
         });
     }
@@ -105,7 +105,7 @@ class AddProjectForm extends Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.post('https://methanex-portfolio-management.herokuapp.com/projects', {
+            axios.post(prodAPIEndpoint + '/projects', {
                 portfolioId: this.state.portfolio,
                 name: this.state.name,
                 projectStatus: this.state.status,
@@ -210,6 +210,7 @@ class AddProjectForm extends Component {
                         type="date"
                         field="startDate"
                         label="Start Date"
+                        placeholder="yyyy-mm-dd"
                         value={startDate}
                         onChange={this.onChange}
                         error={errors.startDate}
@@ -218,6 +219,7 @@ class AddProjectForm extends Component {
                         type="date"
                         field="endDate"
                         label="End Date"
+                        placeholder="yyyy-mm-dd"
                         value={endDate}
                         onChange={this.onChange}
                         error={errors.endDate}

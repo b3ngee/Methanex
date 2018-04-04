@@ -32,8 +32,8 @@ public class ProjectResourceController {
 
     @GetMapping
     @ResponseBody
-    public Iterable<ProjectResource> getProjectResources(@RequestParam(value = "projectId", required = false) Integer projectId) {
-        return projectResourceService.getProjectResources(projectId);
+    public Iterable<ProjectResource> getProjectResources(@RequestParam(value = "projectId", required = false) Integer projectId, @RequestParam(value = "resourceId", required = false) Integer resourceId) {
+        return projectResourceService.getProjectResources(projectId, resourceId);
     }
 
     @PostMapping

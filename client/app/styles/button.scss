@@ -1,7 +1,11 @@
+@import './global.scss';
+
 button {
-    background-color: lighten(#1AA7CC, 10%);
+    font-size: 12px;
+    font-weight: bold;
+    background-color: $button-color;
     padding: 14px 20px;
-    margin: 15px 15px;
+    margin: 0px 15px 15px 0;
     border: none;
     cursor: pointer;
 }

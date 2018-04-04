@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 import { navbar } from '../styles/navbar.scss';
 import { logout } from '../styles/logout.scss';
 import {
+    RESOURCE,
     RESOURCE_MANAGER,
     PORTFOLIO_MANAGER,
     PROJECT_MANAGER,
@@ -26,12 +27,14 @@ class Navbar extends Component {
         let isPortfolioManager = false;
         let isResourceManager = false;
         let isProjectManager = false;
+        let isResource = false;
         const roles = localStorage.getItem('roles');
         if (roles) {
             isAdmin = roles.includes(SUPER_ADMIN);
             isPortfolioManager = roles.includes(PORTFOLIO_MANAGER);
             isResourceManager = roles.includes(RESOURCE_MANAGER);
             isProjectManager = roles.includes(PROJECT_MANAGER);
+            isResource = roles.split(',').includes(RESOURCE);
         }
         return (
             <div className={ navbar }>
@@ -39,10 +42,11 @@ class Navbar extends Component {
                 {
                     localStorage.getItem('user_id') &&
                     <div>
-                        <Link to="/">My Profile</Link>
+                        <Link to="/">Profile</Link>
                         { (isAdmin || isPortfolioManager) && <Link to="/portfolio">Portfolios</Link> }
-                        { (isAdmin || isProjectManager || isPortfolioManager) && <Link to="/project">Projects</Link> }
-                        { (isAdmin || isResourceManager) && <Link to="/resource">Resources</Link> }
+                        { (isAdmin || isProjectManager || isResource) && <Link to="/project">Projects</Link> }
+                        { (isResourceManager) && <Link to="/resource">Resources</Link> }
+                        { (isAdmin) && <Link to="/resource">Users</Link>}
                         { isAdmin && <Link to="/setting">Administration</Link> }
                         <div className={ logout } onClick={this.logout.bind(this)}> Log Out </div>
                     </div>

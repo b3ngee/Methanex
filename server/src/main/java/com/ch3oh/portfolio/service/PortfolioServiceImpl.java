@@ -1,5 +1,6 @@
 package com.ch3oh.portfolio.service;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import com.ch3oh.portfolio.exception.GeneralRestNotFoundException;
 import com.ch3oh.portfolio.exception.RestBadRequestException;
 import com.ch3oh.portfolio.exception.user.UserNotFoundException;
 import com.ch3oh.portfolio.persistence.Portfolio;
+import com.ch3oh.portfolio.persistence.RagStatusEnum;
 import com.ch3oh.portfolio.persistence.RoleTypeEnum;
 import com.ch3oh.portfolio.repository.ClassificationDao;
 import com.ch3oh.portfolio.repository.PortfolioDao;
@@ -66,8 +68,13 @@ public class PortfolioServiceImpl {
             throw new RestBadRequestException("Portfolio name is missing");
         }
 
+        if (!portfolio.hasRagStatus()) {
+            throw new RestBadRequestException("Rag status is missing");
+        }
+
         validateClassification(portfolio.getClassificationId());
         validateName(portfolio.getName());
+        validateRagStatus(portfolio.getRagStatus());
 
         return portfolioDao.save(portfolio);
     }
@@ -97,6 +104,11 @@ public class PortfolioServiceImpl {
         if (toUpdate.hasName()) {
             validateName(toUpdate.getName());
             portfolio.setName(toUpdate.getName());
+        }
+
+        if (toUpdate.hasRagStatus()) {
+            validateRagStatus(toUpdate.getRagStatus());
+            portfolio.setRagStatus(toUpdate.getRagStatus());
         }
 
         return portfolioDao.save(portfolio);
@@ -130,6 +142,16 @@ public class PortfolioServiceImpl {
     private void validateName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new RestBadRequestException("Portfolio name is blank");
+        }
+    }
+
+    private void validateRagStatus(String ragStatus) {
+        if (StringUtils.isBlank(ragStatus)) {
+            throw new RestBadRequestException("RAG status is blank");
+        }
+
+        if (!EnumUtils.isValidEnum(RagStatusEnum.class, ragStatus)) {
+            throw new RestBadRequestException("Rag status does not exist (must be one of: RED, GREEN or AMBER)");
         }
     }
 }

@@ -1,0 +1,19 @@
+.popupBoxTwoButtons {
+    font-size: 12px;
+    position: absolute;
+    top: 30%;
+    left: 45%;
+    width: 22%;
+    height: 20%;
+    background: #FFF;
+    overflow: auto;
+    margin: 10px 10px 10px 10px;
+    padding: 20px 20px 0px 20px;
+    border: 1px solid #000;
+
+    Button {
+        position: static;
+        right: 0;
+        bottom: 0;
+    }
+}

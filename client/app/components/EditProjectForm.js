@@ -4,7 +4,8 @@ import TextFieldGroup from './TextFieldGroup';
 import Button from './Button';
 import Dropdown from './Dropdown';
 import { formBox } from '../styles/form.scss';
-import { STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
+import { project } from '../styles/project.scss';
+import { prodAPIEndpoint, STATUS, RAG_STATUS, COMPLETE } from '../constants/constants';
 import PopupBox from './PopupBox';
 import { enumifyProjectStatus, enumifyRagStatus } from '../utils/sanitizer';
 
@@ -13,18 +14,21 @@ class EditProjectForm extends Component {
         super(props);
         this.state = {
             id: this.props.location.state.data[0].Value,
-            portfolioId: this.props.location.state.data[1].Value,
+            portfolioName: this.props.location.state.data[1].Value,
             name: this.props.location.state.data[2].Value,
             projectStatus: enumifyProjectStatus(this.props.location.state.data[3].Value),
             ragStatus: enumifyRagStatus(this.props.location.state.data[4].Value),
             budget: this.props.location.state.data[5].Value,
             spentToDate: this.props.location.state.data[6].Value,
             estimateToComplete: this.props.location.state.data[7].Value,
-            managerId: this.props.location.state.data[8].Value,
+            managerName: this.props.location.state.data[8].Value,
             complete: this.props.location.state.data[9].Value ? 'true' : 'false',
             startDate: this.props.location.state.data[10].Value,
             endDate: this.props.location.state.data[11].Value,
             ganttChart: this.props.location.state.data[12].Value,
+            portfolioId: this.props.location.state2.data2.portfolioId,
+            managerId: this.props.location.state2.data2.managerId,
+            projectName: this.props.location.state2.data2.projectName,
             portfolios: [],
             managers: [],
             errors: {},
@@ -44,20 +48,20 @@ class EditProjectForm extends Component {
     }
 
     fetchPortfolios() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
+        axios.get(prodAPIEndpoint + '/portfolios', {headers: {Pragma: 'no-cache'}}).then((portfolioResp) => {
             this.setState({ portfolios: portfolioResp.data });
         });
     }
 
     fetchManagers() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/user-roles', {headers: {Pragma: 'no-cache'}}).then((roleResp) => {
+        axios.get(prodAPIEndpoint + '/user-roles', {headers: {Pragma: 'no-cache'}}).then((roleResp) => {
             const projectManagerIDs = roleResp.data.filter(r => {
                 return r.role === 'PROJECT_MANAGER';
             }).map(ro => {
                 return ro.userId;
             });
 
-            axios.get('https://methanex-portfolio-management.herokuapp.com/users', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
+            axios.get(prodAPIEndpoint + '/users', {headers: {Pragma: 'no-cache'}}).then((userResp) => {
                 const projectManagers = userResp.data.filter(u => {
                     return projectManagerIDs.includes(u.id);
                 });
@@ -120,7 +124,7 @@ class EditProjectForm extends Component {
         e.preventDefault();
         if (this.isValid()) {
             const id = this.state.id;
-            axios.put('https://methanex-portfolio-management.herokuapp.com/projects/' + id, {
+            axios.put(prodAPIEndpoint + '/projects/' + id, {
                 id: this.state.id,
                 portfolioId: this.state.portfolioId,
                 name: this.state.name,
@@ -166,108 +170,113 @@ class EditProjectForm extends Component {
             return { id: mo.id, name: mo.firstName + ' ' + mo.lastName };
         });
         return (
-        <div className={ formBox }>
-            <form onSubmit={this.onSubmit}>
-                <h2>Edit Project</h2>
-                <PopupBox
-                    label="Successful!"
-                    isOpen={successModalOpen}
-                    onClose={this.onCloseSuccess}
-                />
-                <PopupBox
-                    label={errorMessage}
-                    isOpen={errorModalOpen}
-                    onClose={this.onCloseError}
-                />
-                <Dropdown
-                    label="Portfolio"
-                    name="portfolioId"
-                    data={portfolioObjects}
-                    preSelect={portfolioId}
-                    onSelect={this.onChange}
-                    error={errors.porfolio}
-                />
-                <Dropdown
-                    label="Project Manager"
-                    name="managerId"
-                    data={managerObjects}
-                    preSelect={managerId}
-                    onSelect={this.onChange}
-                    error={errors.manager}
-                />
-                <TextFieldGroup
-                    field="name"
-                    label="Project Name"
-                    value={name}
-                    error={errors.name}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
-                    field="budget"
-                    label="Budget ($)"
-                    value={budget}
-                    error={errors.budget}
-                    onChange={this.onChange}
-                />
-                <TextFieldGroup
-                    field="estimateToComplete"
-                    label="Estimate to Complete ($)"
-                    value={estimateToComplete}
-                    onChange={this.onChange}
-                    error={errors.etc}
-                />
-                <TextFieldGroup
-                    field="spentToDate"
-                    label="Spent to Date ($)"
-                    value={spentToDate}
-                    onChange={this.onChange}
-                    error={errors.std}
-                />
-                <TextFieldGroup
-                    type="date"
-                    field="startDate"
-                    label="Start Date"
-                    value={startDate}
-                    onChange={this.onChange}
-                    error={errors.startDate}
-                />
-                <TextFieldGroup
-                    type="date"
-                    field="endDate"
-                    label="End Date"
-                    value={endDate}
-                    onChange={this.onChange}
-                    error={errors.endDate}
-                />
-                <Dropdown
-                    label="Complete"
-                    name="complete"
-                    data={COMPLETE}
-                    preSelect={complete}
-                    onSelect={this.onChange}
-                    error={errors.complete}
-                />
-                <Dropdown
-                    label="Status"
-                    name="projectStatus"
-                    data={STATUS}
-                    preSelect={projectStatus}
-                    onSelect={this.onChange}
-                    error={errors.status}
-                />
-                <Dropdown
-                    label="RAG Status"
-                    name="ragStatus"
-                    data={RAG_STATUS}
-                    preSelect={ragStatus}
-                    onSelect={this.onChange}
-                    error={errors.rag}
-                />
-                <Button
-                    type="submit"
-                    label="Save"
-                />
-            </form>
+        <div className={ project }>
+            <h1>{this.state.projectName}</h1>
+            <div className={ formBox }>
+                <form onSubmit={this.onSubmit}>
+                    <h2>Edit Project</h2>
+                    <PopupBox
+                        label="Successful!"
+                        isOpen={successModalOpen}
+                        onClose={this.onCloseSuccess}
+                    />
+                    <PopupBox
+                        label={errorMessage}
+                        isOpen={errorModalOpen}
+                        onClose={this.onCloseError}
+                    />
+                    <Dropdown
+                        label="Portfolio"
+                        name="portfolioId"
+                        data={portfolioObjects}
+                        preSelect={portfolioId}
+                        onSelect={this.onChange}
+                        error={errors.porfolio}
+                    />
+                    <Dropdown
+                        label="Project Manager"
+                        name="managerId"
+                        data={managerObjects}
+                        preSelect={managerId}
+                        onSelect={this.onChange}
+                        error={errors.manager}
+                    />
+                    <TextFieldGroup
+                        field="name"
+                        label="Project Name"
+                        value={name}
+                        error={errors.name}
+                        onChange={this.onChange}
+                    />
+                    <TextFieldGroup
+                        field="budget"
+                        label="Budget ($)"
+                        value={budget}
+                        error={errors.budget}
+                        onChange={this.onChange}
+                    />
+                    <TextFieldGroup
+                        field="estimateToComplete"
+                        label="Estimate to Complete ($)"
+                        value={estimateToComplete}
+                        onChange={this.onChange}
+                        error={errors.etc}
+                    />
+                    <TextFieldGroup
+                        field="spentToDate"
+                        label="Spent to Date ($)"
+                        value={spentToDate}
+                        onChange={this.onChange}
+                        error={errors.std}
+                    />
+                    <TextFieldGroup
+                        type="date"
+                        field="startDate"
+                        label="Start Date"
+                        placeholder="yyyy-mm-dd"
+                        value={startDate}
+                        onChange={this.onChange}
+                        error={errors.startDate}
+                    />
+                    <TextFieldGroup
+                        type="date"
+                        field="endDate"
+                        label="End Date"
+                        placeholder="yyyy-mm-dd"
+                        value={endDate}
+                        onChange={this.onChange}
+                        error={errors.endDate}
+                    />
+                    <Dropdown
+                        label="Complete"
+                        name="complete"
+                        data={COMPLETE}
+                        preSelect={complete}
+                        onSelect={this.onChange}
+                        error={errors.complete}
+                    />
+                    <Dropdown
+                        label="Status"
+                        name="projectStatus"
+                        data={STATUS}
+                        preSelect={projectStatus}
+                        onSelect={this.onChange}
+                        error={errors.status}
+                    />
+                    <Dropdown
+                        label="RAG Status"
+                        name="ragStatus"
+                        data={RAG_STATUS}
+                        preSelect={ragStatus}
+                        onSelect={this.onChange}
+                        error={errors.rag}
+                    />
+                    <Button
+                        type="submit"
+                        label="Save"
+                    />
+                </form>
+            </div>
         </div>
         );
     }

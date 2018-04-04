@@ -5,6 +5,7 @@ import Button from './Button';
 import { formBox } from '../styles/form.scss';
 import PopupBox from './PopupBox';
 import TextFieldGroup from './TextFieldGroup';
+import { prodAPIEndpoint } from '../constants/constants';
 
 class EditSkillCategory extends React.Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class EditSkillCategory extends React.Component {
     }
 
     getSkillCategories() {
-        axios.get('https://methanex-portfolio-management.herokuapp.com/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
+        axios.get(prodAPIEndpoint + '/skill-categories', {headers: {Pragma: 'no-cache'}}).then((response) => {
             this.setState({skillCategories: response.data});
         });
     }
@@ -49,7 +50,7 @@ class EditSkillCategory extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         if (this.isValid()) {
-            axios.put('https://methanex-portfolio-management.herokuapp.com/skill-categories/' + this.state.categoryID, {
+            axios.put(prodAPIEndpoint + '/skill-categories/' + this.state.categoryID, {
                 name: this.state.newSkillCategory
             }).then((response) => {
                 if(response.status === 200) {

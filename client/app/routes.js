@@ -20,6 +20,7 @@ import EditResourceForm from './components/EditResourceForm';
 import UserSettings from './components/UserSettings';
 import SkillSettings from './components/SkillSettings';
 import PortfolioSettings from './components/PortfolioSettings';
+import EditPortfolioForm from './components/EditPortfolioForm';
 
 const isLoggedIn = () => {
 	if (!localStorage.getItem('user_id')) {
@@ -33,7 +34,8 @@ export default (
 		<Route exact path="/" render={() => (isLoggedIn() ? (<Profile />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/portfolio" render={() => (isLoggedIn() ? (<Portfolio />) : (<Redirect to="/login"/>))} />
         <Route exact path="/portfolio/report" component={ReportingModule} />
-		<Route exact path="/portfolio/addnewportfolio" component={AddPortfolioForm} />
+		<Route exact path="/portfolio/add" component={AddPortfolioForm} />
+		<Route exact path="/portfolio/edit" component={ EditPortfolioForm } />
 		    <Route path={'/portfolio/:portfolio_id'} component={ PortfolioDetail } />
 		<Route exact path="/project" render={() => (isLoggedIn() ? (<Project />) : (<Redirect to="/login"/>))} />
 		<Route exact path="/project/report" component= {ReportingModule} />

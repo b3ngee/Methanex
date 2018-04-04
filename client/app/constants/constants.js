@@ -1,5 +1,6 @@
 // API endpoints
 export const prodAPIEndpoint = 'https://methanex-portfolio-management.herokuapp.com';
+// export const prodAPIEndpoint = 'http://localhost:8080';
 export const apiaryAPIEndpoint = 'https://private-2a709-methanex.apiary-mock.com';
 
 // User roles
@@ -35,4 +36,16 @@ export const COMPETENCY = [
     {id: 3, name: '3'},
     {id: 4, name: '4'},
     {id: 5, name: '5'}
+];
+
+// Statuses for Resources
+export const RESOURCE_STATUS = [
+    {id: 'Available', name: 'Available'},
+    {id: 'Unavailable', name: 'Unavailable'}
+];
+
+// User status
+export const USER_STATUS = [
+    {id: 'true', name: 'Enabled'},
+    {id: 'false', name: 'Disabled'}
 ];
