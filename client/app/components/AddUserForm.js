@@ -69,6 +69,7 @@ class AddUserForm extends React.Component {
 
     onCloseSuccess() {
         this.setState({ successModalOpen: false });
+        window.history.back();
     }
 
     onCloseError() {
