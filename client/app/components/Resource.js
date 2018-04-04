@@ -84,7 +84,7 @@ class Resource extends React.Component {
                                 if (this.state.prData[j].status === 'APPROVED') {
                                     tableData.push({
                                         'ID': this.state.projects[k].id, // hidden
-                                        '(request) ID': this.state.prData[j].id, // for debugging; remove later
+                                        'Request ID': this.state.prData[j].id, // for debugging; remove later
                                         'Resource': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
                                         'Resource ID': this.state.resources[i].id, // for debugging; can be removed later
                                         'Project Name': this.state.projects[k].name,
