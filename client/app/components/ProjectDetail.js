@@ -481,7 +481,7 @@ class ProjectDetail extends React.Component {
                 />
                 <Button type="submit" label="Delete" onClick={this.handleDeleteProject}/>
 
-                <h2>Resources</h2>
+                <h2>Assigned Resources</h2>
                 <PopupBoxTwoButtons
                     label="Are you sure?"
                     isOpen={deletionModalOpen}
