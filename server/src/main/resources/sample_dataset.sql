@@ -1,16 +1,16 @@
 INSERT INTO `USER` (`ID`, `MANAGER_ID`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `EMAIL`, `PASSWORD`, `LOCATION`, `STATUS`, `ENABLED`)
 VALUES
-	(1, NULL, 'SUPER ADMIN', '1', '1 Main Street', 'superadmin@methanex.com', '$2a$10$GNqgmYVm4mb4l/tgWOcVSuW3XfmgLaSn/UdRKdHfPYEuEfxDeM8hi', 'Vancouver', 'Available', 1),
-	(2, NULL, 'PORTFOLIO MANAGER 1', '1', '1 Main Street', 'portfoliomanager1@methanex.com', '$2a$10$HGVd2Ary84RnwhaBDqEtP.S0.NpGTHAl5F6FmZnfrky5eE5dmSDku', 'Vancouver', 'Available', 1),
-	(3, NULL, 'PORTFOLIO MANAGER 2', '2', '1 Main Street', 'portfoliomanager2@methanex.com', '$2a$10$jFL6r8.jivZX5yvI4WEyJOsZUkGfI7I5qgbNWOxo9s60m75ftuk7q', 'Vancouver', 'Available', 1),
-	(4, NULL, 'PROJECT MANAGER 1', '1', '1 Main Street', 'projectmanager1@methanex.com', '$2a$10$Qtixd6gaRJLdFDUKqeuOoulTA6UKNQLpl7jq33P1/n3cz2nibWsIy', 'Vancouver', 'Available', 1),
-	(5, NULL, 'PROJECT MANAGER 2', '2', '1 Main Street', 'projectmanager2@methanex.com', '$2a$10$eJthODeoPHC9x1YyJePpouyodtY791D.dk45CJPAZdqEkCNBbobyO', 'Vancouver', 'Available', 1),
-	(6, NULL, 'RESOURCE MANAGER 1', '1', '1 Main Street', 'resourcemanager1@methanex.com', '$2a$10$/ZG3c8MTESHolKh9I9Fvs.GgFe53BwnWs2GE.BlUDE/S1bQDjSQN.', 'Vancouver', 'Available', 1),
-	(7, NULL, 'RESOURCE MANAGER 2', '2', '1 Main Street', 'resourcemanager2@methanex.com', '$2a$10$TvkNr.rpUA9neUa702p5q.Vc45s5FAqLUXCRAPUITfCYg7wXX5SHC', 'Vancouver', 'Available', 1),
-	(8, 6, 'RESOURCE 1', '1', '1 Main Street', 'resource1@methanex.com', '$2a$10$730TwyHskzXtUe8bV/Pd1OovbQj12SjgdhzY2LIrt2A8fSn43Atq2', 'Vancouver', 'Available', 1),
-	(9, 6, 'RESOURCE 2', '2', '1 Main Street', 'resource2@methanex.com', '$2a$10$s.zFZ94HN/G7BLuCa5vufew1P2CDZq7Wr4RyxyWZrNI9ZaLMhQRei', 'Vancouver', 'Available', 1),
-	(10, 7, 'RESOURCE 3', '3', '1 Main Street', 'resource3@methanex.com', '$2a$10$6brIMCxwm4XT0PPQYxUwo..dY3ZnGxbkQePynguqXRqQ11BxtSL2i', 'Vancouver', 'Available', 1),
-	(11, 7, 'RESOURCE 4', '4', '1 Main Street', 'resource4@methanex.com', '$2a$10$foyOHHoNRoQAaU0mNEJk5ORlyMVM51xYv.kMANMviaB0fUi4Tu752', 'Vancouver', 'Available', 1);
+	(1, NULL, 'Jerry Jim', '(Super Admin)', '1 Main Street', 'superadmin@methanex.com', '$2a$10$GNqgmYVm4mb4l/tgWOcVSuW3XfmgLaSn/UdRKdHfPYEuEfxDeM8hi', 'Vancouver', 'Available', 1),
+	(2, NULL, 'Daniel Almeida', '(Portfolio Manager)', '2 Main Street', 'portfoliomanager1@methanex.com', '$2a$10$HGVd2Ary84RnwhaBDqEtP.S0.NpGTHAl5F6FmZnfrky5eE5dmSDku', 'Vancouver', 'Available', 1),
+	(3, NULL, 'Iris Ren', '(Portfolio Manager)', '3 Main Street', 'portfoliomanager2@methanex.com', '$2a$10$jFL6r8.jivZX5yvI4WEyJOsZUkGfI7I5qgbNWOxo9s60m75ftuk7q', 'Vancouver', 'Available', 1),
+	(4, NULL, 'Lansi Chu', '(Project Manager)', '4 Main Street', 'projectmanager1@methanex.com', '$2a$10$Qtixd6gaRJLdFDUKqeuOoulTA6UKNQLpl7jq33P1/n3cz2nibWsIy', 'Vancouver', 'Available', 1),
+	(5, NULL, 'Colby Song', '(Project Manager)', '5 Main Street', 'projectmanager2@methanex.com', '$2a$10$eJthODeoPHC9x1YyJePpouyodtY791D.dk45CJPAZdqEkCNBbobyO', 'Vancouver', 'Available', 1),
+	(6, NULL, 'Yoony Ok', '(Resource Manager)', '6 Main Street', 'resourcemanager1@methanex.com', '$2a$10$/ZG3c8MTESHolKh9I9Fvs.GgFe53BwnWs2GE.BlUDE/S1bQDjSQN.', 'Vancouver', 'Available', 1),
+	(7, NULL, 'Ben Gee', '(Resource Manager)', '7 Main Street', 'resourcemanager2@methanex.com', '$2a$10$TvkNr.rpUA9neUa702p5q.Vc45s5FAqLUXCRAPUITfCYg7wXX5SHC', 'Vancouver', 'Available', 1),
+	(8, 6, 'Rhoda Zhang', '(Resource)', '8 Main Street', 'resource1@methanex.com', '$2a$10$730TwyHskzXtUe8bV/Pd1OovbQj12SjgdhzY2LIrt2A8fSn43Atq2', 'Vancouver', 'Available', 1),
+	(9, 6, 'Harnoor Shoker', '(Resource)', '9 Main Street', 'resource2@methanex.com', '$2a$10$s.zFZ94HN/G7BLuCa5vufew1P2CDZq7Wr4RyxyWZrNI9ZaLMhQRei', 'Vancouver', 'Available', 1),
+	(10, 7, 'Daniel Chen', '(Resource)', '10 Main Street', 'resource3@methanex.com', '$2a$10$6brIMCxwm4XT0PPQYxUwo..dY3ZnGxbkQePynguqXRqQ11BxtSL2i', 'Vancouver', 'Available', 1),
+	(11, 7, 'John Doe', '(Resource)', '11 Main Street', 'resource4@methanex.com', '$2a$10$foyOHHoNRoQAaU0mNEJk5ORlyMVM51xYv.kMANMviaB0fUi4Tu752', 'Vancouver', 'Available', 1);
 
 INSERT INTO `USER_ROLE` (`ID`, `USER_ID`, `ROLE`)
 VALUES
@@ -110,7 +110,4 @@ VALUES
 INSERT INTO `PROJECT_RESOURCE` (`ID`, `PROJECT_ID`, `RESOURCE_ID`, `ASSIGNED_HOURS`, `STATUS`)
 VALUES
 	(1, 1, 8, 100, 'APPROVED'),
-	(2, 1, 9, 150, 'REJECTED'),
-	(3, 2, 8, 200, 'PENDING'),
-	(4, 3, 10, 300, 'APPROVED'),
-	(5, 3, 11, 400, 'PENDING');
+	(4, 3, 10, 300, 'APPROVED');
