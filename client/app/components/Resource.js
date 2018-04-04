@@ -84,7 +84,6 @@ class Resource extends React.Component {
                                 if (this.state.prData[j].status === 'APPROVED') {
                                     tableData.push({
                                         'ID': this.state.projects[k].id, // hidden
-                                        'Request ID': this.state.prData[j].id, // for debugging; remove later
                                         'Resource': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
                                         'Resource ID': this.state.resources[i].id, // for debugging; can be removed later
                                         'Project Name': this.state.projects[k].name,
@@ -94,7 +93,6 @@ class Resource extends React.Component {
                                 if (this.state.prData[j].status === 'PENDING') {
                                     rowRequests.push({
                                          'ID': this.state.projects[k].id, // hidden
-                                         'Request ID': this.state.prData[j].id,
                                          'Resource': this.state.resources[i].firstName + ' ' + this.state.resources[i].lastName,
                                          'Resource ID': this.state.resources[i].id,
                                          'Project Name': this.state.projects[k].name,
@@ -173,8 +171,8 @@ class Resource extends React.Component {
     render() {
         let columns = ['ID', 'Resource Name', 'Resource ID', 'Availability'];
 //        let columns = ['ID', 'Resource Name', 'Resource ID', 'Manager Name', 'Availability']; // todo: can be put back if manager name is preferred to be shown
-        let requestColumns = ['ID', 'Request ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Requested', 'Availability', 'Approve', 'Reject'];
-        let assignedResourcesColumns = ['ID', '(request) ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Assigned'];
+        let requestColumns = ['ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Requested', 'Availability', 'Approve', 'Reject'];
+        let assignedResourcesColumns = ['ID', 'Resource', 'Resource ID', 'Project Name', 'Hours Assigned'];
         const {rows, successModalOpen, errorModalOpen, errorMessage, requestModalOpen} = this.state;
         return(
             <div className={ resource }>
