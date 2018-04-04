@@ -26,6 +26,7 @@ class ProjectDetail extends React.Component {
             resourceId: '',
             assignedHours: '',
             successModalOpen: false,
+            successModalForProjectDeletionOpen: false,
             errorModalOpen: false,
             projectDeletionModalOpen: false,
             deletionModalOpen: false,
@@ -51,6 +52,7 @@ class ProjectDetail extends React.Component {
         this.deleteResourceOrRequest = this.deleteResourceOrRequest.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.onCloseSuccess = this.onCloseSuccess.bind(this);
+        this.onCloseSuccessForDeleteProject = this.onCloseSuccessForDeleteProject.bind(this);
         this.onCloseProjectDeletion = this.onCloseProjectDeletion.bind(this);
         this.onCloseDeletion = this.onCloseDeletion.bind(this);
         this.onCancelDeletion = this.onCancelDeletion.bind(this);
@@ -128,7 +130,7 @@ class ProjectDetail extends React.Component {
             if (response.status === 200) {
                 this.setState({
                     projectDeletionModalOpen: false,
-                    successModalOpen: true
+                    successModalForProjectDeletionOpen: true
                 });
             }
         }).catch((error) => {
@@ -399,6 +401,11 @@ class ProjectDetail extends React.Component {
         this.setState({ successModalOpen: false });
     }
 
+    onCloseSuccessForDeleteProject() {
+        this.setState({ successModalForProjectDeletionOpen: false });
+        window.history.back();
+    }
+
     onCloseProjectDeletion() {
         this.deleteProject();
     }
@@ -423,7 +430,7 @@ class ProjectDetail extends React.Component {
 
         const data = this.state.rows;
         const data2 = {'managerId': this.state.managerId, 'portfolioId': this.state.portfolioId, 'projectName': this.state.projectName};
-        const { assignedHours, projectDeletionModalOpen, deletionModalOpen, successModalOpen, errorModalOpen, errorMessage, skillCategoryData, filteredSkillTypeData} = this.state;
+        const { assignedHours, projectDeletionModalOpen, deletionModalOpen, successModalOpen, successModalForProjectDeletionOpen, errorModalOpen, errorMessage, skillCategoryData, filteredSkillTypeData} = this.state;
         const resourceObjects = this.state.resources.map(ro => {
             return { id: ro.basic.id, name: ro.basic.firstName, skillsInfo: ro.skillsInfo };
         });
@@ -461,6 +468,11 @@ class ProjectDetail extends React.Component {
                     label="Successful!"
                     isOpen={successModalOpen}
                     onClose={this.onCloseSuccess}
+                />
+                <PopupBox
+                    label="Successful!"
+                    isOpen={successModalForProjectDeletionOpen}
+                    onClose={this.onCloseSuccessForDeleteProject}
                 />
                 <PopupBox
                     label={errorMessage}
