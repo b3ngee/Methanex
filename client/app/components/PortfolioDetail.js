@@ -104,7 +104,8 @@ class PortfolioDetails extends React.Component {
     }
 
     onCloseSuccess() {
-        window.history.back();
+        this.props.history.push('/portfolio');
+//        window.history.back();
     }
 
     onCloseError() {
@@ -155,6 +156,7 @@ class PortfolioDetails extends React.Component {
 PortfolioDetails.propTypes = {
     match: React.PropTypes.any,
     location: React.PropTypes.any,
+    history: React.PropTypes.any
 };
 
 export default PortfolioDetails;

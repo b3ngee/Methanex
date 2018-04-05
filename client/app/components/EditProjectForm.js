@@ -89,15 +89,15 @@ class EditProjectForm extends Component {
             this.setState({ errors: { rag: 'RAG status is required' }});
             isValid = false;
         }
-        if (!this.state.budget) {
+        if (!this.state.budget && this.state.budget !== 0) {
             this.setState({ errors: { budget: 'Budget is required' }});
             isValid = false;
         }
-        if (!this.state.spentToDate) {
+        if (!this.state.spentToDate && this.state.spentToDate !== 0) {
             this.setState({ errors: { std: 'Spent to Date is required' }});
             isValid = false;
         }
-        if (!this.state.estimateToComplete) {
+        if (!this.state.estimateToComplete && this.state.estimateToComplete !== 0) {
             this.setState({ errors: { etc: 'Estimate to Complete is required' }});
             isValid = false;
         }

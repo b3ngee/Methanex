@@ -18,7 +18,7 @@ class EditResourceForm extends Component {
             lastName: this.props.location.state.data[3].Value,
             address: this.props.location.state.data[4].Value,
             email: this.props.location.state.data[5].Value,
-            password: this.props.location.state.data[6].Value,
+            location: this.props.location.state.data[6].Value,
             status: this.props.location.state.data[7].Value,
             enabled: this.props.location.state.data[8].Value,
             errors: {},
@@ -33,6 +33,7 @@ class EditResourceForm extends Component {
     }
 
     componentDidMount() {
+        console.log(this.props.location.state.data);
         this.getResourceManagers();
     }
 
@@ -53,7 +54,7 @@ class EditResourceForm extends Component {
                 lastName: this.state.lastName,
                 address: this.state.address,
                 email: this.state.email,
-                // password: this.state.password,
+                location: this.state.location,
                 status: this.state.status,
                 enabled: this.state.enabled,
             }).then((response) => {
@@ -105,6 +106,10 @@ class EditResourceForm extends Component {
             this.setState({ errors: { email: 'Resource\'s email is required' }});
             hasError = false;
         }
+        if (!this.state.location) {
+            this.setState({ errors: { location: 'Resource\'s location is required' }});
+            hasError = false;
+        }
         if (!this.state.status) {
             this.setState({ errors: { status: 'Resource\'s status is required' }});
             hasError = false;
@@ -117,7 +122,7 @@ class EditResourceForm extends Component {
     }
 
     render() {
-        const {id, managerId, firstName, lastName, address, email, status, enabled, errors, successModalOpen, errorModalOpen, errorMessage} = this.state;
+        const {id, managerId, firstName, lastName, address, email, location, status, enabled, errors, successModalOpen, errorModalOpen, errorMessage} = this.state;
 
         const managerObjects = this.state.resourceManagers.map((mo) => {
             return {id: mo.id, name: mo.firstName + ' ' + mo.lastName};
@@ -172,6 +177,13 @@ class EditResourceForm extends Component {
                         label="Email"
                         value={email}
                         error={errors.email}
+                        onChange={this.onChange}
+                    />
+                    <TextFieldGroup
+                        field="location"
+                        label="Location"
+                        value={location}
+                        error={errors.location}
                         onChange={this.onChange}
                     />
                      <Dropdown
